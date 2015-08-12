@@ -8,36 +8,17 @@ import java.nio.FloatBuffer;
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 
-import com.sherazkhilji.videffect.AutoFixEffect;
-import com.sherazkhilji.videffect.BrightnessEffect;
-import com.sherazkhilji.videffect.ContrastEffect;
-import com.sherazkhilji.videffect.CrossProcessEffect;
-import com.sherazkhilji.videffect.DocumentaryEffect;
-import com.sherazkhilji.videffect.DuotoneEffect;
-import com.sherazkhilji.videffect.FillLightEffect;
-import com.sherazkhilji.videffect.GrainEffect;
-import com.sherazkhilji.videffect.GrainEffect;
-import com.sherazkhilji.videffect.LamoishEffect;
-import com.sherazkhilji.videffect.PosterizeEffect;
-import com.sherazkhilji.videffect.SaturationEffect;
-import com.sherazkhilji.videffect.SepiaEffect;
-import com.sherazkhilji.videffect.SharpnessEffect;
-import com.sherazkhilji.videffect.TemperatureEffect;
-import com.sherazkhilji.videffect.TintEffect;
-import com.sherazkhilji.videffect.VignetteEffect;
+import com.sherazkhilji.videffect.NegativeEffect;
 import com.sherazkhilji.videffect.interfaces.ShaderInterfacer;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.graphics.Color;
 import android.graphics.SurfaceTexture;
 import android.media.MediaPlayer;
-import android.media.effect.Effect;
-import android.media.effect.EffectContext;
-import android.media.effect.EffectFactory;
 import android.opengl.GLES20;
 import android.opengl.GLSurfaceView;
 import android.opengl.Matrix;
+import android.util.AttributeSet;
 import android.util.Log;
 import android.view.Surface;
 import android.widget.Toast;
@@ -67,6 +48,15 @@ public class VideoSurfaceView extends GLSurfaceView {
 		mSurfaceView = this;
 	}
 
+	public VideoSurfaceView(Context context, AttributeSet attrs) {
+		super(context, attrs);
+		mContext = context;
+		setEGLContextClientVersion(2);
+		mRenderer = new VideoRender(mContext);
+		setRenderer(mRenderer);
+		mSurfaceView = this;
+	}
+
 	/**
 	 * initializes media player and starts playback
 	 * 
@@ -89,6 +79,7 @@ public class VideoSurfaceView extends GLSurfaceView {
 			return;
 		}
 		queueEvent(new Runnable() {
+			@Override
 			public void run() {
 				mRenderer.setMediaPlayer(mMediaPlayer);
 			}
@@ -118,6 +109,13 @@ public class VideoSurfaceView extends GLSurfaceView {
 				+ "varying vec2 vTextureCoord;\n" + "void main() {\n"
 				+ "  gl_Position = uMVPMatrix * aPosition;\n"
 				+ "  vTextureCoord = (uSTMatrix * aTextureCoord).xy;\n" + "}\n";
+		private final String mFragmentShader = "#extension GL_OES_EGL_image_external : require\n"
+				+ "precision mediump float;\n"
+				+ "varying vec2 vTextureCoord;\n"
+				+ "uniform samplerExternalOES sTexture;\n"
+				+ "void main() {\n"
+				+ "  gl_FragColor = texture2D(sTexture, vTextureCoord);\n"
+				+ "}\n";
 
 		private float[] mMVPMatrix = new float[16];
 		private float[] mSTMatrix = new float[16];
@@ -204,7 +202,7 @@ public class VideoSurfaceView extends GLSurfaceView {
 
 		@Override
 		public void onSurfaceCreated(GL10 glUnused, EGLConfig config) {
-			ShaderInterfacer effect = new VignetteEffect(mSurfaceView, 0.5f);
+			ShaderInterfacer effect = new NegativeEffect();
 			mProgram = createProgram(mVertexShader, effect.getShader());
 			if (mProgram == 0) {
 				return;
@@ -286,6 +284,7 @@ public class VideoSurfaceView extends GLSurfaceView {
 			mMediaPlayer.start();
 		}
 
+		@Override
 		synchronized public void onFrameAvailable(SurfaceTexture surface) {
 			updateSurface = true;
 		}

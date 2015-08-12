@@ -1,8 +1,5 @@
 package com.sherazkhilji.videffect;
 
-import java.util.Date;
-import java.util.Random;
-
 import android.opengl.GLSurfaceView;
 
 import com.sherazkhilji.videffect.interfaces.ShaderInterfacer;

@@ -1,7 +1,6 @@
 package com.sherazkhilji.videffect.sample;
 
-import java.io.File;
-
+import com.sheraz.kira.videoeffect.R;
 import com.sherazkhilji.videffect.view.VideoSurfaceView;
 
 import android.app.Activity;
@@ -9,7 +8,6 @@ import android.content.res.AssetFileDescriptor;
 import android.content.res.Resources;
 import android.media.MediaPlayer;
 import android.os.Bundle;
-import android.os.Environment;
 import android.util.Log;
 
 public class SamplePlayerActivity extends Activity {
@@ -43,10 +41,13 @@ public class SamplePlayerActivity extends Activity {
 		} catch (Exception e) {
 			Log.e(TAG, e.getMessage(), e);
 		}
-
-		mVideoView = new VideoSurfaceView(this);
+		// Initialize VideoSurfaceView using code
+		// mVideoView = new VideoSurfaceView(this);
+		// setContentView(mVideoView);
+		// or
+		setContentView(R.layout.activity_sampleplayer);
+		mVideoView = (VideoSurfaceView) findViewById(R.id.mVideoSurfaceView);
 		mVideoView.init(mMediaPlayer);
-		setContentView(mVideoView);
 
 	}
 

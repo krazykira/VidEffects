@@ -1,8 +1,6 @@
 package com.sherazkhilji.videffect;
 
 import android.graphics.Color;
-import android.opengl.GLSurfaceView;
-
 import com.sherazkhilji.videffect.interfaces.ShaderInterfacer;
 
 /**

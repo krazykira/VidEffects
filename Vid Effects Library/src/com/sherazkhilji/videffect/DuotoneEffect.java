@@ -1,12 +1,8 @@
 package com.sherazkhilji.videffect;
 
-import java.util.Date;
-import java.util.Random;
-
 import com.sherazkhilji.videffect.interfaces.ShaderInterfacer;
 
 import android.graphics.Color;
-import android.opengl.GLSurfaceView;
 
 /**
  * Representation of video using only two color tones.

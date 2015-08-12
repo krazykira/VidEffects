@@ -4,5 +4,9 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity" >
 
+    <com.sherazkhilji.videffect.view.VideoSurfaceView
+        android:id="@+id/mVideoSurfaceView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
 
 </RelativeLayout>
