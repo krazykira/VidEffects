@@ -5,6 +5,11 @@ This is an Android library which can be used to apply different Filters/Effects 
 
 The effects applied using this library are temporary. What that means is that the orignal video doesn't change. Effects are only applied during video playback and once the video ends the effects end with it. In the future, i am aiming to apply permanant effect to videos. You guys are welcome to help out.
 
+## How to use it
+
+- Download and Add VidEffects as Library project
+- Checkout the [SamplePlayerActivity](https://github.com/krazykira/VidEffects/blob/master/Vid%20Effects%20Library/src/com/sherazkhilji/videffect/sample/SamplePlayerActivity.java) for more detailed example on how to apply different effects on your videos.
+
 ## See it in working
 
 #### Video screenshot without any Effect
