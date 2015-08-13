@@ -40,7 +40,7 @@ License
     limitations under the License.
 
 
-**For those who are interested in contributing to this project. Fork the repository or contact me**
+**For those of you, interested in contributing to this project. Fork it and send me a pull request or contact me if you want to be part of the project**
 
 
 
