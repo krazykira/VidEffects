@@ -18,7 +18,7 @@ The effects applied using this library are temporary. What that means is that th
 
 ## Special Thanks to:
 
-* The blog [post](http://code.tutsplus.com/tutorials/how-to-use-android-media-effects-with-opengl-es--cms-23650) by Ashraff Hathibelagal for easing the process of learning Opengl and explaining how to apply effects on images.
+* This blog [post](http://code.tutsplus.com/tutorials/how-to-use-android-media-effects-with-opengl-es--cms-23650) by Ashraff Hathibelagal for easing the process of learning Opengl and explaining how to apply effects on images.
 * [GrepCode](http://grepcode.com/file/repository.grepcode.com/java/ext/com.google.android/android/5.0.1_r1/android/filterpacks/imageproc/package-info.java) For providing me with Android source code which were helpful in writing video effects/filters.
 * [MediaPlayerSurface by crossle](https://github.com/crossle/MediaPlayerSurface) It helped me in playing video using a GlsurfaceView.
 * [Lunero] (http://stackoverflow.com/questions/31805837/applying-effects-on-video-being-played/31958741#comment51543141_31805837) and [Fadden](http://stackoverflow.com/questions/31805837/applying-effects-on-video-being-played/31958741#comment51571387_31805837) who is the writer of [grafika](https://github.com/google/grafika) for pointing me towards right direction on how to apply effects on a video.
