@@ -1,20 +1,34 @@
 # VidEffects
 This is an Android library which can be used to apply different Filters/Effects on videos. It uses vertexShaders and fragmentShaders to apply effects on GLSurfaceView. It uses mediaPlayer instance for playing videos on GlSurcaeView. See the sample app in order to see a working demo.
 
-### Limitations
+## Limitations
 
 The effects applied using this library are temporary. What that means is that the orignal video doesn't change. Effects are only applied during video playback and once the video ends the effects end with it. In the future, i am aiming to apply permanant effect to videos. You guys are welcome to help out.
 
-### See it in working
+## See it in working
 
-**Video screenshot without any Effect**
+#### Video screenshot without any Effect
 ![Video screenshot without any Effect](https://cloud.githubusercontent.com/assets/2201511/9244232/ded8b760-41b2-11e5-9e4b-54d7c0b9cfca.png)
 
-**Video screenshot with Black and White Effect**
+#### Video screenshot with Black and White Effect
 ![Video screenshot with Black and White Effect](https://cloud.githubusercontent.com/assets/2201511/9244235/e75ab7a8-41b2-11e5-90b7-33d944d1d6c8.png)
 
-**Video screenshot with Negative Effect**
+#### Video screenshot with Negative Effect
 ![Video screenshot with Negative Effect](https://cloud.githubusercontent.com/assets/2201511/9244236/ea09d344-41b2-11e5-9e71-f04601fd61e9.png)
+
+## Special Thanks to:
+
+* The blog [post](http://code.tutsplus.com/tutorials/how-to-use-android-media-effects-with-opengl-es--cms-23650) by Ashraff Hathibelagal for easing the process of learning Opengl and explaining how to apply effects on images.
+* [GrepCode](http://grepcode.com/file/repository.grepcode.com/java/ext/com.google.android/android/5.0.1_r1/android/filterpacks/imageproc/package-info.java) For providing me with Android source code which were helpful in writing video effects/filters.
+* [MediaPlayerSurface by crossle](https://github.com/crossle/MediaPlayerSurface) It helped me in playing video using a GlsurfaceView.
+* [Lunero] (http://stackoverflow.com/questions/31805837/applying-effects-on-video-being-played/31958741#comment51543141_31805837) and [Fadden](http://stackoverflow.com/questions/31805837/applying-effects-on-video-being-played/31958741#comment51571387_31805837) who is the writer of [grafika](https://github.com/google/grafika) for pointing me towards right direction on how to apply effects on a video.
+* [Intel INDE Media for Mobile Tutorials](https://software.intel.com/en-us/articles/intel-inde-media-pack-for-android-tutorials-building-samples) for the sample app and helping me getting familiar with how fragmentShaders work.
+ 
+
+### Development
+
+Want to contribute? Great! Fork it and send me a pull request or contact me on the email below, if you want to be part of the project.
+
 
 Developed By
 ============
@@ -25,7 +39,7 @@ Developed By
 License
 =======
 
-    Copyright 2014 Sheraz Ahmad Khilji
+    Copyright 2015 Sheraz Ahmad Khilji
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -38,9 +52,3 @@ License
     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
     See the License for the specific language governing permissions and
     limitations under the License.
-
-
-**For those of you, interested in contributing to this project. Fork it and send me a pull request or contact me if you want to be part of the project**
-
-
-
