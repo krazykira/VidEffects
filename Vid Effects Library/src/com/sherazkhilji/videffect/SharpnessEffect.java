@@ -2,7 +2,7 @@ package com.sherazkhilji.videffect;
 
 import android.opengl.GLSurfaceView;
 
-import com.sherazkhilji.videffect.interfaces.ShaderInterfacer;
+import com.sherazkhilji.videffect.interfaces.ShaderInterface;
 
 /**
  * Sharpens the video.
@@ -10,7 +10,7 @@ import com.sherazkhilji.videffect.interfaces.ShaderInterfacer;
  * @author sheraz.khilji
  *
  */
-public class SharpnessEffect implements ShaderInterfacer {
+public class SharpnessEffect implements ShaderInterface {
 	private GLSurfaceView mGlSurfaceView;
 	private int mWidth;
 	private int mHeight;

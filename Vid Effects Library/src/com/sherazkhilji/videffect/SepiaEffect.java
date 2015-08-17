@@ -1,6 +1,6 @@
 package com.sherazkhilji.videffect;
 
-import com.sherazkhilji.videffect.interfaces.ShaderInterfacer;
+import com.sherazkhilji.videffect.interfaces.ShaderInterface;
 
 /**
  * Converts video to Sepia tone.
@@ -8,7 +8,7 @@ import com.sherazkhilji.videffect.interfaces.ShaderInterfacer;
  * @author sheraz.khilji
  *
  */
-public class SepiaEffect implements ShaderInterfacer {
+public class SepiaEffect implements ShaderInterface {
 	/**
 	 * Initialize Effect
 	 * 

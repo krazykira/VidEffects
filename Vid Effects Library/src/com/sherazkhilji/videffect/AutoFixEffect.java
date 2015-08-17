@@ -1,6 +1,6 @@
 package com.sherazkhilji.videffect;
 
-import com.sherazkhilji.videffect.interfaces.ShaderInterfacer;
+import com.sherazkhilji.videffect.interfaces.ShaderInterface;
 
 /**
  * Attempts to auto-fix the video based on histogram equalization.
@@ -8,7 +8,7 @@ import com.sherazkhilji.videffect.interfaces.ShaderInterfacer;
  * @author sheraz.khilji
  *
  */
-public class AutoFixEffect implements ShaderInterfacer {
+public class AutoFixEffect implements ShaderInterface {
 	private float scale;
 
 	/**

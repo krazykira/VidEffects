@@ -1,6 +1,6 @@
 package com.sherazkhilji.videffect;
 
-import com.sherazkhilji.videffect.interfaces.ShaderInterfacer;
+import com.sherazkhilji.videffect.interfaces.ShaderInterface;
 
 /**
  * Applies back-light filling to the video.
@@ -8,7 +8,7 @@ import com.sherazkhilji.videffect.interfaces.ShaderInterfacer;
  * @author sheraz.khilji
  *
  */
-public class FillLightEffect implements ShaderInterfacer {
+public class FillLightEffect implements ShaderInterface {
 	private float strength = 0f;
 
 	/**

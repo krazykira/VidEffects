@@ -7,7 +7,7 @@ package com.sherazkhilji.videffect.interfaces;
  * @author sheraz.khilji
  *
  */
-public interface ShaderInterfacer {
+public interface ShaderInterface {
 	/**
 	 * Returns Shader code
 	 * 

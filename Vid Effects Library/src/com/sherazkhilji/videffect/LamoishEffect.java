@@ -5,7 +5,7 @@ import java.util.Random;
 
 import android.opengl.GLSurfaceView;
 
-import com.sherazkhilji.videffect.interfaces.ShaderInterfacer;
+import com.sherazkhilji.videffect.interfaces.ShaderInterface;
 
 /**
  * Applies lomo-camera style effect to video.
@@ -13,7 +13,7 @@ import com.sherazkhilji.videffect.interfaces.ShaderInterfacer;
  * @author sheraz.khilji
  *
  */
-public class LamoishEffect implements ShaderInterfacer {
+public class LamoishEffect implements ShaderInterface {
 	private GLSurfaceView mGlSurfaceView;
 	private int mWidth;
 	private int mHeight;

@@ -1,6 +1,6 @@
 package com.sherazkhilji.videffect;
 
-import com.sherazkhilji.videffect.interfaces.ShaderInterfacer;
+import com.sherazkhilji.videffect.interfaces.ShaderInterface;
 
 /**
  * Adjusts color saturation of video. There is still some issue with this effect.
@@ -8,7 +8,7 @@ import com.sherazkhilji.videffect.interfaces.ShaderInterfacer;
  * @author sheraz.khilji
  *
  */
-public class SaturationEffect implements ShaderInterfacer {
+public class SaturationEffect implements ShaderInterface {
 	private float scale = 0f;
 
 	/**

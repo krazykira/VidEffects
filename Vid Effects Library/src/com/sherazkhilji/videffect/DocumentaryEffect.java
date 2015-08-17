@@ -3,7 +3,7 @@ package com.sherazkhilji.videffect;
 import java.util.Date;
 import java.util.Random;
 
-import com.sherazkhilji.videffect.interfaces.ShaderInterfacer;
+import com.sherazkhilji.videffect.interfaces.ShaderInterface;
 
 import android.opengl.GLSurfaceView;
 
@@ -13,7 +13,7 @@ import android.opengl.GLSurfaceView;
  * @author sheraz.khilji
  *
  */
-public class DocumentaryEffect implements ShaderInterfacer {
+public class DocumentaryEffect implements ShaderInterface {
 	private GLSurfaceView mGlSurfaceView;
 	private int mWidth;
 	private int mHeight;

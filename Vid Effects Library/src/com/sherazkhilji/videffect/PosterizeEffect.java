@@ -1,6 +1,6 @@
 package com.sherazkhilji.videffect;
 
-import com.sherazkhilji.videffect.interfaces.ShaderInterfacer;
+import com.sherazkhilji.videffect.interfaces.ShaderInterface;
 
 /**
  * Applies Posterization effect to video.
@@ -8,7 +8,7 @@ import com.sherazkhilji.videffect.interfaces.ShaderInterfacer;
  * @author sheraz.khilji
  *
  */
-public class PosterizeEffect implements ShaderInterfacer {
+public class PosterizeEffect implements ShaderInterface {
 	/**
 	 * Initialize Effect
 	 * 

@@ -9,7 +9,8 @@ import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 
 import com.sherazkhilji.videffect.NegativeEffect;
-import com.sherazkhilji.videffect.interfaces.ShaderInterfacer;
+import com.sherazkhilji.videffect.NoEffect;
+import com.sherazkhilji.videffect.interfaces.ShaderInterface;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -38,6 +39,7 @@ public class VideoSurfaceView extends GLSurfaceView {
 	private MediaPlayer mMediaPlayer = null;
 	private static VideoSurfaceView mSurfaceView;
 	private Context mContext;
+	private static ShaderInterface effect;
 
 	public VideoSurfaceView(Context context) {
 		super(context);
@@ -58,18 +60,21 @@ public class VideoSurfaceView extends GLSurfaceView {
 	}
 
 	/**
-	 * initializes media player and starts playback
+	 * initializes media player and the effect that is going to be applied on
+	 * video. The video is played automatically so you dont need to call play.
 	 * 
 	 * @param mediaPlayer
 	 */
-	public void init(MediaPlayer mediaPlayer) {
+	public void init(MediaPlayer mediaPlayer, ShaderInterface shaderEffect) {
 		if (mediaPlayer == null)
 			Toast.makeText(mContext, "Set MediaPlayer before continuing",
 					Toast.LENGTH_LONG).show();
-		else {
+		else
 			mMediaPlayer = mediaPlayer;
-
-		}
+		if (shaderEffect == null)
+			effect = new NoEffect();
+		else
+			effect = shaderEffect;
 	}
 
 	@Override
@@ -109,14 +114,6 @@ public class VideoSurfaceView extends GLSurfaceView {
 				+ "varying vec2 vTextureCoord;\n" + "void main() {\n"
 				+ "  gl_Position = uMVPMatrix * aPosition;\n"
 				+ "  vTextureCoord = (uSTMatrix * aTextureCoord).xy;\n" + "}\n";
-		private final String mFragmentShader = "#extension GL_OES_EGL_image_external : require\n"
-				+ "precision mediump float;\n"
-				+ "varying vec2 vTextureCoord;\n"
-				+ "uniform samplerExternalOES sTexture;\n"
-				+ "void main() {\n"
-				+ "  gl_FragColor = texture2D(sTexture, vTextureCoord);\n"
-				+ "}\n";
-
 		private float[] mMVPMatrix = new float[16];
 		private float[] mSTMatrix = new float[16];
 
@@ -202,7 +199,7 @@ public class VideoSurfaceView extends GLSurfaceView {
 
 		@Override
 		public void onSurfaceCreated(GL10 glUnused, EGLConfig config) {
-			ShaderInterfacer effect = new NegativeEffect();
+
 			mProgram = createProgram(mVertexShader, effect.getShader());
 			if (mProgram == 0) {
 				return;

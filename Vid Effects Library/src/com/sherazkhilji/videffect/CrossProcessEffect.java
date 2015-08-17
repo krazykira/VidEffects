@@ -1,6 +1,6 @@
 package com.sherazkhilji.videffect;
 
-import com.sherazkhilji.videffect.interfaces.ShaderInterfacer;
+import com.sherazkhilji.videffect.interfaces.ShaderInterface;
 
 /**
  * Applies a cross process effect on video, in which the red and green channels
@@ -9,7 +9,7 @@ import com.sherazkhilji.videffect.interfaces.ShaderInterfacer;
  * @author sheraz.khilji
  *
  */
-public class CrossProcessEffect implements ShaderInterfacer {
+public class CrossProcessEffect implements ShaderInterface {
 
 	/**
 	 * Initialize Effect

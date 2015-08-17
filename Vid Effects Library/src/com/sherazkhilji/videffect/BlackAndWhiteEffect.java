@@ -1,6 +1,6 @@
 package com.sherazkhilji.videffect;
 
-import com.sherazkhilji.videffect.interfaces.ShaderInterfacer;
+import com.sherazkhilji.videffect.interfaces.ShaderInterface;
 
 /**
  * Converts the video into black and white colors
@@ -8,7 +8,7 @@ import com.sherazkhilji.videffect.interfaces.ShaderInterfacer;
  * @author sheraz.khilji
  *
  */
-public class BlackAndWhiteEffect implements ShaderInterfacer {
+public class BlackAndWhiteEffect implements ShaderInterface {
 	/**
 	 * Initialize Effect
 	 * 

@@ -1,13 +1,13 @@
 package com.sherazkhilji.videffect;
 
-import com.sherazkhilji.videffect.interfaces.ShaderInterfacer;
+import com.sherazkhilji.videffect.interfaces.ShaderInterface;
 
 /**
  * Adjusts the brightness of the video.
  * @author sheraz.khilji
  *
  */
-public class BrightnessEffect implements ShaderInterfacer {
+public class BrightnessEffect implements ShaderInterface {
 	private float brightnessValue;
 
 	/**

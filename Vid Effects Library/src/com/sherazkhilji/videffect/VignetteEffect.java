@@ -2,7 +2,7 @@ package com.sherazkhilji.videffect;
 
 import android.opengl.GLSurfaceView;
 
-import com.sherazkhilji.videffect.interfaces.ShaderInterfacer;
+import com.sherazkhilji.videffect.interfaces.ShaderInterface;
 
 /**
  * Applies lomo-camera style effect to video.
@@ -10,7 +10,7 @@ import com.sherazkhilji.videffect.interfaces.ShaderInterfacer;
  * @author sheraz.khilji
  *
  */
-public class VignetteEffect implements ShaderInterfacer {
+public class VignetteEffect implements ShaderInterface {
 	private GLSurfaceView mGlSurfaceView;
 	private int mWidth = 0;
 	private int mHeight = 0;

@@ -1,6 +1,7 @@
 package com.sherazkhilji.videffect.sample;
 
 import com.sheraz.kira.videoeffect.R;
+import com.sherazkhilji.videffect.NegativeEffect;
 import com.sherazkhilji.videffect.view.VideoSurfaceView;
 
 import android.app.Activity;
@@ -47,7 +48,7 @@ public class SamplePlayerActivity extends Activity {
 		// or
 		setContentView(R.layout.activity_sampleplayer);
 		mVideoView = (VideoSurfaceView) findViewById(R.id.mVideoSurfaceView);
-		mVideoView.init(mMediaPlayer);
+		mVideoView.init(mMediaPlayer, new NegativeEffect());
 
 	}
 

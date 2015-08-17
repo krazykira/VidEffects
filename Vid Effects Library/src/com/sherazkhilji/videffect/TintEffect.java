@@ -1,7 +1,7 @@
 package com.sherazkhilji.videffect;
 
 import android.graphics.Color;
-import com.sherazkhilji.videffect.interfaces.ShaderInterfacer;
+import com.sherazkhilji.videffect.interfaces.ShaderInterface;
 
 /**
  * Tints the video with specified color..
@@ -9,7 +9,7 @@ import com.sherazkhilji.videffect.interfaces.ShaderInterfacer;
  * @author sheraz.khilji
  *
  */
-public class TintEffect implements ShaderInterfacer {
+public class TintEffect implements ShaderInterface {
 	private int mTint = 0xFF0000FF;
 
 	/**

@@ -1,6 +1,6 @@
 package com.sherazkhilji.videffect;
 
-import com.sherazkhilji.videffect.interfaces.ShaderInterfacer;
+import com.sherazkhilji.videffect.interfaces.ShaderInterface;
 
 import android.graphics.Color;
 
@@ -10,7 +10,7 @@ import android.graphics.Color;
  * @author sheraz.khilji
  *
  */
-public class DuotoneEffect implements ShaderInterfacer {
+public class DuotoneEffect implements ShaderInterface {
 	// Default values
 	private int mFirstColor = Color.MAGENTA;
 	private int mSecondColor = Color.YELLOW;
