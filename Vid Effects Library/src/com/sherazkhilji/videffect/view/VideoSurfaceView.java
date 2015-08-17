@@ -200,7 +200,8 @@ public class VideoSurfaceView extends GLSurfaceView {
 		@Override
 		public void onSurfaceCreated(GL10 glUnused, EGLConfig config) {
 
-			mProgram = createProgram(mVertexShader, effect.getShader());
+			mProgram = createProgram(mVertexShader,
+					effect.getShader(mSurfaceView));
 			if (mProgram == 0) {
 				return;
 			}

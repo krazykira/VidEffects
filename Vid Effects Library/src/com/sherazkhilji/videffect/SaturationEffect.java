@@ -1,9 +1,12 @@
 package com.sherazkhilji.videffect;
 
+import android.opengl.GLSurfaceView;
+
 import com.sherazkhilji.videffect.interfaces.ShaderInterface;
 
 /**
- * Adjusts color saturation of video. There is still some issue with this effect.
+ * Adjusts color saturation of video. There is still some issue with this
+ * effect.
  * 
  * @author sheraz.khilji
  *
@@ -24,7 +27,7 @@ public class SaturationEffect implements ShaderInterface {
 	}
 
 	@Override
-	public String getShader() {
+	public String getShader(GLSurfaceView mGlSurfaceView) {
 		float shift = 1.0f / 255.0f;
 		float weights[] = { 2f / 8f, 5f / 8f, 1f / 8f };
 		float exponents[] = new float[3];
@@ -50,7 +53,7 @@ public class SaturationEffect implements ShaderInterface {
 		weightsString[1] = "weights[1] = " + weights[1] + ";\n";
 		weightsString[2] = "weights[2] = " + weights[2] + ";\n";
 		String shiftString = "shift = " + shift + ";\n";
-		
+
 		String shader = "#extension GL_OES_EGL_image_external : require\n"
 				+ "precision mediump float;\n"
 				+ "uniform samplerExternalOES sTexture;\n" + " float scale;\n"

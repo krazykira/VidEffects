@@ -1,5 +1,7 @@
 package com.sherazkhilji.videffect;
 
+import android.opengl.GLSurfaceView;
+
 import com.sherazkhilji.videffect.interfaces.ShaderInterface;
 
 /**
@@ -27,7 +29,7 @@ public class FillLightEffect implements ShaderInterface {
 	}
 
 	@Override
-	public String getShader() {
+	public String getShader(GLSurfaceView mGlSurfaceView) {
 		float fade_gamma = 0.3f;
 		float amt = 1.0f - strength;
 		float mult = 1.0f / (amt * 0.7f + 0.3f);

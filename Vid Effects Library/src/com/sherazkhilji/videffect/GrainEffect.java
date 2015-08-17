@@ -14,7 +14,6 @@ import android.opengl.GLSurfaceView;
  *
  */
 public class GrainEffect implements ShaderInterface {
-	private GLSurfaceView mGlSurfaceView;
 	private int mWidth;
 	private int mHeight;
 	private float strength;
@@ -23,27 +22,33 @@ public class GrainEffect implements ShaderInterface {
 	/**
 	 * Initialize Effect
 	 * 
-	 * @param glSurfaceView
-	 *            which is responsible for displaying your video
-	 * 
 	 * @param scale
 	 *            Float, between 0 and 1. Zero means no distortion, while 1
 	 *            indicates the maximum amount of adjustment.
 	 */
-	public GrainEffect(GLSurfaceView glSurfaceView, float strength) {
+	public GrainEffect(float strength) {
 		if (strength < 0.0f)
 			strength = 0.0f;
 		if (strength > 1.0f)
 			strength = 1.0f;
-		this.mGlSurfaceView = glSurfaceView;
-		mWidth = mGlSurfaceView.getWidth();
-		mHeight = mGlSurfaceView.getHeight();
-		mRandom = new Random(new Date().getTime());
 		this.strength = strength;
 	}
 
+	/**
+	 * Init all values that will be used by this shader.
+	 * 
+	 * @param mGlSurfaceView
+	 *            which is responsible for displaying your video
+	 */
+	private void initValues(GLSurfaceView mGlSurfaceView) {
+		mWidth = mGlSurfaceView.getWidth();
+		mHeight = mGlSurfaceView.getHeight();
+		mRandom = new Random(new Date().getTime());
+	}
+
 	@Override
-	public String getShader() {
+	public String getShader(GLSurfaceView mGlSurfaceView) {
+		initValues(mGlSurfaceView);
 
 		float seed[] = { mRandom.nextFloat(), mRandom.nextFloat() };
 		String scaleString = "scale = " + strength + ";\n";

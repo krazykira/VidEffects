@@ -14,7 +14,6 @@ import android.opengl.GLSurfaceView;
  *
  */
 public class DocumentaryEffect implements ShaderInterface {
-	private GLSurfaceView mGlSurfaceView;
 	private int mWidth;
 	private int mHeight;
 	private Random mRandom;
@@ -22,19 +21,27 @@ public class DocumentaryEffect implements ShaderInterface {
 	/**
 	 * Initialize Effect
 	 * 
-	 * @param glSurfaceView
+	 * 
+	 */
+	public DocumentaryEffect() {
+
+	}
+
+	/**
+	 * Init all values that will be used by this shader.
+	 * 
+	 * @param mGlSurfaceView
 	 *            which is responsible for displaying your video
 	 */
-	public DocumentaryEffect(GLSurfaceView glSurfaceView) {
-		this.mGlSurfaceView = glSurfaceView;
+	private void initValues(GLSurfaceView mGlSurfaceView) {
 		mWidth = mGlSurfaceView.getWidth();
 		mHeight = mGlSurfaceView.getHeight();
-		Date date = new Date();
 		mRandom = new Random(new Date().getTime());
 	}
 
 	@Override
-	public String getShader() {
+	public String getShader(GLSurfaceView mGlSurfaceView) {
+		initValues(mGlSurfaceView);
 		float scale[] = new float[2];
 		if (mWidth > mHeight) {
 			scale[0] = 1f;

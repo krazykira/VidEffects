@@ -14,7 +14,6 @@ import com.sherazkhilji.videffect.interfaces.ShaderInterface;
  *
  */
 public class LamoishEffect implements ShaderInterface {
-	private GLSurfaceView mGlSurfaceView;
 	private int mWidth;
 	private int mHeight;
 	private Random mRandom;
@@ -22,19 +21,26 @@ public class LamoishEffect implements ShaderInterface {
 	/**
 	 * Initialize Effect
 	 * 
-	 * @param glSurfaceView
+	 */
+	public LamoishEffect() {
+
+	}
+
+	/**
+	 * Init all values that will be used by this shader.
+	 * 
+	 * @param mGlSurfaceView
 	 *            which is responsible for displaying your video
 	 */
-	public LamoishEffect(GLSurfaceView glSurfaceView) {
-		this.mGlSurfaceView = glSurfaceView;
+	private void initValues(GLSurfaceView mGlSurfaceView) {
 		mWidth = mGlSurfaceView.getWidth();
 		mHeight = mGlSurfaceView.getHeight();
-		Date date = new Date();
 		mRandom = new Random(new Date().getTime());
 	}
 
 	@Override
-	public String getShader() {
+	public String getShader(GLSurfaceView mGlSurfaceView) {
+		initValues(mGlSurfaceView);
 		float scale[] = new float[2];
 		if (mWidth > mHeight) {
 			scale[0] = 1f;

@@ -3,6 +3,7 @@ package com.sherazkhilji.videffect;
 import com.sherazkhilji.videffect.interfaces.ShaderInterface;
 
 import android.graphics.Color;
+import android.opengl.GLSurfaceView;
 
 /**
  * Representation of video using only two color tones.
@@ -31,7 +32,7 @@ public class DuotoneEffect implements ShaderInterface {
 	}
 
 	@Override
-	public String getShader() {
+	public String getShader(GLSurfaceView mGlSurfaceView) {
 		float first[] = { Color.red(mFirstColor) / 255f,
 				Color.green(mFirstColor) / 255f, Color.blue(mFirstColor) / 255f };
 		float second[] = { Color.red(mSecondColor) / 255f,

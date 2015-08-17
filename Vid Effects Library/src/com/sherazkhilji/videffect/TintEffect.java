@@ -1,6 +1,8 @@
 package com.sherazkhilji.videffect;
 
 import android.graphics.Color;
+import android.opengl.GLSurfaceView;
+
 import com.sherazkhilji.videffect.interfaces.ShaderInterface;
 
 /**
@@ -25,7 +27,7 @@ public class TintEffect implements ShaderInterface {
 	}
 
 	@Override
-	public String getShader() {
+	public String getShader(GLSurfaceView mGlSurfaceView) {
 		float color_ratio[] = { 0.21f, 0.71f, 0.07f };
 		String color_ratioString[] = new String[3];
 		color_ratioString[0] = "color_ratio[0] = " + color_ratio[0] + ";\n";

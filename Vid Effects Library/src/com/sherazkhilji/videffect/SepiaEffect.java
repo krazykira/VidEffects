@@ -1,5 +1,7 @@
 package com.sherazkhilji.videffect;
 
+import android.opengl.GLSurfaceView;
+
 import com.sherazkhilji.videffect.interfaces.ShaderInterface;
 
 /**
@@ -17,7 +19,7 @@ public class SepiaEffect implements ShaderInterface {
 	}
 
 	@Override
-	public String getShader() {
+	public String getShader(GLSurfaceView mGlSurfaceView) {
 		float weights[] = { 805.0f / 2048.0f, 715.0f / 2048.0f,
 				557.0f / 2048.0f, 1575.0f / 2048.0f, 1405.0f / 2048.0f,
 				1097.0f / 2048.0f, 387.0f / 2048.0f, 344.0f / 2048.0f,

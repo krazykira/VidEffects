@@ -1,5 +1,7 @@
 package com.sherazkhilji.videffect;
 
+import android.opengl.GLSurfaceView;
+
 import com.sherazkhilji.videffect.interfaces.ShaderInterface;
 
 /**
@@ -28,7 +30,7 @@ public class TemperatureEffect implements ShaderInterface {
 	}
 
 	@Override
-	public String getShader() {
+	public String getShader(GLSurfaceView mGlSurfaceView) {
 
 		String scaleString = "scale = " + (2.0f * scale - 1.0f) + ";\n";
 

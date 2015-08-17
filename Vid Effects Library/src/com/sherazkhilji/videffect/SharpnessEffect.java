@@ -1,5 +1,8 @@
 package com.sherazkhilji.videffect;
 
+import java.util.Date;
+import java.util.Random;
+
 import android.opengl.GLSurfaceView;
 
 import com.sherazkhilji.videffect.interfaces.ShaderInterface;
@@ -11,32 +14,39 @@ import com.sherazkhilji.videffect.interfaces.ShaderInterface;
  *
  */
 public class SharpnessEffect implements ShaderInterface {
-	private GLSurfaceView mGlSurfaceView;
-	private int mWidth;
+private int mWidth;
 	private int mHeight;
 	private float scale = 0f;
 
 	/**
 	 * Initialize Effect
 	 * 
-	 * @param glSurfaceView
-	 *            which is responsible for displaying your video
 	 * @param scale
 	 *            Float, between 0 and 1. 0 means no change.
 	 */
-	public SharpnessEffect(GLSurfaceView glSurfaceView, float scale) {
+	public SharpnessEffect(float scale) {
 		if (scale < 0.0f)
 			scale = 0.0f;
 		if (scale > 1.0f)
 			scale = 1.0f;
-		this.mGlSurfaceView = glSurfaceView;
-		mWidth = mGlSurfaceView.getWidth();
-		mHeight = mGlSurfaceView.getHeight();
+
 		this.scale = scale;
 	}
 
+	/**
+	 * Init all values that will be used by this shader.
+	 * 
+	 * @param mGlSurfaceView
+	 *            which is responsible for displaying your video
+	 */
+	private void initValues(GLSurfaceView mGlSurfaceView) {
+		mWidth = mGlSurfaceView.getWidth();
+		mHeight = mGlSurfaceView.getHeight();
+	}
+
 	@Override
-	public String getShader() {
+	public String getShader(GLSurfaceView mGlSurfaceView) {
+		initValues(mGlSurfaceView);
 
 		String stepsizeXString = "stepsizeX = " + 1.0f / mWidth + ";\n";
 		String stepsizeYString = "stepsizeY = " + 1.0f / mHeight + ";\n";

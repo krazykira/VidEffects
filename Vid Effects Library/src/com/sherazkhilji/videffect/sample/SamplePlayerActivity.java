@@ -1,12 +1,16 @@
 package com.sherazkhilji.videffect.sample;
 
 import com.sheraz.kira.videoeffect.R;
+import com.sherazkhilji.videffect.BlackAndWhiteEffect;
+import com.sherazkhilji.videffect.DocumentaryEffect;
+import com.sherazkhilji.videffect.DuotoneEffect;
 import com.sherazkhilji.videffect.NegativeEffect;
 import com.sherazkhilji.videffect.view.VideoSurfaceView;
 
 import android.app.Activity;
 import android.content.res.AssetFileDescriptor;
 import android.content.res.Resources;
+import android.graphics.Color;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.util.Log;
@@ -48,7 +52,8 @@ public class SamplePlayerActivity extends Activity {
 		// or
 		setContentView(R.layout.activity_sampleplayer);
 		mVideoView = (VideoSurfaceView) findViewById(R.id.mVideoSurfaceView);
-		mVideoView.init(mMediaPlayer, new NegativeEffect());
+		mVideoView.init(mMediaPlayer,
+				new DuotoneEffect(Color.YELLOW, Color.RED));
 
 	}
 

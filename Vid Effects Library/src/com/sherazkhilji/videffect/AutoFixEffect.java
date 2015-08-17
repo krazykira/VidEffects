@@ -1,5 +1,7 @@
 package com.sherazkhilji.videffect;
 
+import android.opengl.GLSurfaceView;
+
 import com.sherazkhilji.videffect.interfaces.ShaderInterface;
 
 /**
@@ -28,7 +30,7 @@ public class AutoFixEffect implements ShaderInterface {
 	}
 
 	@Override
-	public String getShader() {
+	public String getShader(GLSurfaceView mGlSurfaceView) {
 
 		String shader = "#extension GL_OES_EGL_image_external : require\n"
 				+ "precision mediump float;\n"
