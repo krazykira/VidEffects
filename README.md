@@ -15,7 +15,8 @@ The effects applied using this library are temporary. What that means is that th
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 ```
-- Then you need to reference the `VideoSurfaceView` and call its `init()` method in your `Activity` or `Fragment` `onCreate()` supplying it with a `MediaPlayer` instance and a `Video Effect` you want to apply. Also you would need to call `VideoSurfaceView` `onResume` in your `Activity` or `Fragment`  `onResume`.
+- Then you need to reference the `VideoSurfaceView` and call its `init()` method in your `Activity` or `Fragment` `onCreate()` supplying it with a `MediaPlayer` instance and a `Video Effect`. Also you would need to call `VideoSurfaceView` `onResume()` in your `Activity` or `Fragment`  `onResume()` so that your video is rendered properly.
+
  ```sh
  	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -47,7 +48,7 @@ The effects applied using this library are temporary. What that means is that th
 		mVideoView = (VideoSurfaceView) findViewById(R.id.mVideoSurfaceView);
 		mVideoView.init(mMediaPlayer,
 				new DuotoneEffect(Color.YELLOW, Color.RED));
-	setContentView(R.layout.activity_sampleplayer);
+	        setContentView(R.layout.activity_sampleplayer);
 	}
 
 	@Override
@@ -58,7 +59,7 @@ The effects applied using this library are temporary. What that means is that th
  ```
 
 
-- Incase of any confusion, checkout the [SamplePlayerActivity](https://github.com/krazykira/VidEffects/blob/master/Vid%20Effects%20Library/src/com/sherazkhilji/videffect/sample/SamplePlayerActivity.java) for a complete example on how to apply different effects on your videos.
+- Incase of any confusion, checkout the [SamplePlayerActivity](https://github.com/krazykira/VidEffects/blob/master/Vid%20Effects%20Library/src/com/sherazkhilji/videffect/sample/SamplePlayerActivity.java) for a complete example on how to apply different `Effects` on your videos.
 
 ## See it in working
 
