@@ -8,7 +8,57 @@ The effects applied using this library are temporary. What that means is that th
 ## How to use it
 
 - Download and Add VidEffects as Library project
-- Checkout the [SamplePlayerActivity](https://github.com/krazykira/VidEffects/blob/master/Vid%20Effects%20Library/src/com/sherazkhilji/videffect/sample/SamplePlayerActivity.java) for more detailed example on how to apply different effects on your videos.
+- You can add the `VideoSurfaceView` using either `java code` or as `xml` in your `layout` file.
+```sh
+<com.sherazkhilji.videffect.view.VideoSurfaceView
+        android:id="@+id/mVideoSurfaceView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+```
+- Then you need to reference the `VideoSurfaceView` and call its `init()` method in your `Activity` or `Fragment` `onCreate()` supplying it with a `MediaPlayer` instance and a `Video Effect` you want to apply. Also you would need to call `VideoSurfaceView` `onResume` in your `Activity` or `Fragment`  `onResume`.
+ ```sh
+ 	@Override
+	protected void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+
+		mResources = getResources();
+		mMediaPlayer = new MediaPlayer();
+
+		try {
+			// Load video file from SD Card
+			// File dir = Environment
+			// .getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
+			// File file = new File(dir,
+			// "sample.mp4");
+			// mMediaPlayer.setDataSource(file.getAbsolutePath());
+			// -----------------------------------------------------------------------
+			// Load video file from Assets directory
+			AssetFileDescriptor afd = getAssets().openFd("sample.mp4");
+			mMediaPlayer.setDataSource(afd.getFileDescriptor(),
+					afd.getStartOffset(), afd.getLength());
+		} catch (Exception e) {
+			Log.e(TAG, e.getMessage(), e);
+		}
+		// Initialize VideoSurfaceView using code
+		// mVideoView = new VideoSurfaceView(this);
+		// setContentView(mVideoView);
+		// or
+	
+		mVideoView = (VideoSurfaceView) findViewById(R.id.mVideoSurfaceView);
+		mVideoView.init(mMediaPlayer,
+				new DuotoneEffect(Color.YELLOW, Color.RED));
+	setContentView(R.layout.activity_sampleplayer);
+	}
+
+	@Override
+	protected void onResume() {
+		super.onResume();
+		mVideoView.onResume();
+	}
+ ```
+
+
+- Incase of any confusion, checkout the [SamplePlayerActivity](https://github.com/krazykira/VidEffects/blob/master/Vid%20Effects%20Library/src/com/sherazkhilji/videffect/sample/SamplePlayerActivity.java) for a complete example on how to apply different effects on your videos.
 
 ## See it in working
 
@@ -32,7 +82,7 @@ The effects applied using this library are temporary. What that means is that th
 
 ### Development
 
-Want to contribute? Great! Fork it and send me a pull request or contact me on the email below, if you want to be part of the project.
+Want to contribute or add some new Effects? Great! Fork it and send me a pull request or contact me on the email below, if you want to be part of the project.
 
 
 Developed By
