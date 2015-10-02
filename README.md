@@ -94,7 +94,7 @@ The effects applied using this library are temporary. What that means is that th
 ![Video screenshot with Black and White Effect](https://cloud.githubusercontent.com/assets/2201511/9244235/e75ab7a8-41b2-11e5-90b7-33d944d1d6c8.png)
 
 #### Video screenshot with Invert Colors Effect
-![Video screenshot with Negative Effect](https://cloud.githubusercontent.com/assets/2201511/9244236/ea09d344-41b2-11e5-9e71-f04601fd61e9.png)
+![Video screenshot with Invert Colors Effect](https://cloud.githubusercontent.com/assets/2201511/9244236/ea09d344-41b2-11e5-9e71-f04601fd61e9.png)
 
 ## Special Thanks To
 
