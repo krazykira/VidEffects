@@ -1,6 +1,30 @@
 # VidEffects
 This is an Android library which can be used to apply different Filters/Effects on videos. It uses vertexShaders and fragmentShaders to apply effects on `GLSurfaceView`. It uses `MediaPlayer` instance for playing videos on `GlSurfaceView`. See the sample app in order to see a working demo.
 
+## Supported Effects
+
+The following list of effects are currently avaialble and can be applied using VidEffects
+* [AutoFix Effect] (https://github.com/krazykira/VidEffects/blob/master/Vid%20Effects%20Library/src/com/sherazkhilji/videffect/AutoFixEffect.java)
+* [Black and White Effect](https://github.com/krazykira/VidEffects/blob/master/Vid%20Effects%20Library/src/com/sherazkhilji/videffect/BlackAndWhiteEffect.java)
+* [Brightness Effect](https://github.com/krazykira/VidEffects/blob/master/Vid%20Effects%20Library/src/com/sherazkhilji/videffect/BrightnessEffect.java)
+* [Contrast Effect](https://github.com/krazykira/VidEffects/blob/master/Vid%20Effects%20Library/src/com/sherazkhilji/videffect/ContrastEffect.java)
+* [CrossProcess Effect](https://github.com/krazykira/VidEffects/blob/master/Vid%20Effects%20Library/src/com/sherazkhilji/videffect/CrossProcessEffect.java)
+* [Documentary Effect](https://github.com/krazykira/VidEffects/blob/master/Vid%20Effects%20Library/src/com/sherazkhilji/videffect/DocumentaryEffect.java)
+* [Duotone Effect](https://github.com/krazykira/VidEffects/blob/master/Vid%20Effects%20Library/src/com/sherazkhilji/videffect/DuotoneEffect.java)
+* [FillLight Effect](https://github.com/krazykira/VidEffects/blob/master/Vid%20Effects%20Library/src/com/sherazkhilji/videffect/FillLightEffect.java)
+* [Grain Effect](https://github.com/krazykira/VidEffects/blob/master/Vid%20Effects%20Library/src/com/sherazkhilji/videffect/GrainEffect.java)
+* [Greyscale Effect](https://github.com/krazykira/VidEffects/blob/master/Vid%20Effects%20Library/src/com/sherazkhilji/videffect/GrayScaleEffect.java)
+* [Lamoish Effect](https://github.com/krazykira/VidEffects/blob/master/Vid%20Effects%20Library/src/com/sherazkhilji/videffect/LamoishEffect.java)
+* [InvertColors Effect](https://github.com/krazykira/VidEffects/blob/master/Vid%20Effects%20Library/src/com/sherazkhilji/videffect/NegativeEffect.java)
+* [Posterize Effect](https://github.com/krazykira/VidEffects/blob/master/Vid%20Effects%20Library/src/com/sherazkhilji/videffect/PosterizeEffect.java)
+* [Saturation Effect](https://github.com/krazykira/VidEffects/blob/master/Vid%20Effects%20Library/src/com/sherazkhilji/videffect/SaturationEffect.java)
+* [Sepia Effect](https://github.com/krazykira/VidEffects/blob/master/Vid%20Effects%20Library/src/com/sherazkhilji/videffect/SepiaEffect.java)
+* [Sharpness Effect](https://github.com/krazykira/VidEffects/blob/master/Vid%20Effects%20Library/src/com/sherazkhilji/videffect/SharpnessEffect.java)
+* [Temperature Effect](https://github.com/krazykira/VidEffects/blob/master/Vid%20Effects%20Library/src/com/sherazkhilji/videffect/TemperatureEffect.java)
+* [Tint Effect](https://github.com/krazykira/VidEffects/blob/master/Vid%20Effects%20Library/src/com/sherazkhilji/videffect/TintEffect.java)
+* [Vignette Effect](https://github.com/krazykira/VidEffects/blob/master/Vid%20Effects%20Library/src/com/sherazkhilji/videffect/VignetteEffect.java)
+
+
 ## Limitations
 
 The effects applied using this library are temporary. What that means is that the orignal video doesn't change. Effects are only applied during video playback and once the video ends the effects end with it. In the future, i am aiming to apply permanant effect to videos. You guys are welcome to help out.
@@ -69,7 +93,7 @@ The effects applied using this library are temporary. What that means is that th
 #### Video screenshot with Black and White Effect
 ![Video screenshot with Black and White Effect](https://cloud.githubusercontent.com/assets/2201511/9244235/e75ab7a8-41b2-11e5-90b7-33d944d1d6c8.png)
 
-#### Video screenshot with Negative Effect
+#### Video screenshot with Invert Colors Effect
 ![Video screenshot with Negative Effect](https://cloud.githubusercontent.com/assets/2201511/9244236/ea09d344-41b2-11e5-9e71-f04601fd61e9.png)
 
 ## Special Thanks To
