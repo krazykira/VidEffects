@@ -4,7 +4,7 @@ import com.sheraz.kira.videoeffect.R;
 import com.sherazkhilji.videffect.BlackAndWhiteEffect;
 import com.sherazkhilji.videffect.DocumentaryEffect;
 import com.sherazkhilji.videffect.DuotoneEffect;
-import com.sherazkhilji.videffect.NegativeEffect;
+import com.sherazkhilji.videffect.InvertColorsEffect;
 import com.sherazkhilji.videffect.view.VideoSurfaceView;
 
 import android.app.Activity;

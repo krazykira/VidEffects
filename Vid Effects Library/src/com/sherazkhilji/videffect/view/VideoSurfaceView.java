@@ -8,7 +8,7 @@ import java.nio.FloatBuffer;
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 
-import com.sherazkhilji.videffect.NegativeEffect;
+import com.sherazkhilji.videffect.InvertColorsEffect;
 import com.sherazkhilji.videffect.NoEffect;
 import com.sherazkhilji.videffect.interfaces.ShaderInterface;
 

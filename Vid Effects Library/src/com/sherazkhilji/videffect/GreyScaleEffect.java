@@ -5,17 +5,17 @@ import android.opengl.GLSurfaceView;
 import com.sherazkhilji.videffect.interfaces.ShaderInterface;
 
 /**
- * Converts video to grayscale.
+ * Converts video to GreyScale.
  * 
  * @author sheraz.khilji
  *
  */
-public class GrayScaleEffect implements ShaderInterface {
+public class GreyScaleEffect implements ShaderInterface {
 	/**
 	 * Initialize Effect
 	 * 
 	 */
-	public GrayScaleEffect() {
+	public GreyScaleEffect() {
 	}
 
 	@Override

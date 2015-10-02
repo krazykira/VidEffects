@@ -5,17 +5,17 @@ import android.opengl.GLSurfaceView;
 import com.sherazkhilji.videffect.interfaces.ShaderInterface;
 
 /**
- * Inverts the video colors
+ * Inverts the video colors. This can also be known as negative Effect.
  * 
  * @author sheraz.khilji
  *
  */
-public class NegativeEffect implements ShaderInterface {
+public class InvertColorsEffect implements ShaderInterface {
 	/**
 	 * Initialize Effect
 	 * 
 	 */
-	public NegativeEffect() {
+	public InvertColorsEffect() {
 	}
 
 	@Override
