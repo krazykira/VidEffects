@@ -104,7 +104,7 @@ For now, if you are really desperate want to apply effects then you can use [FFm
 * [MediaPlayerSurface by crossle](https://github.com/crossle/MediaPlayerSurface) It helped me in playing video using a GlsurfaceView.
 * [Fadden](http://stackoverflow.com/questions/31805837/applying-effects-on-video-being-played/31958741#comment51571387_31805837) who is the writer of [grafika](https://github.com/google/grafika) for pointing me towards right direction on how to apply effects on a video.
 * [Intel INDE Media for Mobile Tutorials](https://software.intel.com/en-us/articles/intel-inde-media-pack-for-android-tutorials-building-samples) for the sample app and helping me getting familiar with how fragmentShaders work.
-* [Umair Shafique](https://github.com/muhammad-umair-khan) for authoring the [How to apply permanent effect using FFmpeg](https://github.com/krazykira/VidEffects/wiki/Permanent-video-effects)  wiki page.
+* [Umair Shafique](https://github.com/muhammad-umair-khan) for authoring [How to apply permanent effect using FFmpeg wiki page](https://github.com/krazykira/VidEffects/wiki/Permanent-video-effects)
  
 
 ### Development
