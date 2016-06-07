@@ -28,7 +28,7 @@ The following list of effects are currently avaialble and can be applied using V
 ## Limitations
 
 The effects applied using this library are temporary. What that means is that the orignal video doesn't change. Effects are only applied during video playback and once the video ends the effects end with it. In the future, i am aiming to apply permanant effect to videos. You guys are welcome to help out using PRs. 
-For now, if you are really desperate want to apply effects then you can use [FFmpeg](https://ffmpeg.org/) to apply effects on videos. Details about that can be seen on this [wiki page](https://github.com/krazykira/VidEffects/wiki/Permanent-video-effects)
+<br>For now, if you are really desperate and want to apply effects then you can use [FFmpeg](https://ffmpeg.org/) to apply effects on videos. Details about how to do that can be seen on this [wiki page](https://github.com/krazykira/VidEffects/wiki/Permanent-video-effects)
 
 ## How to use it
 
