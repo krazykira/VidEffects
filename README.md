@@ -27,7 +27,8 @@ The following list of effects are currently avaialble and can be applied using V
 
 ## Limitations
 
-The effects applied using this library are temporary. What that means is that the orignal video doesn't change. Effects are only applied during video playback and once the video ends the effects end with it. In the future, i am aiming to apply permanant effect to videos. You guys are welcome to help out.
+The effects applied using this library are temporary. What that means is that the orignal video doesn't change. Effects are only applied during video playback and once the video ends the effects end with it. In the future, i am aiming to apply permanant effect to videos. You guys are welcome to help out using PRs. 
+For now, if you are really desperate want to apply effects then you can use [FFmpeg](https://ffmpeg.org/) to apply effects on videos. Details about that can be seen on this [wiki page](https://github.com/krazykira/VidEffects/wiki/Permanent-video-effects)
 
 ## How to use it
 
@@ -96,21 +97,22 @@ The effects applied using this library are temporary. What that means is that th
 #### Video screenshot with Invert Colors Effect
 ![Video screenshot with Invert Colors Effect](https://cloud.githubusercontent.com/assets/2201511/9244236/ea09d344-41b2-11e5-9e71-f04601fd61e9.png)
 
-## Special Thanks To
+## Special Thanks to
 
 * This blog [post](http://code.tutsplus.com/tutorials/how-to-use-android-media-effects-with-opengl-es--cms-23650) by Ashraff Hathibelagal for easing the process of learning Opengl and explaining how to apply effects on images.
 * [GrepCode](http://grepcode.com/file/repository.grepcode.com/java/ext/com.google.android/android/5.0.1_r1/android/filterpacks/imageproc/package-info.java) For providing me with Android source code which were helpful in writing video effects/filters.
 * [MediaPlayerSurface by crossle](https://github.com/crossle/MediaPlayerSurface) It helped me in playing video using a GlsurfaceView.
-* [Lunero] (http://stackoverflow.com/questions/31805837/applying-effects-on-video-being-played/31958741#comment51543141_31805837) and [Fadden](http://stackoverflow.com/questions/31805837/applying-effects-on-video-being-played/31958741#comment51571387_31805837) who is the writer of [grafika](https://github.com/google/grafika) for pointing me towards right direction on how to apply effects on a video.
+* [Fadden](http://stackoverflow.com/questions/31805837/applying-effects-on-video-being-played/31958741#comment51571387_31805837) who is the writer of [grafika](https://github.com/google/grafika) for pointing me towards right direction on how to apply effects on a video.
 * [Intel INDE Media for Mobile Tutorials](https://software.intel.com/en-us/articles/intel-inde-media-pack-for-android-tutorials-building-samples) for the sample app and helping me getting familiar with how fragmentShaders work.
+* [Umair Shafique](https://github.com/muhammad-umair-khan) for authoring the [How to apply permanent effect using FFmpeg](https://github.com/krazykira/VidEffects/wiki/Permanent-video-effects)  wiki page.
  
 
 ### Development
 
-Want to contribute or add some new Effects? Great! Fork it and send me a pull request or contact me on the email below, if you want to be part of the project.
+Want to contribute or add some new Effects? Great! Fork it and send me a pull request or contact me on the email below, if you want to become a permanant contributor.
 
 
-Developed By
+Developed by
 ============
 
 * Sheraz Ahmad Khilji - <sherazkhilji@gmail.com>
