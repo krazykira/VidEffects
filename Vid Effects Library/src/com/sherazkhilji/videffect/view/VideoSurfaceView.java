@@ -154,7 +154,8 @@ public class VideoSurfaceView extends GLSurfaceView {
 					updateSurface = false;
 				}
 			}
-
+			mProgram = createProgram(mVertexShader,
+                		effect.getShader(mSurfaceView));
 			GLES20.glClearColor(0.0f, 1.0f, 0.0f, 1.0f);
 			GLES20.glClear(GLES20.GL_DEPTH_BUFFER_BIT
 					| GLES20.GL_COLOR_BUFFER_BIT);
