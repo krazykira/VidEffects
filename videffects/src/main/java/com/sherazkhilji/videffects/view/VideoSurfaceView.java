@@ -61,7 +61,8 @@ public class VideoSurfaceView extends GLSurfaceView {
      * initializes media player and the effect that is going to be applied on
      * video. The video is played automatically so you dont need to call play.
      *
-     * @param mediaPlayer
+     * @param mediaPlayer  instance of {@link MediaPlayer}
+     * @param shaderEffect any effect that implements {@link ShaderInterface}
      */
     public void init(MediaPlayer mediaPlayer, ShaderInterface shaderEffect) {
         if (mediaPlayer == null)

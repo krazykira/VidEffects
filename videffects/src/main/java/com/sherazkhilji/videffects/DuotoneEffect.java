@@ -19,9 +19,9 @@ public class DuotoneEffect implements ShaderInterface {
     /**
      * Initialize effect
      *
-     * @param color1 Integer, representing an ARGB color with 8 bits per channel.
+     * @param mFirstColor Integer, representing an ARGB color with 8 bits per channel.
      *               May be created using Color class.
-     * @param color2 Integer, representing an ARGB color with 8 bits per channel.
+     * @param mSecondColor Integer, representing an ARGB color with 8 bits per channel.
      *               May be created using Color class.
      */
     public DuotoneEffect(int mFirstColor, int mSecondColor) {

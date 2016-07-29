@@ -86,3 +86,5 @@ captures/
 # Keystore files
 *.jks
 
+private_key_sender.asc
+public_key_sender.asc

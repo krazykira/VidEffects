@@ -21,7 +21,7 @@ public class GrainEffect implements ShaderInterface {
     /**
      * Initialize Effect
      *
-     * @param scale Float, between 0 and 1. Zero means no distortion, while 1
+     * @param strength Float, between 0 and 1. Zero means no distortion, while 1
      *              indicates the maximum amount of adjustment.
      */
     public GrainEffect(float strength) {
