@@ -1,4 +1,6 @@
 # VidEffects
+[![Codewake](https://www.codewake.com/badges/ask_question_flat_square.svg)](https://www.codewake.com/p/videffects)
+
 This is an Android library which can be used to apply different Filters/Effects on videos. It uses vertexShaders and fragmentShaders to apply effects on `GLSurfaceView`. It uses `MediaPlayer` instance for playing videos on `GlSurfaceView`. See the sample app in order to see a working demo.
 
 ## Supported Effects
@@ -32,9 +34,23 @@ The effects applied using this library are temporary. What that means is that th
 
 ## How to use it
 
-- Download and Add VidEffects as Library project
-- You can add the `VideoSurfaceView` using either `java code` or as `xml` in your `layout` file.
-```sh
+- Add the following code to your `app/build.gradle` file
+
+ ```sh
+repositories {
+    	maven {
+        	url 'https://dl.bintray.com/krazykira/maven/'
+    	}
+}
+
+dependencies {
+//	Gradle path for VidEffects
+    	compile 'com.sherazkhilji.videffects:videffects:1.0.0'
+}
+```
+
+- Then you need to add the `VideoSurfaceView` either using `java code` or as `xml` in your `layout` file.
+ ```sh
 <com.sherazkhilji.videffect.view.VideoSurfaceView
         android:id="@+id/mVideoSurfaceView"
         android:layout_width="match_parent"
@@ -121,7 +137,7 @@ Developed by
 License
 =======
 
-    Copyright 2015 Sheraz Ahmad Khilji
+    Copyright 2016 Sheraz Ahmad Khilji
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
