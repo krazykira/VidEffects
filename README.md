@@ -6,25 +6,27 @@ This is an Android library which can be used to apply different Filters/Effects 
 ## Supported Effects
 
 The following list of effects are currently avaialble and can be applied using VidEffects
-* [AutoFix Effect] (https://github.com/krazykira/VidEffects/blob/master/Vid%20Effects%20Library/src/com/sherazkhilji/videffect/AutoFixEffect.java)
-* [Black and White Effect](https://github.com/krazykira/VidEffects/blob/master/Vid%20Effects%20Library/src/com/sherazkhilji/videffect/BlackAndWhiteEffect.java)
-* [Brightness Effect](https://github.com/krazykira/VidEffects/blob/master/Vid%20Effects%20Library/src/com/sherazkhilji/videffect/BrightnessEffect.java)
-* [Contrast Effect](https://github.com/krazykira/VidEffects/blob/master/Vid%20Effects%20Library/src/com/sherazkhilji/videffect/ContrastEffect.java)
-* [CrossProcess Effect](https://github.com/krazykira/VidEffects/blob/master/Vid%20Effects%20Library/src/com/sherazkhilji/videffect/CrossProcessEffect.java)
-* [Documentary Effect](https://github.com/krazykira/VidEffects/blob/master/Vid%20Effects%20Library/src/com/sherazkhilji/videffect/DocumentaryEffect.java)
-* [Duotone Effect](https://github.com/krazykira/VidEffects/blob/master/Vid%20Effects%20Library/src/com/sherazkhilji/videffect/DuotoneEffect.java)
-* [FillLight Effect](https://github.com/krazykira/VidEffects/blob/master/Vid%20Effects%20Library/src/com/sherazkhilji/videffect/FillLightEffect.java)
-* [Grain Effect](https://github.com/krazykira/VidEffects/blob/master/Vid%20Effects%20Library/src/com/sherazkhilji/videffect/GrainEffect.java)
-* [Greyscale Effect](https://github.com/krazykira/VidEffects/blob/master/Vid%20Effects%20Library/src/com/sherazkhilji/videffect/GreyScaleEffect.java)
-* [Lamoish Effect](https://github.com/krazykira/VidEffects/blob/master/Vid%20Effects%20Library/src/com/sherazkhilji/videffect/LamoishEffect.java)
-* [InvertColors Effect](https://github.com/krazykira/VidEffects/blob/master/Vid%20Effects%20Library/src/com/sherazkhilji/videffect/InvertColorsEffect.java)
-* [Posterize Effect](https://github.com/krazykira/VidEffects/blob/master/Vid%20Effects%20Library/src/com/sherazkhilji/videffect/PosterizeEffect.java)
-* [Saturation Effect](https://github.com/krazykira/VidEffects/blob/master/Vid%20Effects%20Library/src/com/sherazkhilji/videffect/SaturationEffect.java)
-* [Sepia Effect](https://github.com/krazykira/VidEffects/blob/master/Vid%20Effects%20Library/src/com/sherazkhilji/videffect/SepiaEffect.java)
-* [Sharpness Effect](https://github.com/krazykira/VidEffects/blob/master/Vid%20Effects%20Library/src/com/sherazkhilji/videffect/SharpnessEffect.java)
-* [Temperature Effect](https://github.com/krazykira/VidEffects/blob/master/Vid%20Effects%20Library/src/com/sherazkhilji/videffect/TemperatureEffect.java)
-* [Tint Effect](https://github.com/krazykira/VidEffects/blob/master/Vid%20Effects%20Library/src/com/sherazkhilji/videffect/TintEffect.java)
-* [Vignette Effect](https://github.com/krazykira/VidEffects/blob/master/Vid%20Effects%20Library/src/com/sherazkhilji/videffect/VignetteEffect.java)
+* [AutoFix Effect](https://github.com/krazykira/VidEffects/blob/master/videffects/src/main/java/com/sherazkhilji/videffects//AutoFixEffect.java)
+* [Black and White Effect](https://github.com/krazykira/VidEffects/blob/master/videffects/src/main/java/com/sherazkhilji/videffects//BlackAndWhiteEffect.java)
+* [Brightness Effect](https://github.com/krazykira/VidEffects/blob/master/videffects/src/main/java/com/sherazkhilji/videffects//BrightnessEffect.java)
+* [Contrast Effect](https://github.com/krazykira/VidEffects/blob/master/videffects/src/main/java/com/sherazkhilji/videffects//ContrastEffect.java)
+* [CrossProcess Effect](https://github.com/krazykira/VidEffects/blob/master/videffects/src/main/java/com/sherazkhilji/videffects//CrossProcessEffect.java)
+* [Documentary Effect](https://github.com/krazykira/VidEffects/blob/master/videffects/src/main/java/com/sherazkhilji/videffects//DocumentaryEffect.java)
+* [Duotone Effect](https://github.com/krazykira/VidEffects/blob/master/videffects/src/main/java/com/sherazkhilji/videffects//DuotoneEffect.java)
+* [FillLight Effect](https://github.com/krazykira/VidEffects/blob/master/videffects/src/main/java/com/sherazkhilji/videffects//FillLightEffect.java)
+* [Grain Effect](https://github.com/krazykira/VidEffects/blob/master/videffects/src/main/java/com/sherazkhilji/videffects//GrainEffect.java)
+* [Greyscale Effect](https://github.com/krazykira/VidEffects/blob/master/videffects/src/main/java/com/sherazkhilji/videffects//GreyScaleEffect.java)
+* [Lamoish Effect](https://github.com/krazykira/VidEffects/blob/master/videffects/src/main/java/com/sherazkhilji/videffects//LamoishEffect.java)
+* [InvertColors Effect](https://github.com/krazykira/VidEffects/blob/master/videffects/src/main/java/com/sherazkhilji/videffects//InvertColorsEffect.java)
+* [Posterize Effect](https://github.com/krazykira/VidEffects/blob/master/videffects/src/main/java/com/sherazkhilji/videffects//PosterizeEffect.java)
+* [Saturation Effect](https://github.com/krazykira/VidEffects/blob/master/videffects/src/main/java/com/sherazkhilji/videffects//SaturationEffect.java)
+* [Sepia Effect](https://github.com/krazykira/VidEffects/blob/master/videffects/src/main/java/com/sherazkhilji/videffects//SepiaEffect.java)
+* [Sharpness Effect](https://github.com/krazykira/VidEffects/blob/master/videffects/src/main/java/com/sherazkhilji/videffects//SharpnessEffect.java)
+* [Temperature Effect](https://github.com/krazykira/VidEffects/blob/master/videffects/src/main/java/com/sherazkhilji/videffects//TemperatureEffect.java)
+* [Tint Effect](https://github.com/krazykira/VidEffects/blob/master/videffects/src/main/java/com/sherazkhilji/videffects//TintEffect.java)
+* [Vignette Effect](https://github.com/krazykira/VidEffects/blob/master/videffects/src/main/java/com/sherazkhilji/videffects//VignetteEffect.java)
+
+
 
 
 ## Limitations
