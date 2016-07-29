@@ -1,1 +1,1 @@
-include ':app', ':videffects'
+include ':app'

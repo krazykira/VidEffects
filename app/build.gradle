@@ -16,7 +16,12 @@ android {
         }
     }
 }
+repositories {
+    maven {
+        url 'https://dl.bintray.com/krazykira/maven/'
+    }
+}
 
 dependencies {
-    compile project(path: ':videffects')
+    compile 'com.sherazkhilji.videffects:videffects:1.0.0'
 }
