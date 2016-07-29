@@ -49,7 +49,7 @@ dependencies {
 }
 ```
 
-- Then you need to add the `VideoSurfaceView` either using `java code` or as `xml` in your `layout` file.
+- Then you need to add `VideoSurfaceView` either using `java code` or as `xml` in your `layout` file.
  ```sh
 <com.sherazkhilji.videffect.view.VideoSurfaceView
         android:id="@+id/mVideoSurfaceView"
