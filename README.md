@@ -100,7 +100,7 @@ dependencies {
  ```
 
 
-- Incase of any confusion, checkout the [SamplePlayerActivity](https://github.com/krazykira/VidEffects/blob/master/Vid%20Effects%20Library/src/com/sherazkhilji/videffect/sample/SamplePlayerActivity.java) for a complete example on how to apply different `Effects` on your videos.
+- Incase of any confusion, checkout the [SamplePlayerActivity](https://github.com/krazykira/VidEffects/blob/master/app/src/main/java/com/videffects/sample/SamplePlayerActivity.java) for a complete example on how to apply different `Effects` on your videos.
 
 ## See it in working
 
