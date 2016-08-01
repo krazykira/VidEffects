@@ -33,16 +33,16 @@ The effects applied using this library are temporary. What that means is that th
 <br>For now, if you are really desperate and want to apply effects then you can use [FFmpeg](https://ffmpeg.org/) to apply effects on videos. Details about how to do that can be seen on this [wiki page](https://github.com/krazykira/VidEffects/wiki/Permanent-video-effects)
 
 ## How to use it
+- Add the following code to your project's `build.gradle` file
+  ```sh
+  repositories {
+        jcenter()
+    }
+```
 
-- Add the following code to your `app/build.gradle` file
+- Add the following gradle path to your `app/build.gradle` file
 
  ```sh
-repositories {
-    	maven {
-        	url 'https://dl.bintray.com/krazykira/maven/'
-    	}
-}
-
 dependencies {
 //	Gradle path for VidEffects
     	compile 'com.sherazkhilji.videffects:videffects:1.0.0'
