@@ -32,7 +32,7 @@ ext {
     siteUrl = 'https://github.com/krazykira/VidEffects'
     gitUrl = 'https://github.com/krazykira/VidEffects.git'
 
-    libraryVersion = '1.0.0'
+    libraryVersion = '1.0.1'
 
     developerId = 'krazykira'
     developerName = 'Sheraz Ahmed Khilji'

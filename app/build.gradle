@@ -7,7 +7,7 @@ android {
     defaultConfig {
         applicationId "com.sherazkhilji.sample"
         minSdkVersion 16
-        targetSdkVersion 23
+        targetSdkVersion 24
     }
 
     buildTypes {
@@ -20,4 +20,6 @@ android {
 
 dependencies {
     compile 'com.sherazkhilji.videffects:videffects:1.0.0'
+//        compile project(":videffects")
+
 }

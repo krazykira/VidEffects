@@ -108,11 +108,14 @@ public class VideoSurfaceView extends GLSurfaceView {
         private FloatBuffer mTriangleVertices;
 
         private final String mVertexShader = "uniform mat4 uMVPMatrix;\n"
-                + "uniform mat4 uSTMatrix;\n" + "attribute vec4 aPosition;\n"
+                + "uniform mat4 uSTMatrix;\n"
+                + "attribute vec4 aPosition;\n"
                 + "attribute vec4 aTextureCoord;\n"
-                + "varying vec2 vTextureCoord;\n" + "void main() {\n"
+                + "varying vec2 vTextureCoord;\n"
+                + "void main() {\n"
                 + "  gl_Position = uMVPMatrix * aPosition;\n"
-                + "  vTextureCoord = (uSTMatrix * aTextureCoord).xy;\n" + "}\n";
+                + "  vTextureCoord = (uSTMatrix * aTextureCoord).xy;\n"
+                + "}\n";
         private float[] mMVPMatrix = new float[16];
         private float[] mSTMatrix = new float[16];
 
