@@ -26,6 +26,8 @@ The following list of effects are currently avaialble and can be applied using V
 * [Temperature Effect](https://github.com/krazykira/VidEffects/blob/master/videffects/src/main/java/com/sherazkhilji/videffects//TemperatureEffect.java)
 * [Tint Effect](https://github.com/krazykira/VidEffects/blob/master/videffects/src/main/java/com/sherazkhilji/videffects//TintEffect.java)
 * [Vignette Effect](https://github.com/krazykira/VidEffects/blob/master/videffects/src/main/java/com/sherazkhilji/videffects//VignetteEffect.java)
+* [Hue Effect](https://github.com/krazykira/VidEffects/blob/master/videffects/src/main/java/com/sherazkhilji/videffects//HueEffect.java)
+* [Gamma Effect](https://github.com/krazykira/VidEffects/blob/master/videffects/src/main/java/com/sherazkhilji/videffects//GammaEffect.java)
 
 
 
