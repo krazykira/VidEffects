@@ -26,6 +26,8 @@ The following list of effects are currently avaialble and can be applied using V
 * [Temperature Effect](https://github.com/krazykira/VidEffects/blob/master/videffects/src/main/java/com/sherazkhilji/videffects//TemperatureEffect.java)
 * [Tint Effect](https://github.com/krazykira/VidEffects/blob/master/videffects/src/main/java/com/sherazkhilji/videffects//TintEffect.java)
 * [Vignette Effect](https://github.com/krazykira/VidEffects/blob/master/videffects/src/main/java/com/sherazkhilji/videffects//VignetteEffect.java)
+* [Hue Effect](https://github.com/krazykira/VidEffects/blob/master/videffects/src/main/java/com/sherazkhilji/videffects//HueEffect.java)
+* [Gamma Effect](https://github.com/krazykira/VidEffects/blob/master/videffects/src/main/java/com/sherazkhilji/videffects//GammaEffect.java)
 
 
 
@@ -48,7 +50,7 @@ The effects applied using this library are temporary. What that means is that th
  ```sh
 dependencies {
 //	Gradle path for VidEffects
-    	compile 'com.sherazkhilji.videffects:videffects:1.0.0'
+    	compile 'com.sherazkhilji.videffects:videffects:1.0.1@aar'
 }
 ```
 
@@ -140,7 +142,7 @@ Developed by
 License
 =======
 
-    Copyright 2016 Sheraz Ahmad Khilji
+    Copyright 2017 Sheraz Ahmad Khilji
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.

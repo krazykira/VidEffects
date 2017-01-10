@@ -51,7 +51,8 @@ public class SamplePlayerActivity extends Activity {
         mVideoView = (VideoSurfaceView) findViewById(R.id.mVideoSurfaceView);
         mVideoView.init(mMediaPlayer,
                 new DuotoneEffect(Color.parseColor("#3498DB"), Color.YELLOW));
-
+//      If you want to change effect then just call mVideoView.init() again
+//      and then call mVideoView.onResume()
     }
 
     @Override
