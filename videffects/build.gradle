@@ -1,24 +1,14 @@
 apply plugin: 'com.android.library'
+apply plugin: 'maven'
 
-android {
-    compileSdkVersion 23
-    buildToolsVersion "23.0.3"
+/**
+ In order to push the library to Bintray we need to execute the
+ following gradle commands in the given sequence.
 
-    defaultConfig {
-        minSdkVersion 15
-        targetSdkVersion 23
-        versionCode 1
-        versionName "1.0.0"
-
-    }
-    buildTypes {
-        release {
-            minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-        }
-    }
-}
-
+ ./gradlew assemble      // To generate build folder
+ ./gradlew createPom     // To create POM file for maven
+ ./gradlew bintrayUpload // To upload library to bintray
+ */
 ext {
     bintrayRepo = 'maven'
     bintrayName = 'VidEffects'
@@ -42,6 +32,66 @@ ext {
     licenseUrl = 'http://www.apache.org/licenses/LICENSE-2.0.txt'
     allLicenses = ["Apache-2.0"]
 }
+/**
+ * This is needed because we want to complie this as android library so that we can test it before publishing
+ */
+android {
+    compileSdkVersion 24
+    buildToolsVersion "23.0.3"
+
+    defaultConfig {
+        minSdkVersion 15
+        targetSdkVersion 24
+        versionCode 1
+        versionName libraryVersion
+
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+}
+
+/**
+ Run this code to create pom-default.xml file in build directory
+ */
+task createPom << {
+    pom {
+        project {
+//          All of these values are defined in the ext block
+            packaging 'aar'
+            groupId publishedGroupId
+            artifactId artifact
+            version libraryVersion
+
+            inceptionYear new Date()
+            licenses {
+                license {
+                    name licenseName
+                    url licenseUrl
+                    distribution 'repo'
+                }
+            }
+            developers {
+                developer {
+                    id developerId
+                    name developerName
+                    email developerEmail
+                }
+            }
+            scm {
+                connection gitUrl
+                developerConnection gitUrl
+                url siteUrl
+
+            }
+        }
+    }.writeTo("build/poms/pom-default.xml")
+}
 // Place it at the end of the file
 apply from: 'https://raw.githubusercontent.com/nuuneoi/JCenter/master/installv1.gradle'
 apply from: 'https://raw.githubusercontent.com/nuuneoi/JCenter/master/bintrayv1.gradle'
+
+

@@ -19,7 +19,7 @@ android {
 }
 
 dependencies {
-    compile 'com.sherazkhilji.videffects:videffects:1.0.0'
+    compile 'com.sherazkhilji.videffects:videffects:1.0.1@aar'
 //        compile project(":videffects")
 
 }
