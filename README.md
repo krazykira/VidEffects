@@ -50,7 +50,7 @@ The effects applied using this library are temporary. What that means is that th
  ```sh
 dependencies {
 //	Gradle path for VidEffects
-    	compile 'com.sherazkhilji.videffects:videffects:1.0.1@aar'
+    	compile 'com.sherazkhilji.videffects:videffects:1.0.2'
 }
 ```
 

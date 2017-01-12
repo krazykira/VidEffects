@@ -6,7 +6,7 @@ apply plugin: 'maven'
  following gradle commands in the given sequence.
 
  ./gradlew assemble      // To generate build folder
- ./gradlew createPom     // To create POM file for maven
+ ./gradlew createPom     // To create POM file for maven. if that creates a new file then dont add it to git
  ./gradlew bintrayUpload // To upload library to bintray
  */
 ext {
@@ -22,7 +22,7 @@ ext {
     siteUrl = 'https://github.com/krazykira/VidEffects'
     gitUrl = 'https://github.com/krazykira/VidEffects.git'
 
-    libraryVersion = '1.0.1'
+    libraryVersion = '1.0.2'
 
     developerId = 'krazykira'
     developerName = 'Sheraz Ahmed Khilji'
@@ -61,6 +61,7 @@ task createPom << {
     pom {
         project {
 //          All of these values are defined in the ext block
+            packaging 'aar'
             groupId publishedGroupId
             artifactId artifact
             version libraryVersion
