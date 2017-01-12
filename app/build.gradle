@@ -1,7 +1,7 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 23
+    compileSdkVersion 24
     buildToolsVersion "23.0.3"
 
     defaultConfig {
@@ -19,7 +19,7 @@ android {
 }
 
 dependencies {
-    compile 'com.sherazkhilji.videffects:videffects:1.0.1@aar'
+    compile 'com.sherazkhilji.videffects:videffects:1.0.0'
 //        compile project(":videffects")
 
 }

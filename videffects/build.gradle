@@ -61,7 +61,6 @@ task createPom << {
     pom {
         project {
 //          All of these values are defined in the ext block
-            packaging 'aar'
             groupId publishedGroupId
             artifactId artifact
             version libraryVersion
@@ -88,7 +87,7 @@ task createPom << {
 
             }
         }
-    }.writeTo("build/poms/pom-default.xml")
+    }.writeTo("build/poms/pom-default.xml").writeTo("pom.xml")
 }
 // Place it at the end of the file
 apply from: 'https://raw.githubusercontent.com/nuuneoi/JCenter/master/installv1.gradle'
