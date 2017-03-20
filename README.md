@@ -142,7 +142,7 @@ Developed by
 License
 =======
 
-    Copyright 2017 Sheraz Ahmad Khilji
+    Copyright 2016 Sheraz Ahmad Khilji
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
