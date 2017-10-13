@@ -39,7 +39,7 @@ The effects applied using this library are temporary. What that means is that th
 
 ## How to use it
 - Add the following code to your project's `build.gradle` file
-  ```sh
+```sh
   repositories {
         jcenter()
     }
