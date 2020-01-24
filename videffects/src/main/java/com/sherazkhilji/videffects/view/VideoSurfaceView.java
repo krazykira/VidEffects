@@ -45,17 +45,17 @@ public class VideoSurfaceView extends GLSurfaceView {
 
     public VideoSurfaceView(Context context) {
         super(context);
-        init(context);
+        init();
     }
 
     public VideoSurfaceView(Context context, AttributeSet attrs) {
         super(context, attrs);
-        init(context);
+        init();
     }
 
-    private void init(Context context) {
+    private void init() {
         setEGLContextClientVersion(2);
-        mRenderer = new VideoRender(context);
+        mRenderer = new VideoRender();
         setRenderer(mRenderer);
         mSurfaceView = this;
     }
@@ -68,15 +68,13 @@ public class VideoSurfaceView extends GLSurfaceView {
      * @param shaderEffect any effect that implements {@link ShaderInterface}
      */
     public void init(MediaPlayer mediaPlayer, ShaderInterface shaderEffect) {
-        if (mediaPlayer == null)
-            Toast.makeText(getContext(), "Set MediaPlayer before continuing",
-                    Toast.LENGTH_LONG).show();
-        else
+        if (mediaPlayer == null) {
+            Log.e(TAG, "Set MediaPlayer before continuing");
+        } else {
             mMediaPlayer = mediaPlayer;
-        if (shaderEffect == null)
-            effect = new NoEffect();
-        else
-            effect = shaderEffect;
+        }
+
+        effect = shaderEffect != null ? shaderEffect : new NoEffect();
     }
 
     @Override
@@ -85,32 +83,25 @@ public class VideoSurfaceView extends GLSurfaceView {
             Log.e(TAG, "Call init() before Continuing");
             return;
         }
-        queueEvent(new Runnable() {
-            @Override
-            public void run() {
-                mRenderer.setMediaPlayer(mMediaPlayer);
-            }
-        });
-
         super.onResume();
     }
 
-    private static class VideoRender implements Renderer,
+    @Override
+    public void onPause() {
+        super.onPause();
+        mMediaPlayer.pause();
+    }
+
+    private class VideoRender implements Renderer,
             SurfaceTexture.OnFrameAvailableListener {
-        private static String TAG = "VideoRender";
 
         private static final int FLOAT_SIZE_BYTES = 4;
         private static final int TRIANGLE_VERTICES_DATA_STRIDE_BYTES = 5 * FLOAT_SIZE_BYTES;
         private static final int TRIANGLE_VERTICES_DATA_POS_OFFSET = 0;
         private static final int TRIANGLE_VERTICES_DATA_UV_OFFSET = 3;
-        private final float[] mTriangleVerticesData = {
-                // X, Y, Z, U, V
-                -1.0f, -1.0f, 0, 0.f, 0.f, 1.0f, -1.0f, 0, 1.f, 0.f, -1.0f,
-                1.0f, 0, 0.f, 1.f, 1.0f, 1.0f, 0, 1.f, 1.f,};
+        private static final int GL_TEXTURE_EXTERNAL_OES = 0x8D65;
 
-        private FloatBuffer mTriangleVertices;
-
-        private final String mVertexShader = "uniform mat4 uMVPMatrix;\n"
+        private static final String mVertexShader = "uniform mat4 uMVPMatrix;\n"
                 + "uniform mat4 uSTMatrix;\n"
                 + "attribute vec4 aPosition;\n"
                 + "attribute vec4 aTextureCoord;\n"
@@ -119,11 +110,13 @@ public class VideoSurfaceView extends GLSurfaceView {
                 + "  gl_Position = uMVPMatrix * aPosition;\n"
                 + "  vTextureCoord = (uSTMatrix * aTextureCoord).xy;\n"
                 + "}\n";
+
         private float[] mMVPMatrix = new float[16];
         private float[] mSTMatrix = new float[16];
+        private FloatBuffer mTriangleVertices;
 
         private int mProgram;
-        private int mTextureID[] = new int[2];
+        private int[] mTextureID = new int[2];
         private int muMVPMatrixHandle;
         private int muSTMatrixHandle;
         private int maPositionHandle;
@@ -131,12 +124,16 @@ public class VideoSurfaceView extends GLSurfaceView {
 
         private SurfaceTexture mSurface;
         private boolean updateSurface = false;
+        private boolean isMediaPlayerPrepared = false;
 
-        private static int GL_TEXTURE_EXTERNAL_OES = 0x8D65;
-
-        private MediaPlayer mMediaPlayer;
-
-        public VideoRender(Context context) {
+        VideoRender() {
+            // X, Y, Z, U, V
+            float[] mTriangleVerticesData = {
+                    -1.0f, -1.0f, 0.0f, 0.0f, 0.f,
+                     1.0f, -1.0f, 0.0f, 1.0f, 0.f,
+                    -1.0f,  1.0f, 0.0f, 0.0f, 1.f,
+                     1.0f,  1.0f, 0.0f, 1.0f, 1.0f
+            };
             mTriangleVertices = ByteBuffer
                     .allocateDirect(
                             mTriangleVerticesData.length * FLOAT_SIZE_BYTES)
@@ -144,10 +141,6 @@ public class VideoSurfaceView extends GLSurfaceView {
             mTriangleVertices.put(mTriangleVerticesData).position(0);
 
             Matrix.setIdentityM(mSTMatrix, 0);
-        }
-
-        public void setMediaPlayer(MediaPlayer player) {
-            mMediaPlayer = player;
         }
 
         @Override
@@ -263,10 +256,10 @@ public class VideoSurfaceView extends GLSurfaceView {
             GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D,
                     GLES20.GL_TEXTURE_WRAP_T, GLES20.GL_CLAMP_TO_EDGE);
 
-			/*
+            /*
              * Create the SurfaceTexture that will feed this textureID, and pass
-			 * it to the MediaPlayer
-			 */
+             * it to the MediaPlayer
+             */
             mSurface = new SurfaceTexture(mTextureID[0]);
             mSurface.setOnFrameAvailableListener(this);
 
@@ -275,10 +268,13 @@ public class VideoSurfaceView extends GLSurfaceView {
             mMediaPlayer.setScreenOnWhilePlaying(true);
             surface.release();
 
-            try {
-                mMediaPlayer.prepare();
-            } catch (IOException t) {
-                Log.e(TAG, "media player prepare failed");
+            if (!isMediaPlayerPrepared) {
+                try {
+                    mMediaPlayer.prepare();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                isMediaPlayerPrepared = true;
             }
 
             synchronized (this) {
@@ -344,7 +340,7 @@ public class VideoSurfaceView extends GLSurfaceView {
 
         private void checkGlError(String op) {
             int error;
-            while ((error = GLES20.glGetError()) != GLES20.GL_NO_ERROR) {
+            if ((error = GLES20.glGetError()) != GLES20.GL_NO_ERROR) {
                 Log.e(TAG, op + ": glError " + error);
                 throw new RuntimeException(op + ": glError " + error);
             }
