@@ -1,7 +1,6 @@
 package com.sherazkhilji.videffects.view;
 
 import android.annotation.SuppressLint;
-import android.app.ActionBar;
 import android.content.Context;
 import android.graphics.SurfaceTexture;
 import android.media.MediaPlayer;
@@ -11,14 +10,9 @@ import android.opengl.Matrix;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.Surface;
-import android.view.ViewGroup;
-import android.view.ViewTreeObserver;
-import android.widget.Toast;
 
 import com.sherazkhilji.videffects.NoEffect;
 import com.sherazkhilji.videffects.interfaces.ShaderInterface;
-
-import org.w3c.dom.Attr;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
@@ -38,9 +32,7 @@ import javax.microedition.khronos.opengles.GL10;
 @SuppressLint("ViewConstructor")
 public class VideoSurfaceView extends GLSurfaceView {
     private static final String TAG = "VideoSurfaceView";
-    private VideoRender mRenderer;
     private MediaPlayer mMediaPlayer = null;
-    private static VideoSurfaceView mSurfaceView;
     private static ShaderInterface effect;
 
     public VideoSurfaceView(Context context) {
@@ -55,9 +47,7 @@ public class VideoSurfaceView extends GLSurfaceView {
 
     private void init() {
         setEGLContextClientVersion(2);
-        mRenderer = new VideoRender();
-        setRenderer(mRenderer);
-        mSurfaceView = this;
+        setRenderer(new VideoRender());
     }
 
     /**
@@ -74,6 +64,14 @@ public class VideoSurfaceView extends GLSurfaceView {
             mMediaPlayer = mediaPlayer;
         }
 
+        effect = shaderEffect != null ? shaderEffect : new NoEffect();
+    }
+
+    /**
+     *
+     * @param shaderEffect any effect that implements {@link ShaderInterface}
+     */
+    public void setShader(ShaderInterface shaderEffect) {
         effect = shaderEffect != null ? shaderEffect : new NoEffect();
     }
 
@@ -152,8 +150,7 @@ public class VideoSurfaceView extends GLSurfaceView {
                     updateSurface = false;
                 }
             }
-            mProgram = createProgram(mVertexShader,
-                    effect.getShader(mSurfaceView));
+            mProgram = createProgram(effect.getShader(VideoSurfaceView.this));
             GLES20.glClearColor(0.0f, 1.0f, 0.0f, 1.0f);
             GLES20.glClear(GLES20.GL_DEPTH_BUFFER_BIT
                     | GLES20.GL_COLOR_BUFFER_BIT);
@@ -199,8 +196,7 @@ public class VideoSurfaceView extends GLSurfaceView {
         @Override
         public void onSurfaceCreated(GL10 glUnused, EGLConfig config) {
 
-            mProgram = createProgram(mVertexShader,
-                    effect.getShader(mSurfaceView));
+            mProgram = createProgram(effect.getShader(VideoSurfaceView.this));
             if (mProgram == 0) {
                 return;
             }
@@ -307,8 +303,8 @@ public class VideoSurfaceView extends GLSurfaceView {
             return shader;
         }
 
-        private int createProgram(String vertexSource, String fragmentSource) {
-            int vertexShader = loadShader(GLES20.GL_VERTEX_SHADER, vertexSource);
+        private int createProgram(String fragmentSource) {
+            int vertexShader = loadShader(GLES20.GL_VERTEX_SHADER, VideoRender.mVertexShader);
             if (vertexShader == 0) {
                 return 0;
             }

@@ -1,27 +1,14 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/root"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@android:color/darker_gray">
+    tools:context="com.videffects.sample.activity.SamplePlayerActivity">
 
-    <FrameLayout
+    <!--    It's significant to set maximum possible size for view.    -->
+    <com.sherazkhilji.videffects.view.VideoSurfaceView
+        android:id="@+id/videoSurfaceView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginBottom="96dp">
+        android:layout_gravity="center" />
 
-<!--    It's significant to set maximum possible size for view.    -->
-        <com.sherazkhilji.videffects.view.VideoSurfaceView
-            android:id="@+id/videoSurfaceView"
-            android:layout_gravity="center"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" />
-
-    </FrameLayout>
-
-<!--    TODO: Fill it with different filters -->
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/effectsLayout"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/filters_view_height"/>
-
-</RelativeLayout>
+</FrameLayout>
