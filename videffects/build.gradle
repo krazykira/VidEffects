@@ -36,16 +36,17 @@ ext {
  * This is needed because we want to complie this as android library so that we can test it before publishing
  */
 android {
-    compileSdkVersion 24
-    buildToolsVersion "23.0.3"
+
+    compileSdkVersion 29
+    buildToolsVersion "29.0.2"
 
     defaultConfig {
         minSdkVersion 15
-        targetSdkVersion 24
+        targetSdkVersion 29
         versionCode 1
         versionName libraryVersion
-
     }
+
     buildTypes {
         release {
             minifyEnabled false
@@ -57,7 +58,7 @@ android {
 /**
  Run this code to create pom-default.xml file in build directory
  */
-task createPom << {
+task createPom doLast {
     pom {
         project {
 //          All of these values are defined in the ext block

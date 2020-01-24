@@ -1,6 +1,7 @@
 package com.sherazkhilji.videffects.view;
 
 import android.annotation.SuppressLint;
+import android.app.ActionBar;
 import android.content.Context;
 import android.graphics.SurfaceTexture;
 import android.media.MediaPlayer;
@@ -10,10 +11,14 @@ import android.opengl.Matrix;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.Surface;
+import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.widget.Toast;
 
 import com.sherazkhilji.videffects.NoEffect;
 import com.sherazkhilji.videffects.interfaces.ShaderInterface;
+
+import org.w3c.dom.Attr;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
@@ -36,23 +41,21 @@ public class VideoSurfaceView extends GLSurfaceView {
     private VideoRender mRenderer;
     private MediaPlayer mMediaPlayer = null;
     private static VideoSurfaceView mSurfaceView;
-    private Context mContext;
     private static ShaderInterface effect;
 
     public VideoSurfaceView(Context context) {
         super(context);
-        mContext = context;
-        setEGLContextClientVersion(2);
-        mRenderer = new VideoRender(mContext);
-        setRenderer(mRenderer);
-        mSurfaceView = this;
+        init(context);
     }
 
     public VideoSurfaceView(Context context, AttributeSet attrs) {
         super(context, attrs);
-        mContext = context;
+        init(context);
+    }
+
+    private void init(Context context) {
         setEGLContextClientVersion(2);
-        mRenderer = new VideoRender(mContext);
+        mRenderer = new VideoRender(context);
         setRenderer(mRenderer);
         mSurfaceView = this;
     }
@@ -66,7 +69,7 @@ public class VideoSurfaceView extends GLSurfaceView {
      */
     public void init(MediaPlayer mediaPlayer, ShaderInterface shaderEffect) {
         if (mediaPlayer == null)
-            Toast.makeText(mContext, "Set MediaPlayer before continuing",
+            Toast.makeText(getContext(), "Set MediaPlayer before continuing",
                     Toast.LENGTH_LONG).show();
         else
             mMediaPlayer = mediaPlayer;
