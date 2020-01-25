@@ -83,10 +83,4 @@ public class SaturationEffect implements ShaderInterface {
                 + "}\n";
 
     }
-
-    @Override
-    public boolean isAdjustable() {
-        return true;
-    }
-
 }

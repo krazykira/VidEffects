@@ -32,6 +32,10 @@ public class GrainEffect implements ShaderInterface {
         this.strength = strength;
     }
 
+    public void setStrength(float strength) {
+        this.strength = strength;
+    }
+
     /**
      * Init all values that will be used by this shader.
      *
@@ -100,10 +104,5 @@ public class GrainEffect implements ShaderInterface {
                 + "  gl_FragColor = gl_FragColor+vec4(rand(vTextureCoord + seed), rand(vTextureCoord + seed),rand(vTextureCoord + seed),1);\n"
                 + "}\n";
 
-    }
-
-    @Override
-    public boolean isAdjustable() {
-        return true;
     }
 }

@@ -62,10 +62,4 @@ public class FillLightEffect implements ShaderInterface {
                 + "  gl_FragColor = vec4(new_color, color.a);\n" + "}\n";
 
     }
-
-    @Override
-    public boolean isAdjustable() {
-        return true;
-    }
-
 }

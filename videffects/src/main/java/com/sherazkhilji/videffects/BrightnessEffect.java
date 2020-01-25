@@ -40,10 +40,4 @@ public class BrightnessEffect implements ShaderInterface {
                 + "  gl_FragColor = brightness * color;\n" + "}\n";
 
     }
-
-    @Override
-    public boolean isAdjustable() {
-        return true;
-    }
-
 }

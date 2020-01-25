@@ -27,6 +27,10 @@ public class AutoFixEffect implements ShaderInterface {
         this.scale = scale;
     }
 
+    public void setScale(float scale) {
+        this.scale = scale;
+    }
+
     @Override
     public String getShader(GLSurfaceView mGlSurfaceView) {
         return "#extension GL_OES_EGL_image_external : require\n"
@@ -83,10 +87,5 @@ public class AutoFixEffect implements ShaderInterface {
                 + "    gl_FragColor = vec4(color.rgb * dst_energy / energy, color.a);\n"
                 + "  }\n" + "}\n";
 
-    }
-
-    @Override
-    public boolean isAdjustable() {
-        return true;
     }
 }

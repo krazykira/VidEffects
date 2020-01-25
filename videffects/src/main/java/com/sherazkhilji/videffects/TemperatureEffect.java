@@ -55,9 +55,4 @@ public class TemperatureEffect implements ShaderInterface {
         return shader;
 
     }
-
-    @Override
-    public boolean isAdjustable() {
-        return true;
-    }
 }

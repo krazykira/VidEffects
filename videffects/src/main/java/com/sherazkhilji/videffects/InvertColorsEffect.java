@@ -25,9 +25,4 @@ public class InvertColorsEffect implements ShaderInterface {
                 + "  gl_FragColor = vec4(colorR, colorG, colorB, color.a);\n"
                 + "}\n";
     }
-
-    @Override
-    public boolean isAdjustable() {
-        return false;
-    }
 }

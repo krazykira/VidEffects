@@ -35,10 +35,4 @@ public class CrossProcessEffect implements ShaderInterface {
                 + "  gl_FragColor = vec4(ncolor.rgb, color.a);\n" + "}\n";
 
     }
-
-    @Override
-    public boolean isAdjustable() {
-        return false;
-    }
-
 }

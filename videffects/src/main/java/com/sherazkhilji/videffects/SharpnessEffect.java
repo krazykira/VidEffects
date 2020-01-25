@@ -78,9 +78,4 @@ public class SharpnessEffect implements ShaderInterface {
                 + "}\n";
 
     }
-
-    @Override
-    public boolean isAdjustable() {
-        return true;
-    }
 }

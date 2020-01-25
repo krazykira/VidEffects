@@ -10,7 +10,7 @@ import com.sherazkhilji.videffects.interfaces.ShaderInterface;
  */
 public class HueEffect implements ShaderInterface {
 
-    float hueValue;
+    private float hue;
 
     /**
      * Initialize Effect
@@ -19,10 +19,12 @@ public class HueEffect implements ShaderInterface {
      *
      * @param hueDegrees Range of value should be between 0 to 360 degrees as described in the image above
      */
-    public HueEffect(float hueDegrees) {
-//      manipulating input value so that we can map it on 360 degree circle
-        hueValue = ((hueDegrees - 45) / 45f + 0.5f) * -1;
+    public HueEffect(float degrees) {
+        setDegrees(degrees);
+    }
 
+    public void setDegrees(float degrees) {
+        hue = ((degrees - 45) / 45f + 0.5f) * -1;
     }
 
     @Override
@@ -32,7 +34,7 @@ public class HueEffect implements ShaderInterface {
 
                 + "varying vec2 vTextureCoord;\n"
                 + "uniform samplerExternalOES sTexture;\n"
-                + "float hue=" + hueValue + ";\n"
+                + "float hue=" + hue + ";\n"
 
                 + "void main() {\n"
 
@@ -65,10 +67,5 @@ public class HueEffect implements ShaderInterface {
                 + "gl_FragColor = color;\n"
 
                 + "}\n";
-    }
-
-    @Override
-    public boolean isAdjustable() {
-        return true;
     }
 }

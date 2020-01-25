@@ -75,6 +75,10 @@ public class VideoSurfaceView extends GLSurfaceView {
         effect = shaderEffect != null ? shaderEffect : new NoEffect();
     }
 
+    public ShaderInterface getShader() {
+        return effect;
+    }
+
     @Override
     public void onResume() {
         if (mMediaPlayer == null) {

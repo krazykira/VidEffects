@@ -151,9 +151,4 @@ public class LamoishEffect implements ShaderInterface {
         return shader;
 
     }
-
-    @Override
-    public boolean isAdjustable() {
-        return false;
-    }
 }

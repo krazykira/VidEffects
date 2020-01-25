@@ -105,9 +105,4 @@ public class DocumentaryEffect implements ShaderInterface {
                 + "}\n";
 
     }
-
-    @Override
-    public boolean isAdjustable() {
-        return false;
-    }
 }

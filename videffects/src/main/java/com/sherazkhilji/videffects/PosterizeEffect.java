@@ -26,9 +26,4 @@ public class PosterizeEffect implements ShaderInterface {
                 + "  gl_FragColor = vec4(pcolor, color.a);\n" + "}\n";
 
     }
-
-    @Override
-    public boolean isAdjustable() {
-        return false;
-    }
 }

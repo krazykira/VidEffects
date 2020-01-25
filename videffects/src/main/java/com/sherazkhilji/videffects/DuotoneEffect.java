@@ -17,6 +17,10 @@ public class DuotoneEffect implements ShaderInterface {
     private int mFirstColor;
     private int mSecondColor;
 
+    public DuotoneEffect() {
+        this(Color.MAGENTA, Color.YELLOW);
+    }
+
     /**
      * Initialize effect
      *
@@ -69,10 +73,5 @@ public class DuotoneEffect implements ShaderInterface {
                 + "  vec3 new_color = (1.0 - energy) * first + energy * second;\n"
                 + "  gl_FragColor = vec4(new_color.rgb, color.a);\n" + "}\n";
 
-    }
-
-    @Override
-    public boolean isAdjustable() {
-        return false;
     }
 }

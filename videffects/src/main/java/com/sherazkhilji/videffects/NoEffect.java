@@ -22,9 +22,4 @@ public class NoEffect implements ShaderInterface {
                 + "}\n";
 
     }
-
-    @Override
-    public boolean isAdjustable() {
-        return false;
-    }
 }

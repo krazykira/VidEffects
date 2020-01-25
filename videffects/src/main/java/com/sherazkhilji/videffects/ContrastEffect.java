@@ -37,9 +37,4 @@ public class ContrastEffect implements ShaderInterface {
                 + "  color -= 0.5;\n" + "  color *= contrast;\n"
                 + "  color += 0.5;\n" + "  gl_FragColor = color;\n" + "}\n";
     }
-
-    @Override
-    public boolean isAdjustable() {
-        return true;
-    }
 }
