@@ -13,16 +13,10 @@ import java.util.Random;
  * @author sheraz.khilji
  */
 public class DocumentaryEffect implements ShaderInterface {
+
     private int mWidth;
     private int mHeight;
     private Random mRandom;
-
-    /**
-     * Initialize Effect
-     */
-    public DocumentaryEffect() {
-
-    }
 
     /**
      * Init all values that will be used by this shader.
@@ -38,7 +32,7 @@ public class DocumentaryEffect implements ShaderInterface {
     @Override
     public String getShader(GLSurfaceView mGlSurfaceView) {
         initValues(mGlSurfaceView);
-        float scale[] = new float[2];
+        float[] scale = new float[2];
         if (mWidth > mHeight) {
             scale[0] = 1f;
             scale[1] = ((float) mHeight) / mWidth;
@@ -49,10 +43,10 @@ public class DocumentaryEffect implements ShaderInterface {
         float max_dist = ((float) Math.sqrt(scale[0] * scale[0] + scale[1]
                 * scale[1])) * 0.5f;
 
-        float seed[] = {mRandom.nextFloat(), mRandom.nextFloat()};
+        float[] seed = {mRandom.nextFloat(), mRandom.nextFloat()};
 
-        String scaleString[] = new String[2];
-        String seedString[] = new String[2];
+        String[] scaleString = new String[2];
+        String[] seedString = new String[2];
 
         scaleString[0] = "scale[0] = " + scale[0] + ";\n";
         scaleString[1] = "scale[1] = " + scale[1] + ";\n";
@@ -63,7 +57,7 @@ public class DocumentaryEffect implements ShaderInterface {
         String inv_max_distString = "inv_max_dist = " + 1.0f / max_dist + ";\n";
         String stepsizeString = "stepsize = " + 1.0f / 255.0f + ";\n";
 
-        String shader = "#extension GL_OES_EGL_image_external : require\n"
+        return "#extension GL_OES_EGL_image_external : require\n"
                 + "precision mediump float;\n"
                 + "uniform samplerExternalOES sTexture;\n"
                 + " vec2 seed;\n"
@@ -110,7 +104,10 @@ public class DocumentaryEffect implements ShaderInterface {
                 + "  gl_FragColor = vec4(new_color * lumen, color.a);\n"
                 + "}\n";
 
-        return shader;
+    }
 
+    @Override
+    public boolean isAdjustable() {
+        return false;
     }
 }

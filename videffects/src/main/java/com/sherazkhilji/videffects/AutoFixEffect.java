@@ -10,8 +10,8 @@ import com.sherazkhilji.videffects.interfaces.ShaderInterface;
  * @author sheraz.khilji
  */
 public class AutoFixEffect implements ShaderInterface {
-    private float scale;
 
+    private float scale;
     /**
      * Initialize Effect
      *
@@ -29,8 +29,7 @@ public class AutoFixEffect implements ShaderInterface {
 
     @Override
     public String getShader(GLSurfaceView mGlSurfaceView) {
-
-        String shader = "#extension GL_OES_EGL_image_external : require\n"
+        return "#extension GL_OES_EGL_image_external : require\n"
                 + "precision mediump float;\n"
                 + "uniform samplerExternalOES tex_sampler_0;\n"
                 + "uniform samplerExternalOES tex_sampler_1;\n"
@@ -84,7 +83,10 @@ public class AutoFixEffect implements ShaderInterface {
                 + "    gl_FragColor = vec4(color.rgb * dst_energy / energy, color.a);\n"
                 + "  }\n" + "}\n";
 
-        return shader;
+    }
 
+    @Override
+    public boolean isAdjustable() {
+        return true;
     }
 }

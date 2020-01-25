@@ -8,6 +8,7 @@ import com.sherazkhilji.videffects.interfaces.ShaderInterface;
  * Apply Gamma Effect on Video being played
  */
 public class GammaEffect implements ShaderInterface {
+
     private float gammaValue;
 
     /**
@@ -27,7 +28,7 @@ public class GammaEffect implements ShaderInterface {
     @Override
     public String getShader(GLSurfaceView mGlSurfaceView) {
 
-        String shader = "#extension GL_OES_EGL_image_external : require\n"
+        return "#extension GL_OES_EGL_image_external : require\n"
                 + "precision mediump float;\n"
 
                 + "varying vec2 vTextureCoord;\n"
@@ -40,7 +41,11 @@ public class GammaEffect implements ShaderInterface {
                 + "gl_FragColor = vec4(pow(textureColor.rgb, vec3(gamma)), textureColor.w);\n"
 
                 + "}\n";
-
-        return shader;
     }
+
+    @Override
+    public boolean isAdjustable() {
+        return true;
+    }
+
 }

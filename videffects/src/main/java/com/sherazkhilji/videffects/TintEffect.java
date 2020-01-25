@@ -12,6 +12,7 @@ import com.sherazkhilji.videffects.interfaces.ShaderInterface;
  * @author sheraz.khilji
  */
 public class TintEffect implements ShaderInterface {
+
     private int mTint = 0xFF0000FF;
 
     /**
@@ -22,7 +23,6 @@ public class TintEffect implements ShaderInterface {
      */
     public TintEffect(int color) {
         this.mTint = color;
-
     }
 
     @Override
@@ -61,5 +61,10 @@ public class TintEffect implements ShaderInterface {
                 + "  gl_FragColor = vec4(new_color.rgb, color.a);\n" + "}\n";
         return shader;
 
+    }
+
+    @Override
+    public boolean isAdjustable() {
+        return false;
     }
 }

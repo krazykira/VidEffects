@@ -11,6 +11,7 @@ import com.sherazkhilji.videffects.interfaces.ShaderInterface;
  * @author sheraz.khilji
  */
 public class BrightnessEffect implements ShaderInterface {
+
     private float brightnessValue;
 
     /**
@@ -29,8 +30,7 @@ public class BrightnessEffect implements ShaderInterface {
 
     @Override
     public String getShader(GLSurfaceView mGlSurfaceView) {
-
-        String shader = "#extension GL_OES_EGL_image_external : require\n"
+        return "#extension GL_OES_EGL_image_external : require\n"
                 + "precision mediump float;\n"
                 + "uniform samplerExternalOES sTexture;\n"
                 + "float brightness ;\n" + "varying vec2 vTextureCoord;\n"
@@ -39,8 +39,11 @@ public class BrightnessEffect implements ShaderInterface {
                 + "  vec4 color = texture2D(sTexture, vTextureCoord);\n"
                 + "  gl_FragColor = brightness * color;\n" + "}\n";
 
-        return shader;
+    }
 
+    @Override
+    public boolean isAdjustable() {
+        return true;
     }
 
 }

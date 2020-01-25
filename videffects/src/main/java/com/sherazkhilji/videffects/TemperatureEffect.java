@@ -10,6 +10,7 @@ import com.sherazkhilji.videffects.interfaces.ShaderInterface;
  * @author sheraz.khilji
  */
 public class TemperatureEffect implements ShaderInterface {
+
     private float scale = 0f;
 
     /**
@@ -53,5 +54,10 @@ public class TemperatureEffect implements ShaderInterface {
 
         return shader;
 
+    }
+
+    @Override
+    public boolean isAdjustable() {
+        return true;
     }
 }

@@ -9,6 +9,7 @@ import com.sherazkhilji.videffects.interfaces.ShaderInterface;
  * Apply Hue effect on the video being played
  */
 public class HueEffect implements ShaderInterface {
+
     float hueValue;
 
     /**
@@ -26,8 +27,7 @@ public class HueEffect implements ShaderInterface {
 
     @Override
     public String getShader(GLSurfaceView mGlSurfaceView) {
-
-        String shader = "#extension GL_OES_EGL_image_external : require\n"
+        return "#extension GL_OES_EGL_image_external : require\n"
                 + "precision mediump float;\n"
 
                 + "varying vec2 vTextureCoord;\n"
@@ -65,7 +65,10 @@ public class HueEffect implements ShaderInterface {
                 + "gl_FragColor = color;\n"
 
                 + "}\n";
+    }
 
-        return shader;
+    @Override
+    public boolean isAdjustable() {
+        return true;
     }
 }

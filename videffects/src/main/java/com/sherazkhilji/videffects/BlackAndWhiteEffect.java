@@ -10,16 +10,10 @@ import com.sherazkhilji.videffects.interfaces.ShaderInterface;
  * @author sheraz.khilji
  */
 public class BlackAndWhiteEffect implements ShaderInterface {
-    /**
-     * Initialize Effect
-     */
-    public BlackAndWhiteEffect() {
-    }
 
     @Override
     public String getShader(GLSurfaceView mGlSurfaceView) {
-
-        String shader = "#extension GL_OES_EGL_image_external : require\n"
+        return  "#extension GL_OES_EGL_image_external : require\n"
                 + "precision mediump float;\n"
                 + "varying vec2 vTextureCoord;\n"
                 + "uniform samplerExternalOES sTexture;\n" + "void main() {\n"
@@ -29,8 +23,10 @@ public class BlackAndWhiteEffect implements ShaderInterface {
                 + "  float colorB = (color.r + color.g + color.b) / 3.0;\n"
                 + "  gl_FragColor = vec4(colorR, colorG, colorB, color.a);\n"
                 + "}\n";
+    }
 
-        return shader;
-
+    @Override
+    public boolean isAdjustable() {
+        return false;
     }
 }

@@ -11,6 +11,7 @@ import com.sherazkhilji.videffects.interfaces.ShaderInterface;
  * @author sheraz.khilji
  */
 public class SaturationEffect implements ShaderInterface {
+
     private float scale = 0f;
 
     /**
@@ -20,7 +21,6 @@ public class SaturationEffect implements ShaderInterface {
      *              full desaturation, i.e. grayscale.
      */
     public SaturationEffect(float scale) {
-
         this.scale = scale;
     }
 
@@ -52,7 +52,7 @@ public class SaturationEffect implements ShaderInterface {
         weightsString[2] = "weights[2] = " + weights[2] + ";\n";
         String shiftString = "shift = " + shift + ";\n";
 
-        String shader = "#extension GL_OES_EGL_image_external : require\n"
+        return "#extension GL_OES_EGL_image_external : require\n"
                 + "precision mediump float;\n"
                 + "uniform samplerExternalOES sTexture;\n" + " float scale;\n"
                 + " float shift;\n" + " vec3 weights;\n" + " vec3 exponents;\n"
@@ -82,8 +82,11 @@ public class SaturationEffect implements ShaderInterface {
                 + "  gl_FragColor = gl_FragColor+vec4(verynew_color / max_color, color.a);\n"
                 + "}\n";
 
-        return shader;
+    }
 
+    @Override
+    public boolean isAdjustable() {
+        return true;
     }
 
 }

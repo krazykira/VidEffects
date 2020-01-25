@@ -10,11 +10,6 @@ import com.sherazkhilji.videffects.interfaces.ShaderInterface;
  * @author sheraz.khilji
  */
 public class SepiaEffect implements ShaderInterface {
-    /**
-     * Initialize Effect
-     */
-    public SepiaEffect() {
-    }
 
     @Override
     public String getShader(GLSurfaceView mGlSurfaceView) {
@@ -34,7 +29,7 @@ public class SepiaEffect implements ShaderInterface {
         matrixString[7] = "  matrix[2][1]=" + weights[7] + ";\n";
         matrixString[8] = "  matrix[2][2]=" + weights[8] + ";\n";
 
-        String shader = "#extension GL_OES_EGL_image_external : require\n"
+        return "#extension GL_OES_EGL_image_external : require\n"
                 + "precision mediump float;\n"
                 + "uniform samplerExternalOES sTexture;\n" + " mat3 matrix;\n"
                 + "varying vec2 vTextureCoord;\n" + "void main() {\n"
@@ -45,7 +40,10 @@ public class SepiaEffect implements ShaderInterface {
                 + "  vec3 new_color = min(matrix * color.rgb, 1.0);\n"
                 + "  gl_FragColor = vec4(new_color.rgb, color.a);\n" + "}\n";
 
-        return shader;
+    }
 
+    @Override
+    public boolean isAdjustable() {
+        return false;
     }
 }
