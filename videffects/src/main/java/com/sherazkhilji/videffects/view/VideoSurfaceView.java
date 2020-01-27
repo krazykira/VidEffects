@@ -12,6 +12,7 @@ import android.util.Log;
 import android.view.Surface;
 
 import com.sherazkhilji.videffects.NoEffect;
+import com.sherazkhilji.videffects.Utils;
 import com.sherazkhilji.videffects.interfaces.ShaderInterface;
 
 import java.io.IOException;
@@ -103,16 +104,6 @@ public class VideoSurfaceView extends GLSurfaceView {
         private static final int TRIANGLE_VERTICES_DATA_UV_OFFSET = 3;
         private static final int GL_TEXTURE_EXTERNAL_OES = 0x8D65;
 
-        private static final String mVertexShader = "uniform mat4 uMVPMatrix;\n"
-                + "uniform mat4 uSTMatrix;\n"
-                + "attribute vec4 aPosition;\n"
-                + "attribute vec4 aTextureCoord;\n"
-                + "varying vec2 vTextureCoord;\n"
-                + "void main() {\n"
-                + "  gl_Position = uMVPMatrix * aPosition;\n"
-                + "  vTextureCoord = (uSTMatrix * aTextureCoord).xy;\n"
-                + "}\n";
-
         private float[] mMVPMatrix = new float[16];
         private float[] mSTMatrix = new float[16];
         private FloatBuffer mTriangleVertices;
@@ -129,19 +120,11 @@ public class VideoSurfaceView extends GLSurfaceView {
         private boolean isMediaPlayerPrepared = false;
 
         VideoRender() {
-            // X, Y, Z, U, V
-            float[] mTriangleVerticesData = {
-                    -1.0f, -1.0f, 0.0f, 0.0f, 0.f,
-                     1.0f, -1.0f, 0.0f, 1.0f, 0.f,
-                    -1.0f,  1.0f, 0.0f, 0.0f, 1.f,
-                     1.0f,  1.0f, 0.0f, 1.0f, 1.0f
-            };
             mTriangleVertices = ByteBuffer
-                    .allocateDirect(
-                            mTriangleVerticesData.length * FLOAT_SIZE_BYTES)
+                    .allocateDirect(Utils.VERTICES.length * FLOAT_SIZE_BYTES)
                     .order(ByteOrder.nativeOrder()).asFloatBuffer();
-            mTriangleVertices.put(mTriangleVerticesData).position(0);
 
+            mTriangleVertices.put(Utils.VERTICES).position(0);
             Matrix.setIdentityM(mSTMatrix, 0);
         }
 
@@ -289,30 +272,12 @@ public class VideoSurfaceView extends GLSurfaceView {
             updateSurface = true;
         }
 
-        private int loadShader(int shaderType, String source) {
-            int shader = GLES20.glCreateShader(shaderType);
-            if (shader != 0) {
-                GLES20.glShaderSource(shader, source);
-                GLES20.glCompileShader(shader);
-                int[] compiled = new int[1];
-                GLES20.glGetShaderiv(shader, GLES20.GL_COMPILE_STATUS,
-                        compiled, 0);
-                if (compiled[0] == 0) {
-                    Log.e(TAG, "Could not compile shader " + shaderType + ":");
-                    Log.e(TAG, GLES20.glGetShaderInfoLog(shader));
-                    GLES20.glDeleteShader(shader);
-                    shader = 0;
-                }
-            }
-            return shader;
-        }
-
         private int createProgram(String fragmentSource) {
-            int vertexShader = loadShader(GLES20.GL_VERTEX_SHADER, VideoRender.mVertexShader);
+            int vertexShader = Utils.loadShader(GLES20.GL_VERTEX_SHADER, effect.mVertexShader);
             if (vertexShader == 0) {
                 return 0;
             }
-            int pixelShader = loadShader(GLES20.GL_FRAGMENT_SHADER,
+            int pixelShader = Utils.loadShader(GLES20.GL_FRAGMENT_SHADER,
                     fragmentSource);
             if (pixelShader == 0) {
                 return 0;

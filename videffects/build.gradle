@@ -22,7 +22,7 @@ ext {
     siteUrl = 'https://github.com/krazykira/VidEffects'
     gitUrl = 'https://github.com/krazykira/VidEffects.git'
 
-    libraryVersion = '1.0.2'
+    libraryVersion = '1.0.3'
 
     developerId = 'krazykira'
     developerName = 'Sheraz Ahmed Khilji'
@@ -41,7 +41,7 @@ android {
     buildToolsVersion "29.0.2"
 
     defaultConfig {
-        minSdkVersion 15
+        minSdkVersion 18
         targetSdkVersion 29
         versionCode 1
         versionName libraryVersion
