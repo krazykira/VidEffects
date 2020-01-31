@@ -9,7 +9,7 @@ android {
     buildToolsVersion "29.0.2"
 
     defaultConfig {
-        applicationId "com.kifio.sample"
+        applicationId "com.sherazkhilji.sample"
         minSdkVersion 21
         targetSdkVersion 29
         versionCode 1

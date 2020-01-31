@@ -19,4 +19,18 @@
         android:layout_margin="8dp"
         android:layout_gravity="bottom"/>
 
+    <FrameLayout
+        android:id="@+id/progress"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#CE000000"
+        android:visibility="gone">
+
+        <ProgressBar
+            android:layout_width="56dp"
+            android:layout_height="56dp"
+            android:layout_gravity="center"/>
+
+    </FrameLayout>
+
 </FrameLayout>

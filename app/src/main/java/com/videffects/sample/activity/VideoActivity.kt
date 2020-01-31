@@ -1,23 +1,35 @@
 package com.videffects.sample.activity
 
+import android.Manifest
+import android.content.Intent
+import android.content.pm.PackageManager
 import android.content.res.AssetFileDescriptor
 import android.media.MediaPlayer
+import android.os.Build
 import android.os.Bundle
+import android.os.Environment
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
 import android.widget.SeekBar
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import com.sherazkhilji.sample.R
 import com.sherazkhilji.videffects.AutoFixEffect
 import com.sherazkhilji.videffects.GrainEffect
 import com.sherazkhilji.videffects.HueEffect
 import com.sherazkhilji.videffects.interfaces.ShaderInterface
+import com.sherazkhilji.videffects.service.SavingService
 import com.videffects.sample.fragment.ShaderChooserDialog
 import com.videffects.sample.interfaces.OnSelectShaderListener
-import com.videffects.sample.tools.*
+import com.videffects.sample.tools.getSize
+import com.videffects.sample.tools.resizeView
+import com.videffects.sample.tools.transformIntensity
 import kotlinx.android.synthetic.main.activity_video.*
+import java.io.File
+import kotlin.math.roundToInt
 
 
 class VideoActivity : AppCompatActivity(), OnSelectShaderListener, SeekBar.OnSeekBarChangeListener {
@@ -26,6 +38,8 @@ class VideoActivity : AppCompatActivity(), OnSelectShaderListener, SeekBar.OnSee
 
         private const val TAG = "kifio-VideoActivity"
 
+        private const val WRITE_EXTERNAL_STORAGE = 201
+
         private const val UNKNOWN_SIZE_ERROR_MESSAGE = "Can't get video parameters"
 
         fun startActivity(assetsFileDescriptor: AssetFileDescriptor) {
@@ -33,6 +47,7 @@ class VideoActivity : AppCompatActivity(), OnSelectShaderListener, SeekBar.OnSee
         }
     }
 
+    private var size: Pair<Double, Double>? = null
     private val mediaPlayer = MediaPlayer()
     private var assetFileDescriptor: AssetFileDescriptor? = null
 
@@ -49,6 +64,7 @@ class VideoActivity : AppCompatActivity(), OnSelectShaderListener, SeekBar.OnSee
             }
 
             videoSurfaceView.resizeView(size)
+            this.size = size
             mediaPlayer.setDataSource(it.fileDescriptor, it.startOffset, it.length)
             mediaPlayer.isLooping = true
             videoSurfaceView.init(mediaPlayer, GrainEffect(0.1F))
@@ -71,7 +87,48 @@ class VideoActivity : AppCompatActivity(), OnSelectShaderListener, SeekBar.OnSee
                 dialog.show(this.supportFragmentManager, ShaderChooserDialog::class.java.simpleName)
                 true
             }
+            R.id.save -> {
+                if (shouldAskWritePermission) {
+                    val result = ContextCompat.checkSelfPermission(this,
+                            Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                    if (result != PackageManager.PERMISSION_GRANTED
+                            && Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                        requestPermissions(arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE), WRITE_EXTERNAL_STORAGE)
+                    } else {
+                        save()
+                    }
+                } else {
+                    save()
+                }
+                true
+            }
             else -> super.onOptionsItemSelected(item)
+        }
+    }
+
+    private val shouldAskWritePermission = Build.VERSION.SDK_INT >= Build.VERSION_CODES.M
+            && Build.VERSION.SDK_INT < Build.VERSION_CODES.Q
+
+    override fun onRequestPermissionsResult(
+            requestCode: Int,
+            permissions: Array<out String>,
+            grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if (requestCode == WRITE_EXTERNAL_STORAGE) save()
+    }
+
+    private fun save() {
+        size?.let {
+            val outPath = File(getExternalFilesDir(Environment.DIRECTORY_PICTURES), "out.mp4").toString()
+            val intent = Intent(this, SavingService::class.java)
+            intent.putExtra(SavingService.WIDTH, it.first.roundToInt())
+            intent.putExtra(SavingService.HEIGHT, it.second.roundToInt())
+            intent.putExtra(SavingService.PATH, "video_0.mp4")
+            intent.putExtra(SavingService.IS_ASSET, true)
+            intent.putExtra(SavingService.OUT_PATH, outPath)
+            progress.visibility = View.VISIBLE
+            startService(intent)
         }
     }
 
