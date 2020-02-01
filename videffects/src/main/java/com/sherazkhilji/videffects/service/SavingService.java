@@ -16,6 +16,7 @@ import android.opengl.EGLContext;
 import android.opengl.EGLDisplay;
 import android.opengl.EGLExt;
 import android.opengl.EGLSurface;
+import android.opengl.GLSurfaceView;
 import android.opengl.GLUtils;
 import android.opengl.Matrix;
 import android.os.Handler;
@@ -23,13 +24,15 @@ import android.os.HandlerThread;
 import android.util.Log;
 import android.view.Surface;
 
-import com.sherazkhilji.videffects.NoEffect;
+import com.sherazkhilji.videffects.interfaces.Filter;
+import com.sherazkhilji.videffects.interfaces.ShaderInterface;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
 
 import static android.media.MediaCodec.BUFFER_FLAG_END_OF_STREAM;
 import static android.opengl.EGLExt.EGL_RECORDABLE_ANDROID;
+import static com.sherazkhilji.videffects.Constants.DEFAULT_VERTEX_SHADER;
 
 public class SavingService extends IntentService {
 
@@ -38,11 +41,13 @@ public class SavingService extends IntentService {
     public static final String OUT_PATH = "outPath";
     public static final String WIDTH = "width";
     public static final String HEIGHT = "height";
+    public static final String FILTER = "FILTER";
     public static final String TAG = "SavingService";
     public static final String VIDEO = "video/";
 
     public static void saveVideo(
             Context context,
+            Filter filter,
             String path,
             String outPath,
             int width,
@@ -53,6 +58,7 @@ public class SavingService extends IntentService {
         intent.putExtra(HEIGHT, height);
         intent.putExtra(PATH, path);
         intent.putExtra(OUT_PATH, outPath);
+        intent.putExtra(FILTER, filter);
         context.startService(intent);
     }
 
@@ -102,6 +108,9 @@ public class SavingService extends IntentService {
         width = intent.getIntExtra(WIDTH, 0);
         height = intent.getIntExtra(HEIGHT, 0);
 
+        Filter filter = intent.getParcelableExtra(FILTER);
+        if (filter == null) return;
+
         try {
             if (isAsset) {
                 AssetFileDescriptor assetsFileDescriptor = getAssets().openFd(path);
@@ -124,7 +133,6 @@ public class SavingService extends IntentService {
                     // Create H.264 encoder
                     encoder = MediaCodec.createEncoderByType(mime);
 
-
                     // Configure the encoder
                     encoder.configure(getOutputFormat(format), null, null, MediaCodec.CONFIGURE_FLAG_ENCODE);
                     inputSurface = encoder.createInputSurface();
@@ -132,7 +140,7 @@ public class SavingService extends IntentService {
                     initEgl(inputSurface);
 
                     // Init output surface
-                    textureRenderer = new TextureRenderer(new NoEffect());
+                    textureRenderer = new TextureRenderer(filter);
                     surfaceTexture = new SurfaceTexture(textureRenderer.getTextureId());
 
                     // Control the thread from which OnFrameAvailableListener will

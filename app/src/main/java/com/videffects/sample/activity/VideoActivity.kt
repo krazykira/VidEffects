@@ -20,6 +20,8 @@ import com.sherazkhilji.sample.R
 import com.sherazkhilji.videffects.AutoFixEffect
 import com.sherazkhilji.videffects.GrainEffect
 import com.sherazkhilji.videffects.HueEffect
+import com.sherazkhilji.videffects.filter.GrainFilter
+import com.sherazkhilji.videffects.interfaces.Filter
 import com.sherazkhilji.videffects.interfaces.ShaderInterface
 import com.sherazkhilji.videffects.service.SavingService
 import com.videffects.sample.fragment.ShaderChooserDialog
@@ -67,7 +69,7 @@ class VideoActivity : AppCompatActivity(), OnSelectShaderListener, SeekBar.OnSee
             this.size = size
             mediaPlayer.setDataSource(it.fileDescriptor, it.startOffset, it.length)
             mediaPlayer.isLooping = true
-            videoSurfaceView.init(mediaPlayer, GrainEffect(0.1F))
+            videoSurfaceView.init(mediaPlayer, GrainFilter(size.first.toInt(), size.second.toInt()))
         }
 
         intensitySeekBar.max = 100
@@ -126,6 +128,7 @@ class VideoActivity : AppCompatActivity(), OnSelectShaderListener, SeekBar.OnSee
             intent.putExtra(SavingService.HEIGHT, it.second.roundToInt())
             intent.putExtra(SavingService.PATH, "video_0.mp4")
             intent.putExtra(SavingService.IS_ASSET, true)
+            intent.putExtra(SavingService.FILTER, videoSurfaceView.filter)
             intent.putExtra(SavingService.OUT_PATH, outPath)
             progress.visibility = View.VISIBLE
             startService(intent)
@@ -149,10 +152,22 @@ class VideoActivity : AppCompatActivity(), OnSelectShaderListener, SeekBar.OnSee
         mediaPlayer.release()
     }
 
-    override fun onSelectShader(shader: ShaderInterface, allowAdjustment: Boolean) {
-        videoSurfaceView.shader = shader
+    override fun onSelectShader(shader: Any) {
+        when (shader) {
+            is ShaderInterface -> {
+                videoSurfaceView.shader = shader
+                intensitySeekBar.isEnabled = false
+            }
+            is Filter -> {
+                videoSurfaceView.setFilter(shader)
+                intensitySeekBar.isEnabled = true
+            }
+            else -> {
+                return
+            }
+        }
+
         intensitySeekBar.progress = 0
-        intensitySeekBar.isEnabled = allowAdjustment
     }
 
     override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {

@@ -1,34 +1,46 @@
-package com.sherazkhilji.videffects;
+package com.sherazkhilji.videffects.filter;
 
-import android.opengl.GLSurfaceView;
+import android.os.Parcel;
+import android.os.Parcelable;
 
-import com.sherazkhilji.videffects.interfaces.ShaderInterface;
+import com.sherazkhilji.videffects.Constants;
+import com.sherazkhilji.videffects.interfaces.Filter;
 
-
-/**
- * Apply Hue effect on the video being played
- */
-public class HueEffect implements ShaderInterface {
+public class HueFilter implements Filter {
 
     private float hue;
 
-    /**
-     * Initialize Effect
-     * <p>
-     * <img alt="Hue value chart" width="400" height="350" src="https://cloud.githubusercontent.com/assets/2201511/21810115/b99ac22a-d74a-11e6-9f6c-ef74d15c88c7.jpg" >
-     *
-     * @param degrees Range of value should be between 0 to 360 degrees as described in the image above
-     */
-    public HueEffect(float degrees) {
-        setDegrees(degrees);
+    public HueFilter() {
+
     }
 
-    public void setDegrees(float degrees) {
-        hue = ((degrees - 45) / 45f + 0.5f) * -1;
+    public HueFilter(Parcel in) {
+        hue = in.readFloat();
+    }
+
+    public static final Creator<HueFilter> CREATOR = new Creator<HueFilter>() {
+        @Override
+        public HueFilter createFromParcel(Parcel in) {
+            return new HueFilter(in);
+        }
+
+        @Override
+        public HueFilter[] newArray(int size) {
+            return new HueFilter[size];
+        }
+    };
+
+    public void setHue(float degrees) {
+        this.hue = ((degrees - 45) / 45f + 0.5f) * -1;
     }
 
     @Override
-    public String getShader(GLSurfaceView mGlSurfaceView) {
+    public String getVertexShader() {
+        return Constants.DEFAULT_VERTEX_SHADER;
+    }
+
+    @Override
+    public String getFragmentShader() {
         return "#extension GL_OES_EGL_image_external : require\n"
                 + "precision mediump float;\n"
 
@@ -67,5 +79,15 @@ public class HueEffect implements ShaderInterface {
                 + "gl_FragColor = color;\n"
 
                 + "}\n";
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeFloat(hue);
     }
 }

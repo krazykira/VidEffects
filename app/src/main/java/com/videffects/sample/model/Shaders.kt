@@ -2,38 +2,44 @@ package com.videffects.sample.model
 
 import android.graphics.Color
 import com.sherazkhilji.videffects.*
+import com.sherazkhilji.videffects.filter.AutoFixFilter
+import com.sherazkhilji.videffects.filter.GrainFilter
+import com.sherazkhilji.videffects.filter.HueFilter
 
 object Shaders {
 
     private const val SUFFIX = "Effect"
 
     private val shaders = arrayOf(
-            Pair(AutoFixEffect(0.0F), true),
-            Pair(BlackAndWhiteEffect(), false),
-            Pair(BrightnessEffect(0.5F), false),
-            Pair(ContrastEffect(0.5F), false),
-            Pair(CrossProcessEffect(), false),
-            Pair(DocumentaryEffect(), false),
-            Pair(DuotoneEffect(), false),
-            Pair(FillLightEffect(0.5F), false),
-            Pair(GammaEffect(1.0F), false),
-            Pair(GrainEffect(0.1F), true),
-            Pair(GreyScaleEffect(), false),
-            Pair(HueEffect(0.0F), true),
-            Pair(InvertColorsEffect(), false),
-            Pair(LamoishEffect(), false),
-            Pair(PosterizeEffect(), false),
-            Pair(SaturationEffect(0.5F), false),
-            Pair(SepiaEffect(), false),
-            Pair(SharpnessEffect(0.5F), false),
-            Pair(TemperatureEffect(0.5F), false),
-            Pair(TintEffect(Color.GREEN), false),
-            Pair(VignetteEffect(0F), false)
+            // Filters
+            AutoFixFilter(),
+            GrainFilter(1920, 1080),
+            HueFilter(),
+
+            // Effects
+            BlackAndWhiteEffect(),
+            BrightnessEffect(0.5F),
+            ContrastEffect(0.5F),
+            CrossProcessEffect(),
+            DocumentaryEffect(),
+            DuotoneEffect(),
+            FillLightEffect(0.5F),
+            GammaEffect(1.0F),
+            GreyScaleEffect(),
+            InvertColorsEffect(),
+            LamoishEffect(),
+            PosterizeEffect(),
+            SaturationEffect(0.5F),
+            SepiaEffect(),
+            SharpnessEffect(0.5F),
+            TemperatureEffect(0.5F),
+            TintEffect(Color.GREEN),
+            VignetteEffect(0F)
     )
 
     val count = shaders.size
 
     fun getShader(index: Int) = shaders[index]
 
-    fun getShaderName(index: Int) = shaders[index].first::class.java.simpleName.removeSuffix(SUFFIX)
+    fun getShaderName(index: Int) = shaders[index]::class.java.simpleName.removeSuffix(SUFFIX)
 }

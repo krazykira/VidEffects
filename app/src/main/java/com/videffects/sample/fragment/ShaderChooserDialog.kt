@@ -18,7 +18,7 @@ class ShaderChooserDialog : DialogFragment() {
                 }) { _, which ->
                     val shader = Shaders.getShader(which)
                     val listener = (activity as? OnSelectShaderListener)
-                    listener?.onSelectShader(shader.first, shader.second)
+                    listener?.onSelectShader(shader)
                 }
         return builder.create()
     }

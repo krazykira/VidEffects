@@ -13,6 +13,8 @@ import android.view.Surface;
 
 import com.sherazkhilji.videffects.NoEffect;
 import com.sherazkhilji.videffects.Utils;
+import com.sherazkhilji.videffects.filter.NoEffectFilter;
+import com.sherazkhilji.videffects.interfaces.Filter;
 import com.sherazkhilji.videffects.interfaces.ShaderInterface;
 
 import java.io.IOException;
@@ -22,6 +24,8 @@ import java.nio.FloatBuffer;
 
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
+
+import static com.sherazkhilji.videffects.Constants.DEFAULT_VERTEX_SHADER;
 
 /**
  * This GLSurfaceView can be used to display video that is being played by media
@@ -34,7 +38,8 @@ import javax.microedition.khronos.opengles.GL10;
 public class VideoSurfaceView extends GLSurfaceView {
     private static final String TAG = "VideoSurfaceView";
     private MediaPlayer mMediaPlayer = null;
-    private static ShaderInterface effect;
+    private @Deprecated ShaderInterface effect;
+    private Filter filter;
 
     public VideoSurfaceView(Context context) {
         super(context);
@@ -58,26 +63,46 @@ public class VideoSurfaceView extends GLSurfaceView {
      * @param mediaPlayer  instance of {@link MediaPlayer}
      * @param shaderEffect any effect that implements {@link ShaderInterface}
      */
+    @Deprecated
     public void init(MediaPlayer mediaPlayer, ShaderInterface shaderEffect) {
+        setupMediaPlayer(mediaPlayer);
+        effect = shaderEffect != null ? shaderEffect : new NoEffect();
+    }
+
+    public void init(MediaPlayer mediaPlayer, Filter filter) {
+        setupMediaPlayer(mediaPlayer);
+        this.filter = filter != null ? filter : new NoEffectFilter();
+    }
+
+    private void setupMediaPlayer(MediaPlayer mediaPlayer) {
         if (mediaPlayer == null) {
             Log.e(TAG, "Set MediaPlayer before continuing");
         } else {
             mMediaPlayer = mediaPlayer;
         }
-
-        effect = shaderEffect != null ? shaderEffect : new NoEffect();
     }
 
     /**
      *
      * @param shaderEffect any effect that implements {@link ShaderInterface}
      */
+    @Deprecated
     public void setShader(ShaderInterface shaderEffect) {
+        this.filter = null;
         effect = shaderEffect != null ? shaderEffect : new NoEffect();
+    }
+
+    public void setFilter(Filter filter) {
+        this.effect = null;
+        this.filter = filter != null ? filter : new NoEffectFilter();
     }
 
     public ShaderInterface getShader() {
         return effect;
+    }
+
+    public Filter getFilter() {
+        return filter;
     }
 
     @Override
@@ -137,7 +162,7 @@ public class VideoSurfaceView extends GLSurfaceView {
                     updateSurface = false;
                 }
             }
-            mProgram = createProgram(effect.getShader(VideoSurfaceView.this));
+            setProgram();
             GLES20.glClearColor(0.0f, 1.0f, 0.0f, 1.0f);
             GLES20.glClear(GLES20.GL_DEPTH_BUFFER_BIT
                     | GLES20.GL_COLOR_BUFFER_BIT);
@@ -183,7 +208,7 @@ public class VideoSurfaceView extends GLSurfaceView {
         @Override
         public void onSurfaceCreated(GL10 glUnused, EGLConfig config) {
 
-            mProgram = createProgram(effect.getShader(VideoSurfaceView.this));
+            setProgram();
             if (mProgram == 0) {
                 return;
             }
@@ -272,8 +297,18 @@ public class VideoSurfaceView extends GLSurfaceView {
             updateSurface = true;
         }
 
+        private void setProgram() {
+            if (effect != null) {
+                mProgram = createProgram(effect.getShader(VideoSurfaceView.this));
+            } else if (filter != null) {
+                mProgram = createProgram(filter.getFragmentShader());
+            } else {
+                return;
+            }
+        }
+
         private int createProgram(String fragmentSource) {
-            int vertexShader = Utils.loadShader(GLES20.GL_VERTEX_SHADER, effect.mVertexShader);
+            int vertexShader = Utils.loadShader(GLES20.GL_VERTEX_SHADER, DEFAULT_VERTEX_SHADER);
             if (vertexShader == 0) {
                 return 0;
             }
