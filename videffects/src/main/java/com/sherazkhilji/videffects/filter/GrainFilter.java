@@ -7,10 +7,10 @@ import com.sherazkhilji.videffects.Constants;
 import com.sherazkhilji.videffects.interfaces.Filter;
 
 import java.util.Random;
+import java.util.concurrent.ThreadLocalRandom;
 
 public class GrainFilter implements Filter {
 
-    private Random random;
     private String scaleString = "scale = 1.0 ;\n";
     private String stepX, stepY;
     private String[] seedString = new String[2];
@@ -18,7 +18,6 @@ public class GrainFilter implements Filter {
     public GrainFilter(int width, int height) {
         this.stepX = "stepX = " + 0.5f / width + ";\n";
         this.stepY = "stepY = " + 0.5f / height + ";\n";
-        this.random = new Random(System.currentTimeMillis());
     }
 
     public GrainFilter(Parcel in) {
@@ -51,8 +50,8 @@ public class GrainFilter implements Filter {
 
     @Override
     public String getFragmentShader() {
-        seedString[0] = "seed[0] = " + random.nextFloat() + ";\n";
-        seedString[1] = "seed[1] = " + random.nextFloat() + ";\n";
+        seedString[0] = "seed[0] = " + ThreadLocalRandom.current().nextFloat() + ";\n";
+        seedString[1] = "seed[1] = " + ThreadLocalRandom.current().nextFloat() + ";\n";
         return "#extension GL_OES_EGL_image_external : require\n"
                 + "precision mediump float;\n"
                 + " vec2 seed;\n"

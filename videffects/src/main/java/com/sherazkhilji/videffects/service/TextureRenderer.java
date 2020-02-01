@@ -1,26 +1,27 @@
 package com.sherazkhilji.videffects.service;
 
-import android.opengl.GLES11Ext;
 import android.opengl.GLES20;
+import android.opengl.Matrix;
 
 import com.sherazkhilji.videffects.Utils;
 import com.sherazkhilji.videffects.interfaces.Filter;
 
-import java.nio.ByteBuffer;
-import java.nio.ByteOrder;
-import java.nio.FloatBuffer;
-import java.nio.IntBuffer;
+import static android.opengl.GLES11Ext.GL_TEXTURE_EXTERNAL_OES;
+import static com.sherazkhilji.videffects.Constants.FLOAT_SIZE_BYTES;
 
 class TextureRenderer {
 
     private int program;
     private int vertexHandle = 0;
-    private int[] bufferHandles = new int[2];
     private int uvsHandle = 0;
     private int texMatrixHandle = 0;
     private int mvpHandle = 0;
     private int samplerHandle = 0;
+    private int[] bufferHandles = new int[2];
     private int[] textureHandles = new int[1];
+
+    float[] texMatrix = new float[16];
+    float[] mvpMatrix = new float[16];
 
     int getTextureId() {
         return textureHandles[0];
@@ -30,49 +31,31 @@ class TextureRenderer {
 
     TextureRenderer(Filter filter) {
         this.filter = filter;
-        init();
-    }
-
-    private void init() {
-        FloatBuffer vertexBuffer = ByteBuffer.allocateDirect(Utils.VERTICES.length * 4)
-                .order(ByteOrder.nativeOrder()).asFloatBuffer();
-
-        vertexBuffer.put(Utils.VERTICES);
-        vertexBuffer.position(0);
-
-        int[] indices = new int[]{
-                2, 1, 0, 0, 3, 2
-        };
-        IntBuffer indexBuffer = ByteBuffer.allocateDirect(indices.length * 4)
-                .order(ByteOrder.nativeOrder()).asIntBuffer();
-
-        indexBuffer.put(indices);
-        indexBuffer.position(0);
-
         GLES20.glGenBuffers(2, bufferHandles, 0);
         GLES20.glBindBuffer(GLES20.GL_ARRAY_BUFFER, bufferHandles[0]);
-        GLES20.glBufferData(GLES20.GL_ARRAY_BUFFER, Utils.VERTICES.length * 4, vertexBuffer, GLES20.GL_DYNAMIC_DRAW);
-//        GLES20.glBindBuffer(GLES20.GL_ELEMENT_ARRAY_BUFFER, bufferHandles[1]);
-//        GLES20.glBufferData(GLES20.GL_ELEMENT_ARRAY_BUFFER, indices.length * 4, indexBuffer, GLES20.GL_DYNAMIC_DRAW);
+        GLES20.glBufferData(GLES20.GL_ARRAY_BUFFER, Utils.VERTICES.length * FLOAT_SIZE_BYTES, Utils.getVertexBuffer(), GLES20.GL_DYNAMIC_DRAW);
+        GLES20.glBindBuffer(GLES20.GL_ELEMENT_ARRAY_BUFFER, bufferHandles[1]);
+        GLES20.glBufferData(GLES20.GL_ELEMENT_ARRAY_BUFFER, Utils.INDICES.length * FLOAT_SIZE_BYTES, Utils.getIndicesBuffer(), GLES20.GL_DYNAMIC_DRAW);
         GLES20.glGenTextures(1, textureHandles, 0);
-        GLES20.glBindTexture(GLES11Ext.GL_TEXTURE_EXTERNAL_OES, textureHandles[0]);
-        GLES20.glTexParameteri(GLES11Ext.GL_TEXTURE_EXTERNAL_OES, GLES20.GL_TEXTURE_MIN_FILTER,
-                GLES20.GL_NEAREST);
-        GLES20.glTexParameteri(GLES11Ext.GL_TEXTURE_EXTERNAL_OES, GLES20.GL_TEXTURE_MAG_FILTER,
-                GLES20.GL_LINEAR);
-        GLES20.glTexParameteri(GLES11Ext.GL_TEXTURE_EXTERNAL_OES, GLES20.GL_TEXTURE_WRAP_S,
-                GLES20.GL_CLAMP_TO_EDGE);
-        GLES20.glTexParameteri(GLES11Ext.GL_TEXTURE_EXTERNAL_OES, GLES20.GL_TEXTURE_WRAP_T,
-                GLES20.GL_CLAMP_TO_EDGE);
+        GLES20.glBindTexture(GL_TEXTURE_EXTERNAL_OES, textureHandles[0]);
+        GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D,
+                GLES20.GL_TEXTURE_MIN_FILTER, GLES20.GL_LINEAR);
+        GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D,
+                GLES20.GL_TEXTURE_MAG_FILTER, GLES20.GL_LINEAR);
+        GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D,
+                GLES20.GL_TEXTURE_WRAP_S, GLES20.GL_CLAMP_TO_EDGE);
+        GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D,
+                GLES20.GL_TEXTURE_WRAP_T, GLES20.GL_CLAMP_TO_EDGE);
         GLES20.glEnable(GLES20.GL_BLEND);
         GLES20.glBlendFunc(GLES20.GL_SRC_ALPHA, GLES20.GL_ONE_MINUS_SRC_ALPHA);
     }
 
-    void draw(int viewportWidth, int viewportHeight, float[] texMatrix, float[] mvpMatrix) {
+    void draw(int viewportWidth, int viewportHeight) {
+        Matrix.setIdentityM(mvpMatrix, 0);
+
         GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT | GLES20.GL_DEPTH_BUFFER_BIT);
         GLES20.glClearColor(0f, 0f, 0f, 0f);
         GLES20.glViewport(0, 0, viewportWidth, viewportHeight);
-
 
         int vertexShader = Utils.loadShader(GLES20.GL_VERTEX_SHADER,
                 filter.getVertexShader());
@@ -95,7 +78,7 @@ class TextureRenderer {
         GLES20.glUniformMatrix4fv(texMatrixHandle, 1, false, texMatrix, 0);
         GLES20.glUniformMatrix4fv(mvpHandle, 1, false, mvpMatrix, 0);
         GLES20.glBindBuffer(GLES20.GL_ARRAY_BUFFER, bufferHandles[0]);
-//        GLES20.glBindBuffer(GLES20.GL_ELEMENT_ARRAY_BUFFER, bufferHandles[1]);
+        GLES20.glBindBuffer(GLES20.GL_ELEMENT_ARRAY_BUFFER, bufferHandles[1]);
         GLES20.glEnableVertexAttribArray(vertexHandle);
         GLES20.glVertexAttribPointer(vertexHandle, 3, GLES20.GL_FLOAT, false, 4 * 5, 0);
         GLES20.glEnableVertexAttribArray(uvsHandle);

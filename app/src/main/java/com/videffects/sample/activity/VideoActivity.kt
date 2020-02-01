@@ -5,9 +5,7 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.content.res.AssetFileDescriptor
 import android.media.MediaPlayer
-import android.os.Build
-import android.os.Bundle
-import android.os.Environment
+import android.os.*
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
@@ -31,6 +29,7 @@ import com.videffects.sample.tools.resizeView
 import com.videffects.sample.tools.transformIntensity
 import kotlinx.android.synthetic.main.activity_video.*
 import java.io.File
+import java.lang.ref.WeakReference
 import kotlin.math.roundToInt
 
 
@@ -52,6 +51,24 @@ class VideoActivity : AppCompatActivity(), OnSelectShaderListener, SeekBar.OnSee
     private var size: Pair<Double, Double>? = null
     private val mediaPlayer = MediaPlayer()
     private var assetFileDescriptor: AssetFileDescriptor? = null
+
+    private val receiver: ResultReceiver = object : ResultReceiver(Handler(Looper.getMainLooper())) {
+
+        override fun send(resultCode: Int, resultData: Bundle?) {
+            super.send(resultCode, resultData)
+            // Send notification, that saving are done.
+        }
+
+        override fun onReceiveResult(resultCode: Int, resultData: Bundle?) {
+            super.onReceiveResult(resultCode, resultData)
+            progress.visibility = View.GONE
+            if (resultCode == SavingService.SUCCESSFUL_SAVING) {
+                Toast.makeText(this@VideoActivity, "Video saved!", Toast.LENGTH_SHORT).show()
+            } else {
+                Toast.makeText(this@VideoActivity, "Video wasn't saved! Check logs.", Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -130,6 +147,7 @@ class VideoActivity : AppCompatActivity(), OnSelectShaderListener, SeekBar.OnSee
             intent.putExtra(SavingService.IS_ASSET, true)
             intent.putExtra(SavingService.FILTER, videoSurfaceView.filter)
             intent.putExtra(SavingService.OUT_PATH, outPath)
+            intent.putExtra(SavingService.RECEIVER, receiver)
             progress.visibility = View.VISIBLE
             startService(intent)
         }

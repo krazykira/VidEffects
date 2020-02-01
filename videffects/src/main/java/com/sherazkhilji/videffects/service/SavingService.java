@@ -16,23 +16,21 @@ import android.opengl.EGLContext;
 import android.opengl.EGLDisplay;
 import android.opengl.EGLExt;
 import android.opengl.EGLSurface;
-import android.opengl.GLSurfaceView;
 import android.opengl.GLUtils;
 import android.opengl.Matrix;
 import android.os.Handler;
 import android.os.HandlerThread;
+import android.os.ResultReceiver;
 import android.util.Log;
 import android.view.Surface;
 
 import com.sherazkhilji.videffects.interfaces.Filter;
-import com.sherazkhilji.videffects.interfaces.ShaderInterface;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
 
 import static android.media.MediaCodec.BUFFER_FLAG_END_OF_STREAM;
 import static android.opengl.EGLExt.EGL_RECORDABLE_ANDROID;
-import static com.sherazkhilji.videffects.Constants.DEFAULT_VERTEX_SHADER;
 
 public class SavingService extends IntentService {
 
@@ -42,12 +40,17 @@ public class SavingService extends IntentService {
     public static final String WIDTH = "width";
     public static final String HEIGHT = "height";
     public static final String FILTER = "FILTER";
+    public static final String RECEIVER = "RECEIVER";
     public static final String TAG = "SavingService";
     public static final String VIDEO = "video/";
+
+    public static final int EXCEPTION_WHILE_SAVING = 101;
+    public static final int SUCCESSFUL_SAVING = 102;
 
     public static void saveVideo(
             Context context,
             Filter filter,
+            ResultReceiver receiver,
             String path,
             String outPath,
             int width,
@@ -59,6 +62,7 @@ public class SavingService extends IntentService {
         intent.putExtra(PATH, path);
         intent.putExtra(OUT_PATH, outPath);
         intent.putExtra(FILTER, filter);
+        intent.putExtra(RECEIVER, receiver);
         context.startService(intent);
     }
 
@@ -81,7 +85,6 @@ public class SavingService extends IntentService {
     private long mediaCodedTimeoutUs = 10000L;
     private int trackIndex = -1;
     private final Object lock = new Object();
-    private float[] texMatrix = new float[16];
     private int width, height;
     private volatile boolean frameAvailable = false;
 
@@ -109,6 +112,7 @@ public class SavingService extends IntentService {
         height = intent.getIntExtra(HEIGHT, 0);
 
         Filter filter = intent.getParcelableExtra(FILTER);
+        ResultReceiver receiver = intent.getParcelableExtra(RECEIVER);
         if (filter == null) return;
 
         try {
@@ -174,8 +178,14 @@ public class SavingService extends IntentService {
             }
 
             convert();
+            if (receiver != null) {
+                receiver.send(SUCCESSFUL_SAVING, null);
+            }
         } catch (IOException e) {
             e.printStackTrace();
+            if (receiver != null) {
+                receiver.send(EXCEPTION_WHILE_SAVING, null);
+            }
         } finally {
             releaseConverter();
         }
@@ -184,7 +194,7 @@ public class SavingService extends IntentService {
     private MediaFormat getOutputFormat(MediaFormat inputFormat) {
         MediaFormat format = MediaFormat.createVideoFormat(OUT_MIME, width, height);
         format.setInteger(MediaFormat.KEY_COLOR_FORMAT, MediaCodecInfo.CodecCapabilities.COLOR_FormatSurface);
-        format.setInteger(MediaFormat.KEY_BIT_RATE, 2000000);
+        format.setInteger(MediaFormat.KEY_BIT_RATE, 4000000); // TODO: Add bitrate calculation
         format.setInteger(MediaFormat.KEY_FRAME_RATE, inputFormat.getInteger(MediaFormat.KEY_FRAME_RATE));
         format.setInteger(MediaFormat.KEY_I_FRAME_INTERVAL, 15);
         format.setString(MediaFormat.KEY_MIME, OUT_MIME);
@@ -308,10 +318,10 @@ public class SavingService extends IntentService {
                             waitTillFrameAvailable();
 
                             surfaceTexture.updateTexImage();
-                            surfaceTexture.getTransformMatrix(texMatrix);
+                            surfaceTexture.getTransformMatrix(textureRenderer.texMatrix);
 
                             // Draw texture with opengl
-                            textureRenderer.draw(width, height, texMatrix, getMvp());
+                            textureRenderer.draw(width, height);
 
                             EGLExt.eglPresentationTimeANDROID(eglDisplay, eglSurface,
                                     bufferInfo.presentationTimeUs * 1000);
@@ -365,12 +375,6 @@ public class SavingService extends IntentService {
             }
             frameAvailable = false;
         }
-    }
-
-    private float[] getMvp() {
-        float[] mvp = new float[16];
-        Matrix.setIdentityM(mvp, 0);
-        return mvp;
     }
 
     private void releaseConverter() {

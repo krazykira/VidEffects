@@ -18,14 +18,13 @@ import com.sherazkhilji.videffects.interfaces.Filter;
 import com.sherazkhilji.videffects.interfaces.ShaderInterface;
 
 import java.io.IOException;
-import java.nio.ByteBuffer;
-import java.nio.ByteOrder;
-import java.nio.FloatBuffer;
 
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 
+import static android.opengl.GLES11Ext.GL_TEXTURE_EXTERNAL_OES;
 import static com.sherazkhilji.videffects.Constants.DEFAULT_VERTEX_SHADER;
+import static com.sherazkhilji.videffects.Constants.FLOAT_SIZE_BYTES;
 
 /**
  * This GLSurfaceView can be used to display video that is being played by media
@@ -38,8 +37,10 @@ import static com.sherazkhilji.videffects.Constants.DEFAULT_VERTEX_SHADER;
 public class VideoSurfaceView extends GLSurfaceView {
     private static final String TAG = "VideoSurfaceView";
     private MediaPlayer mMediaPlayer = null;
-    private @Deprecated ShaderInterface effect;
+    private @Deprecated
+    ShaderInterface effect;
     private Filter filter;
+    private VideoRender videoRender;
 
     public VideoSurfaceView(Context context) {
         super(context);
@@ -52,8 +53,9 @@ public class VideoSurfaceView extends GLSurfaceView {
     }
 
     private void init() {
+        this.videoRender = new VideoRender();
         setEGLContextClientVersion(2);
-        setRenderer(new VideoRender());
+        setRenderer(videoRender);
     }
 
     /**
@@ -83,7 +85,6 @@ public class VideoSurfaceView extends GLSurfaceView {
     }
 
     /**
-     *
      * @param shaderEffect any effect that implements {@link ShaderInterface}
      */
     @Deprecated
@@ -123,34 +124,24 @@ public class VideoSurfaceView extends GLSurfaceView {
     private class VideoRender implements Renderer,
             SurfaceTexture.OnFrameAvailableListener {
 
-        private static final int FLOAT_SIZE_BYTES = 4;
-        private static final int TRIANGLE_VERTICES_DATA_STRIDE_BYTES = 5 * FLOAT_SIZE_BYTES;
-        private static final int TRIANGLE_VERTICES_DATA_POS_OFFSET = 0;
-        private static final int TRIANGLE_VERTICES_DATA_UV_OFFSET = 3;
-        private static final int GL_TEXTURE_EXTERNAL_OES = 0x8D65;
+        float[] texMatrix = new float[16];
+        float[] mvpMatrix = new float[16];
 
-        private float[] mMVPMatrix = new float[16];
-        private float[] mSTMatrix = new float[16];
-        private FloatBuffer mTriangleVertices;
-
-        private int mProgram;
-        private int[] mTextureID = new int[2];
-        private int muMVPMatrixHandle;
-        private int muSTMatrixHandle;
-        private int maPositionHandle;
-        private int maTextureHandle;
+        private int program;
+        private int[] bufferHandles = new int[2];
+        private int[] textureHandles = new int[2];
+        private int mvpMatrixHandle;
+        private int texMatrixHandle;
+        private int vertexHandle;
+        private int uvsHandle;
 
         private SurfaceTexture mSurface;
         private boolean updateSurface = false;
         private boolean isMediaPlayerPrepared = false;
 
+        // TODO: Fix video orientation
         VideoRender() {
-            mTriangleVertices = ByteBuffer
-                    .allocateDirect(Utils.VERTICES.length * FLOAT_SIZE_BYTES)
-                    .order(ByteOrder.nativeOrder()).asFloatBuffer();
-
-            mTriangleVertices.put(Utils.VERTICES).position(0);
-            Matrix.setIdentityM(mSTMatrix, 0);
+            Matrix.setIdentityM(texMatrix, 0);
         }
 
         @Override
@@ -158,44 +149,32 @@ public class VideoSurfaceView extends GLSurfaceView {
             synchronized (this) {
                 if (updateSurface) {
                     mSurface.updateTexImage();
-                    mSurface.getTransformMatrix(mSTMatrix);
+                    mSurface.getTransformMatrix(texMatrix);
                     updateSurface = false;
                 }
             }
             setProgram();
             GLES20.glClearColor(0.0f, 1.0f, 0.0f, 1.0f);
-            GLES20.glClear(GLES20.GL_DEPTH_BUFFER_BIT
-                    | GLES20.GL_COLOR_BUFFER_BIT);
+            GLES20.glClear(GLES20.GL_DEPTH_BUFFER_BIT | GLES20.GL_COLOR_BUFFER_BIT);
 
-            GLES20.glUseProgram(mProgram);
-            checkGlError("glUseProgram");
-
+            GLES20.glUseProgram(program);
             GLES20.glActiveTexture(GLES20.GL_TEXTURE0);
-            GLES20.glBindTexture(GL_TEXTURE_EXTERNAL_OES, mTextureID[0]);
+            GLES20.glBindTexture(GL_TEXTURE_EXTERNAL_OES, textureHandles[0]);
 
-            mTriangleVertices.position(TRIANGLE_VERTICES_DATA_POS_OFFSET);
-            GLES20.glVertexAttribPointer(maPositionHandle, 3, GLES20.GL_FLOAT,
-                    false, TRIANGLE_VERTICES_DATA_STRIDE_BYTES,
-                    mTriangleVertices);
-            checkGlError("glVertexAttribPointer maPosition");
-            GLES20.glEnableVertexAttribArray(maPositionHandle);
-            checkGlError("glEnableVertexAttribArray maPositionHandle");
+            GLES20.glBindBuffer(GLES20.GL_ARRAY_BUFFER, bufferHandles[0]);
+            GLES20.glBindBuffer(GLES20.GL_ELEMENT_ARRAY_BUFFER, bufferHandles[1]);
 
-            mTriangleVertices.position(TRIANGLE_VERTICES_DATA_UV_OFFSET);
-            GLES20.glVertexAttribPointer(maTextureHandle, 3, GLES20.GL_FLOAT,
-                    false, TRIANGLE_VERTICES_DATA_STRIDE_BYTES,
-                    mTriangleVertices);
-            checkGlError("glVertexAttribPointer maTextureHandle");
-            GLES20.glEnableVertexAttribArray(maTextureHandle);
-            checkGlError("glEnableVertexAttribArray maTextureHandle");
+            GLES20.glVertexAttribPointer(vertexHandle, 3, GLES20.GL_FLOAT, false, 4 * 5, 0);
+            GLES20.glEnableVertexAttribArray(vertexHandle);
+            GLES20.glVertexAttribPointer(uvsHandle, 2, GLES20.GL_FLOAT, false, 4 * 5, 3 * 4);
+            GLES20.glEnableVertexAttribArray(uvsHandle);
 
-            Matrix.setIdentityM(mMVPMatrix, 0);
-            GLES20.glUniformMatrix4fv(muMVPMatrixHandle, 1, false, mMVPMatrix,
-                    0);
-            GLES20.glUniformMatrix4fv(muSTMatrixHandle, 1, false, mSTMatrix, 0);
+            Matrix.setIdentityM(mvpMatrix, 0);
+            GLES20.glUniformMatrix4fv(mvpMatrixHandle, 1, false, mvpMatrix, 0);
+            GLES20.glUniformMatrix4fv(texMatrixHandle, 1, false, mvpMatrix, 0);
 
-            GLES20.glDrawArrays(GLES20.GL_TRIANGLE_STRIP, 0, 4);
-            checkGlError("glDrawArrays");
+            GLES20.glDrawElements(GLES20.GL_TRIANGLES, 6, GLES20.GL_UNSIGNED_INT, 0);
+
             GLES20.glFinish();
 
         }
@@ -207,54 +186,15 @@ public class VideoSurfaceView extends GLSurfaceView {
 
         @Override
         public void onSurfaceCreated(GL10 glUnused, EGLConfig config) {
-
             setProgram();
-            if (mProgram == 0) {
-                return;
-            }
-            maPositionHandle = GLES20
-                    .glGetAttribLocation(mProgram, "aPosition");
-            checkGlError("glGetAttribLocation aPosition");
-            if (maPositionHandle == -1) {
-                throw new RuntimeException(
-                        "Could not get attrib location for aPosition");
-            }
-            maTextureHandle = GLES20.glGetAttribLocation(mProgram,
-                    "aTextureCoord");
-            checkGlError("glGetAttribLocation aTextureCoord");
-            if (maTextureHandle == -1) {
-                throw new RuntimeException(
-                        "Could not get attrib location for aTextureCoord");
-            }
+            
+            vertexHandle = GLES20.glGetAttribLocation(program, "aPosition");
+            uvsHandle = GLES20.glGetAttribLocation(program, "aTextureCoord");
+            mvpMatrixHandle = GLES20.glGetUniformLocation(program, "uMVPMatrix");
+            texMatrixHandle = GLES20.glGetUniformLocation(program, "uSTMatrix");
 
-            muMVPMatrixHandle = GLES20.glGetUniformLocation(mProgram,
-                    "uMVPMatrix");
-            checkGlError("glGetUniformLocation uMVPMatrix");
-            if (muMVPMatrixHandle == -1) {
-                throw new RuntimeException(
-                        "Could not get attrib location for uMVPMatrix");
-            }
-
-            muSTMatrixHandle = GLES20.glGetUniformLocation(mProgram,
-                    "uSTMatrix");
-            checkGlError("glGetUniformLocation uSTMatrix");
-            if (muSTMatrixHandle == -1) {
-                throw new RuntimeException(
-                        "Could not get attrib location for uSTMatrix");
-            }
-
-            // int[] textures = new int[1];
-            GLES20.glGenTextures(2, mTextureID, 0);
-            // GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, mTextureID[0]);
-
-            // mTextureID = textures[0];
-            GLES20.glBindTexture(GL_TEXTURE_EXTERNAL_OES, mTextureID[0]);
-            checkGlError("glBindTexture mTextureID");
-
-            // GLES20.glTexParameterf(GL_TEXTURE_EXTERNAL_OES,
-            // GLES20.GL_TEXTURE_MIN_FILTER, GLES20.GL_NEAREST);
-            // GLES20.glTexParameterf(GL_TEXTURE_EXTERNAL_OES,
-            // GLES20.GL_TEXTURE_MAG_FILTER, GLES20.GL_LINEAR);
+            GLES20.glGenTextures(2, textureHandles, 0);
+            GLES20.glBindTexture(GL_TEXTURE_EXTERNAL_OES, textureHandles[0]);
             GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D,
                     GLES20.GL_TEXTURE_MIN_FILTER, GLES20.GL_LINEAR);
             GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D,
@@ -264,11 +204,17 @@ public class VideoSurfaceView extends GLSurfaceView {
             GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D,
                     GLES20.GL_TEXTURE_WRAP_T, GLES20.GL_CLAMP_TO_EDGE);
 
+            GLES20.glGenBuffers(2, bufferHandles, 0);
+            GLES20.glBindBuffer(GLES20.GL_ARRAY_BUFFER, bufferHandles[0]);
+            GLES20.glBufferData(GLES20.GL_ARRAY_BUFFER, Utils.VERTICES.length * FLOAT_SIZE_BYTES, Utils.getVertexBuffer(), GLES20.GL_DYNAMIC_DRAW);
+            GLES20.glBindBuffer(GLES20.GL_ELEMENT_ARRAY_BUFFER, bufferHandles[1]);
+            GLES20.glBufferData(GLES20.GL_ELEMENT_ARRAY_BUFFER, Utils.INDICES.length * FLOAT_SIZE_BYTES, Utils.getIndicesBuffer(), GLES20.GL_DYNAMIC_DRAW);
+
             /*
              * Create the SurfaceTexture that will feed this textureID, and pass
              * it to the MediaPlayer
              */
-            mSurface = new SurfaceTexture(mTextureID[0]);
+            mSurface = new SurfaceTexture(textureHandles[0]);
             mSurface.setOnFrameAvailableListener(this);
 
             Surface surface = new Surface(mSurface);
@@ -299,9 +245,9 @@ public class VideoSurfaceView extends GLSurfaceView {
 
         private void setProgram() {
             if (effect != null) {
-                mProgram = createProgram(effect.getShader(VideoSurfaceView.this));
+                program = createProgram(effect.getShader(VideoSurfaceView.this));
             } else if (filter != null) {
-                mProgram = createProgram(filter.getFragmentShader());
+                program = createProgram(filter.getFragmentShader());
             } else {
                 return;
             }
@@ -321,9 +267,7 @@ public class VideoSurfaceView extends GLSurfaceView {
             int program = GLES20.glCreateProgram();
             if (program != 0) {
                 GLES20.glAttachShader(program, vertexShader);
-                checkGlError("glAttachShader");
                 GLES20.glAttachShader(program, pixelShader);
-                checkGlError("glAttachShader");
                 GLES20.glLinkProgram(program);
                 int[] linkStatus = new int[1];
                 GLES20.glGetProgramiv(program, GLES20.GL_LINK_STATUS,
@@ -336,14 +280,6 @@ public class VideoSurfaceView extends GLSurfaceView {
                 }
             }
             return program;
-        }
-
-        private void checkGlError(String op) {
-            int error;
-            if ((error = GLES20.glGetError()) != GLES20.GL_NO_ERROR) {
-                Log.e(TAG, op + ": glError " + error);
-                throw new RuntimeException(op + ": glError " + error);
-            }
         }
 
     } // End of class VideoRender.

@@ -3,6 +3,13 @@ package com.sherazkhilji.videffects;
 import android.opengl.GLES20;
 import android.util.Log;
 
+import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
+import java.nio.FloatBuffer;
+import java.nio.IntBuffer;
+
+import static com.sherazkhilji.videffects.Constants.FLOAT_SIZE_BYTES;
+
 public class Utils {
 
     private static final String TAG = "Utils";
@@ -12,10 +19,14 @@ public class Utils {
     }
 
     public static float[] VERTICES = {
-            -1.0f, -1.0f, 0.0f, 0.0f, 0.f,
-            1.0f, -1.0f, 0.0f, 1.0f, 0.f,
-            -1.0f, 1.0f, 0.0f, 0.0f, 1.f,
-            1.0f, 1.0f, 0.0f, 1.0f, 1.0f
+            -1.0f, -1.0f, 0.0f, 0f, 0f,
+            -1.0f,  1.0f, 0.0f, 0f, 1f,
+             1.0f,  1.0f, 0.0f, 1f, 1f,
+             1.0f, -1.0f, 0.0f, 1f, 0f
+    };
+
+    public static int[] INDICES = {
+            2, 1, 0, 0, 3, 2
     };
 
     public static int loadShader(int shaderType, String source) {
@@ -34,5 +45,21 @@ public class Utils {
             }
         }
         return shader;
+    }
+
+    public static FloatBuffer getVertexBuffer() {
+        FloatBuffer vertexBuffer = ByteBuffer.allocateDirect(Utils.VERTICES.length * 4)
+                .order(ByteOrder.nativeOrder()).asFloatBuffer();
+        vertexBuffer.put(Utils.VERTICES);
+        vertexBuffer.position(0);
+        return vertexBuffer;
+    }
+
+    public static IntBuffer getIndicesBuffer() {
+        IntBuffer indexBuffer = ByteBuffer.allocateDirect(Utils.INDICES.length * 4)
+                .order(ByteOrder.nativeOrder()).asIntBuffer();
+        indexBuffer.put(Utils.INDICES);
+        indexBuffer.position(0);
+        return indexBuffer;
     }
 }
