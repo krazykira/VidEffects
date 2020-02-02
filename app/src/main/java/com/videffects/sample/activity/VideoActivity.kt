@@ -1,39 +1,20 @@
 package com.videffects.sample.activity
 
-import android.Manifest
-import android.content.Intent
-import android.content.pm.PackageManager
 import android.content.res.AssetFileDescriptor
 import android.media.MediaPlayer
-import android.os.*
-import android.util.Log
+import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
-import android.view.View
 import android.widget.SeekBar
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.ContextCompat
 import com.sherazkhilji.sample.R
-import com.sherazkhilji.videffects.AutoFixEffect
-import com.sherazkhilji.videffects.GrainEffect
-import com.sherazkhilji.videffects.HueEffect
-import com.sherazkhilji.videffects.filter.GrainFilter
-import com.sherazkhilji.videffects.interfaces.Filter
-import com.sherazkhilji.videffects.interfaces.ShaderInterface
-import com.sherazkhilji.videffects.service.SavingService
-import com.videffects.sample.fragment.ShaderChooserDialog
-import com.videffects.sample.interfaces.OnSelectShaderListener
-import com.videffects.sample.tools.getSize
-import com.videffects.sample.tools.resizeView
-import com.videffects.sample.tools.transformIntensity
+import com.sherazkhilji.videffects.filter.NoEffectFilter
+import com.videffects.sample.VideoController
+import com.videffects.sample.resizeView
 import kotlinx.android.synthetic.main.activity_video.*
-import java.io.File
-import java.lang.ref.WeakReference
-import kotlin.math.roundToInt
 
 
-class VideoActivity : AppCompatActivity(), OnSelectShaderListener, SeekBar.OnSeekBarChangeListener {
+class VideoActivity : AppCompatActivity() {
 
     companion object {
 
@@ -41,57 +22,28 @@ class VideoActivity : AppCompatActivity(), OnSelectShaderListener, SeekBar.OnSee
 
         private const val WRITE_EXTERNAL_STORAGE = 201
 
-        private const val UNKNOWN_SIZE_ERROR_MESSAGE = "Can't get video parameters"
-
         fun startActivity(assetsFileDescriptor: AssetFileDescriptor) {
             // TODO: Implement opening from assets gallery
         }
     }
 
-    private var size: Pair<Double, Double>? = null
-    private val mediaPlayer = MediaPlayer()
-    private var assetFileDescriptor: AssetFileDescriptor? = null
-
-    private val receiver: ResultReceiver = object : ResultReceiver(Handler(Looper.getMainLooper())) {
-
-        override fun send(resultCode: Int, resultData: Bundle?) {
-            super.send(resultCode, resultData)
-            // Send notification, that saving are done.
-        }
-
-        override fun onReceiveResult(resultCode: Int, resultData: Bundle?) {
-            super.onReceiveResult(resultCode, resultData)
-            progress.visibility = View.GONE
-            if (resultCode == SavingService.SUCCESSFUL_SAVING) {
-                Toast.makeText(this@VideoActivity, "Video saved!", Toast.LENGTH_SHORT).show()
-            } else {
-                Toast.makeText(this@VideoActivity, "Video wasn't saved! Check logs.", Toast.LENGTH_SHORT).show()
-            }
-        }
-    }
+    private var videoController: VideoController? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_video)
-        assetFileDescriptor = assets.openFd("video_0.mp4")
-        assetFileDescriptor?.let {
-            val size = getSize(it)
+        videoController = VideoController(this)
+    }
 
-            if (size == null) {
-                Toast.makeText(this, UNKNOWN_SIZE_ERROR_MESSAGE, Toast.LENGTH_SHORT).show()
-                return
-            }
+    fun setupVideoSurfaceView(mediaPlayer: MediaPlayer, width: Double, height: Double) {
+        videoSurfaceView.resizeView(width, height)
+        videoSurfaceView.init(mediaPlayer, NoEffectFilter())
+    }
 
-            videoSurfaceView.resizeView(size)
-            this.size = size
-            mediaPlayer.setDataSource(it.fileDescriptor, it.startOffset, it.length)
-            mediaPlayer.isLooping = true
-            videoSurfaceView.init(mediaPlayer, GrainFilter(size.first.toInt(), size.second.toInt()))
-        }
-
+    fun setupSeekBar(onSeekBarChangeListener: SeekBar.OnSeekBarChangeListener) {
         intensitySeekBar.max = 100
         intensitySeekBar.isEnabled = false
-        intensitySeekBar.setOnSeekBarChangeListener(this)
+        intensitySeekBar.setOnSeekBarChangeListener(onSeekBarChangeListener)
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -102,31 +54,16 @@ class VideoActivity : AppCompatActivity(), OnSelectShaderListener, SeekBar.OnSee
     override fun onOptionsItemSelected(item: MenuItem): Boolean { // Handle item selection
         return when (item.itemId) {
             R.id.chooseShader -> {
-                val dialog = ShaderChooserDialog()
-                dialog.show(this.supportFragmentManager, ShaderChooserDialog::class.java.simpleName)
+                videoController?.chooseShader(videoSurfaceView.width, videoSurfaceView.height)
                 true
             }
             R.id.save -> {
-                if (shouldAskWritePermission) {
-                    val result = ContextCompat.checkSelfPermission(this,
-                            Manifest.permission.WRITE_EXTERNAL_STORAGE)
-                    if (result != PackageManager.PERMISSION_GRANTED
-                            && Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                        requestPermissions(arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE), WRITE_EXTERNAL_STORAGE)
-                    } else {
-                        save()
-                    }
-                } else {
-                    save()
-                }
+                videoController?.saveVideo()
                 true
             }
             else -> super.onOptionsItemSelected(item)
         }
     }
-
-    private val shouldAskWritePermission = Build.VERSION.SDK_INT >= Build.VERSION_CODES.M
-            && Build.VERSION.SDK_INT < Build.VERSION_CODES.Q
 
     override fun onRequestPermissionsResult(
             requestCode: Int,
@@ -137,21 +74,6 @@ class VideoActivity : AppCompatActivity(), OnSelectShaderListener, SeekBar.OnSee
         if (requestCode == WRITE_EXTERNAL_STORAGE) save()
     }
 
-    private fun save() {
-        size?.let {
-            val outPath = File(getExternalFilesDir(Environment.DIRECTORY_PICTURES), "out.mp4").toString()
-            val intent = Intent(this, SavingService::class.java)
-            intent.putExtra(SavingService.WIDTH, it.first.roundToInt())
-            intent.putExtra(SavingService.HEIGHT, it.second.roundToInt())
-            intent.putExtra(SavingService.PATH, "video_0.mp4")
-            intent.putExtra(SavingService.IS_ASSET, true)
-            intent.putExtra(SavingService.FILTER, videoSurfaceView.filter)
-            intent.putExtra(SavingService.OUT_PATH, outPath)
-            intent.putExtra(SavingService.RECEIVER, receiver)
-            progress.visibility = View.VISIBLE
-            startService(intent)
-        }
-    }
 
     override fun onResume() {
         super.onResume()
@@ -168,41 +90,5 @@ class VideoActivity : AppCompatActivity(), OnSelectShaderListener, SeekBar.OnSee
         super.onDestroy()
         mediaPlayer.stop()
         mediaPlayer.release()
-    }
-
-    override fun onSelectShader(shader: Any) {
-        when (shader) {
-            is ShaderInterface -> {
-                videoSurfaceView.shader = shader
-                intensitySeekBar.isEnabled = false
-            }
-            is Filter -> {
-                videoSurfaceView.setFilter(shader)
-                intensitySeekBar.isEnabled = true
-            }
-            else -> {
-                return
-            }
-        }
-
-        intensitySeekBar.progress = 0
-    }
-
-    override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
-        videoSurfaceView.shader.apply {
-            when (this) {
-                is GrainEffect -> this.setStrength(transformIntensity(progress))
-                is HueEffect -> this.setDegrees(transformIntensity(progress))
-                is AutoFixEffect -> this.setScale(transformIntensity(progress))
-            }
-        }
-    }
-
-    override fun onStartTrackingTouch(seekBar: SeekBar?) {
-        Log.d(TAG, "onStartTrackingTouch")
-    }
-
-    override fun onStopTrackingTouch(seekBar: SeekBar?) {
-        Log.d(TAG, "onStopTrackingTouch")
     }
 }

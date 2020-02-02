@@ -6,14 +6,16 @@ import com.sherazkhilji.videffects.filter.AutoFixFilter
 import com.sherazkhilji.videffects.filter.GrainFilter
 import com.sherazkhilji.videffects.filter.HueFilter
 
-object Shaders {
+class Shaders(width: Int, height: Int) {
 
-    private const val SUFFIX = "Effect"
+    companion object {
+        private const val SUFFIX = "Effect"
+    }
 
     private val shaders = arrayOf(
             // Filters
             AutoFixFilter(),
-            GrainFilter(1920, 1080),
+            GrainFilter(width, height),
             HueFilter(),
 
             // Effects

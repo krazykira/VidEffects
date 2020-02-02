@@ -1,12 +1,10 @@
 package com.sherazkhilji.videffects.filter;
 
 import android.os.Parcel;
-import android.os.Parcelable;
 
 import com.sherazkhilji.videffects.Constants;
 import com.sherazkhilji.videffects.interfaces.Filter;
 
-import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class GrainFilter implements Filter {
