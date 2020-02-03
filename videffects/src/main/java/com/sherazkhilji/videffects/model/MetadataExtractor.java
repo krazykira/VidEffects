@@ -1,37 +1,33 @@
 package com.sherazkhilji.videffects.model;
 
-import android.content.res.AssetFileDescriptor;
 import android.media.MediaMetadataRetriever;
 
 import static android.media.MediaMetadataRetriever.METADATA_KEY_BITRATE;
+import static android.media.MediaMetadataRetriever.METADATA_KEY_VIDEO_HEIGHT;
 import static android.media.MediaMetadataRetriever.METADATA_KEY_VIDEO_ROTATION;
+import static android.media.MediaMetadataRetriever.METADATA_KEY_VIDEO_WIDTH;
 
+/**
+ * Class for extracting metadata from video file.
+ * Default implementation work with videos from file system,
+ * but class can be easily extended for working with any kind of data source.
+ */
 public class MetadataExtractor {
 
-    private MediaMetadataRetriever retriever = new MediaMetadataRetriever();
-    private Metadata metadata;
+    protected MediaMetadataRetriever retriever = new MediaMetadataRetriever();
 
     public Metadata extract(String path) {
         retriever.setDataSource(path);
-        extractMetadata();
-        return metadata;
+        return extractMetadata();
     }
 
-    public Metadata extract(AssetFileDescriptor assetFileDescriptor) {
-        retriever.setDataSource(
-                assetFileDescriptor.getFileDescriptor(),
-                assetFileDescriptor.getStartOffset(),
-                assetFileDescriptor.getLength()
-        );
-        extractMetadata();
-        return metadata;
-    }
-
-    private void extractMetadata() {
+    protected Metadata extractMetadata() {
         String rotationString = retriever.extractMetadata(METADATA_KEY_VIDEO_ROTATION);
         String bitrateString = retriever.extractMetadata(METADATA_KEY_BITRATE);
-        String widthString = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_VIDEO_WIDTH);
-        String heightString = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_VIDEO_HEIGHT);
+        String widthString = retriever.extractMetadata(METADATA_KEY_VIDEO_WIDTH);
+        String heightString = retriever.extractMetadata(METADATA_KEY_VIDEO_HEIGHT);
+
+        Metadata metadata = null;
 
         try {
             int rotation = Integer.parseInt(rotationString);
@@ -46,8 +42,9 @@ public class MetadataExtractor {
             }
         } catch (Exception e) {
             e.printStackTrace();
-        } finally {
-            retriever.release();
         }
+
+        retriever.release();
+        return metadata;
     }
 }

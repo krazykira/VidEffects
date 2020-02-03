@@ -1,16 +1,22 @@
 package com.videffects.sample.activity
 
+import android.Manifest
 import android.content.res.AssetFileDescriptor
 import android.media.MediaPlayer
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
 import android.widget.SeekBar
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
 import com.sherazkhilji.sample.R
 import com.sherazkhilji.videffects.filter.NoEffectFilter
+import com.sherazkhilji.videffects.interfaces.Filter
+import com.sherazkhilji.videffects.interfaces.ShaderInterface
 import com.videffects.sample.VideoController
-import com.videffects.sample.resizeView
+import com.videffects.sample.model.resizeView
 import kotlinx.android.synthetic.main.activity_video.*
 
 
@@ -20,7 +26,7 @@ class VideoActivity : AppCompatActivity() {
 
         private const val TAG = "kifio-VideoActivity"
 
-        private const val WRITE_EXTERNAL_STORAGE = 201
+        const val WRITE_EXTERNAL_STORAGE = 201
 
         fun startActivity(assetsFileDescriptor: AssetFileDescriptor) {
             // TODO: Implement opening from assets gallery
@@ -32,7 +38,7 @@ class VideoActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_video)
-        videoController = VideoController(this)
+        videoController = VideoController(this, "video_2.mp4")
     }
 
     fun setupVideoSurfaceView(mediaPlayer: MediaPlayer, width: Double, height: Double) {
@@ -54,11 +60,11 @@ class VideoActivity : AppCompatActivity() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean { // Handle item selection
         return when (item.itemId) {
             R.id.chooseShader -> {
-                videoController?.chooseShader(videoSurfaceView.width, videoSurfaceView.height)
+                videoController?.chooseShader()
                 true
             }
             R.id.save -> {
-                videoController?.saveVideo()
+                videoController?.saveVideo(videoSurfaceView.filter)
                 true
             }
             else -> super.onOptionsItemSelected(item)
@@ -71,7 +77,7 @@ class VideoActivity : AppCompatActivity() {
             grantResults: IntArray
     ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        if (requestCode == WRITE_EXTERNAL_STORAGE) save()
+        if (requestCode == WRITE_EXTERNAL_STORAGE) videoController?.saveVideo(videoSurfaceView.filter)
     }
 
 
@@ -82,13 +88,43 @@ class VideoActivity : AppCompatActivity() {
 
     override fun onPause() {
         super.onPause()
-        mediaPlayer.pause()
+        videoController?.onPause()
         videoSurfaceView.onPause()
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        mediaPlayer.stop()
-        mediaPlayer.release()
+        videoController?.onDestroy()
+    }
+
+    fun getFilter(): Filter? = videoSurfaceView.filter
+
+    fun requestStoragePermissions() {
+        ActivityCompat.requestPermissions(this,
+                arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE),
+                WRITE_EXTERNAL_STORAGE)
+    }
+
+    fun onSelectShader(shader: ShaderInterface) {
+        videoSurfaceView.shader = shader
+        intensitySeekBar.isEnabled = false
+        intensitySeekBar.progress = 100
+    }
+
+    fun onSelectFilter(filter: Filter) {
+        videoSurfaceView.filter = filter
+        intensitySeekBar.isEnabled = true
+        intensitySeekBar.progress = 0
+    }
+
+    fun onStartSavingVideo() {
+        progress.visibility = View.VISIBLE
+    }
+
+    fun onFinishSavingVideo(msg: String) {
+        runOnUiThread {
+            progress.visibility = View.GONE
+            Toast.makeText(this, msg, Toast.LENGTH_SHORT).show()
+        }
     }
 }

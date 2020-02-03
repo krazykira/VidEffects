@@ -1,12 +1,10 @@
 package com.sherazkhilji.videffects.model;
 
-import android.content.res.AssetFileDescriptor;
 import android.graphics.SurfaceTexture;
 import android.media.MediaCodec;
 import android.media.MediaCodecInfo;
 import android.media.MediaExtractor;
 import android.media.MediaFormat;
-import android.media.MediaMetadataRetriever;
 import android.media.MediaMuxer;
 import android.opengl.EGL14;
 import android.opengl.EGLConfig;
@@ -27,18 +25,19 @@ import java.io.IOException;
 import java.nio.ByteBuffer;
 
 import static android.media.MediaCodec.BUFFER_FLAG_END_OF_STREAM;
-import static android.media.MediaMetadataRetriever.METADATA_KEY_BITRATE;
-import static android.media.MediaMetadataRetriever.METADATA_KEY_VIDEO_ROTATION;
 import static android.opengl.EGLExt.EGL_RECORDABLE_ANDROID;
 
 public class Converter {
 
-    public static final String TAG = "Converter";
-    public static final String VIDEO = "video/";
-
+    private static final String TAG = "Converter";
+    private static final String VIDEO = "video/";
     private static final String OUT_MIME = "video/avc";
 
-    private MediaExtractor extractor = new MediaExtractor();
+    protected MediaExtractor extractor = new MediaExtractor();
+    protected int width;
+    protected int height;
+    protected int bitrate;
+
     private TextureRenderer textureRenderer = null;
     private MediaMuxer muxer = null;
     private MediaCodec decoder = null;
@@ -46,9 +45,6 @@ public class Converter {
     private SurfaceTexture surfaceTexture = null;
     private MediaCodec.BufferInfo bufferInfo = new MediaCodec.BufferInfo();
     private HandlerThread thread = null;
-    private int width;
-    private int height;
-    private int bitrate;
     private Surface inputSurface, outputSurface;
 
     private boolean allInputExtracted = false;
@@ -78,7 +74,7 @@ public class Converter {
     }
 
     private void setMetadata(String path) {
-        Metadata metadata = getMetadataFromPath(path);
+        Metadata metadata = new MetadataExtractor().extract(path);
         if (metadata != null) {
             width = (int) metadata.getWidth();
             height = (int) metadata.getHeight();
@@ -89,58 +85,11 @@ public class Converter {
     public void startConverter(Filter filter, String outPath, ConvertResultListener listener) {
         try {
 
-            if (extractor.getTrackCount() != 1) {
-                throw new IllegalStateException("Few video with ");
+            int trackCount = extractor.getTrackCount();
+            for (int i = 0; i < trackCount; i++) {
+               convert(i, filter, outPath);
             }
 
-            MediaFormat format = extractor.getTrackFormat(0);
-            String mime = format.getString(MediaFormat.KEY_MIME);
-            int frameRate = format.getInteger(MediaFormat.KEY_FRAME_RATE);
-
-            if (mime != null && mime.startsWith(VIDEO)) {
-                extractor.selectTrack(0);
-
-                // Create H.264 encoder
-                encoder = MediaCodec.createEncoderByType(mime);
-
-                // Configure the encoder
-                encoder.configure(getOutputFormat(frameRate), null, null, MediaCodec.CONFIGURE_FLAG_ENCODE);
-                inputSurface = encoder.createInputSurface();
-
-                initEgl(inputSurface);
-
-                // Init output surface
-                textureRenderer = new TextureRenderer(filter);
-                surfaceTexture = new SurfaceTexture(textureRenderer.getTextureId());
-
-                // Control the thread from which OnFrameAvailableListener will be called
-                thread = new HandlerThread("FrameHandlerThread");
-                thread.start();
-
-                surfaceTexture.setOnFrameAvailableListener(new SurfaceTexture.OnFrameAvailableListener() {
-                    @Override
-                    public void onFrameAvailable(SurfaceTexture surfaceTexture) {
-                        synchronized (lock) {
-                            // New frame available before the last frame was process...we dropped some frames
-                            if (frameAvailable) {
-                                Log.d(TAG, "Frame available before the last frame was process...we dropped some frames");
-                            }
-                            frameAvailable = true;
-                            lock.notifyAll();
-                        }
-                    }
-                }, new Handler(thread.getLooper()));
-
-                outputSurface = new Surface(surfaceTexture);
-                decoder = MediaCodec.createDecoderByType(mime);
-                decoder.configure(format, outputSurface, null, 0);
-                muxer = new MediaMuxer(outPath, MediaMuxer.OutputFormat.MUXER_OUTPUT_MPEG_4);
-
-                encoder.start();
-                decoder.start();
-            }
-
-            convert();
             if (listener != null) listener.onSuccess();
         } catch (IOException e) {
             e.printStackTrace();
@@ -150,12 +99,63 @@ public class Converter {
         }
     }
 
+    private void convert(int trackIndex, Filter filter, String outPath) throws IOException {
+        MediaFormat format = extractor.getTrackFormat(trackIndex);
+        String mime = format.getString(MediaFormat.KEY_MIME);
+
+        if (mime != null && mime.startsWith(VIDEO)) {
+            int frameRate = format.getInteger(MediaFormat.KEY_FRAME_RATE);
+
+            extractor.selectTrack(trackIndex);
+
+            // Create H.264 encoder
+            encoder = MediaCodec.createEncoderByType(mime);
+
+            // Configure the encoder
+            encoder.configure(getOutputFormat(frameRate), null, null, MediaCodec.CONFIGURE_FLAG_ENCODE);
+            inputSurface = encoder.createInputSurface();
+
+            initEgl(inputSurface);
+
+            // Init output surface
+            textureRenderer = new TextureRenderer(filter);
+            surfaceTexture = new SurfaceTexture(textureRenderer.getTextureId());
+
+            // Control the thread from which OnFrameAvailableListener will be called
+            thread = new HandlerThread("FrameHandlerThread");
+            thread.start();
+
+            surfaceTexture.setOnFrameAvailableListener(new SurfaceTexture.OnFrameAvailableListener() {
+                @Override
+                public void onFrameAvailable(SurfaceTexture surfaceTexture) {
+                    synchronized (lock) {
+                        // New frame available before the last frame was process...we dropped some frames
+                        if (frameAvailable) {
+                            Log.d(TAG, "Frame available before the last frame was process...we dropped some frames");
+                        }
+                        frameAvailable = true;
+                        lock.notifyAll();
+                    }
+                }
+            }, new Handler(thread.getLooper()));
+
+            outputSurface = new Surface(surfaceTexture);
+            decoder = MediaCodec.createDecoderByType(mime);
+            decoder.configure(format, outputSurface, null, 0);
+            muxer = new MediaMuxer(outPath, MediaMuxer.OutputFormat.MUXER_OUTPUT_MPEG_4);
+
+            encoder.start();
+            decoder.start();
+            convert();
+        }
+    }
+
     private MediaFormat getOutputFormat(int frameRate) {
         MediaFormat format = MediaFormat.createVideoFormat(OUT_MIME, width, height);
         format.setInteger(MediaFormat.KEY_COLOR_FORMAT, MediaCodecInfo.CodecCapabilities.COLOR_FormatSurface);
         format.setInteger(MediaFormat.KEY_BIT_RATE, bitrate);
         format.setInteger(MediaFormat.KEY_FRAME_RATE, frameRate);
-        format.setInteger(MediaFormat.KEY_I_FRAME_INTERVAL, 0);
+        format.setInteger(MediaFormat.KEY_I_FRAME_INTERVAL, 20);
         format.setString(MediaFormat.KEY_MIME, OUT_MIME);
         return format;
     }

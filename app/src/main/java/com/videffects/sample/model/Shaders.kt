@@ -5,6 +5,7 @@ import com.sherazkhilji.videffects.*
 import com.sherazkhilji.videffects.filter.AutoFixFilter
 import com.sherazkhilji.videffects.filter.GrainFilter
 import com.sherazkhilji.videffects.filter.HueFilter
+import com.sherazkhilji.videffects.interfaces.Filter
 
 class Shaders(width: Int, height: Int) {
 

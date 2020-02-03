@@ -2,7 +2,6 @@ package com.videffects.sample.fragment
 
 import android.app.Dialog
 import android.os.Bundle
-import android.util.Size
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.DialogFragment
 import com.videffects.sample.interfaces.OnSelectShaderListener
@@ -30,7 +29,7 @@ class ShaderChooserDialog : DialogFragment() {
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         val width = arguments?.getInt(WIDTH) ?: 0
         val height = arguments?.getInt(HEIGHT) ?: 0
-        val shaders = Shaders(width, height)
+        val shaders = Shaders(width, height)    // Can take some time and may block ui
 
         val builder: AlertDialog.Builder = AlertDialog.Builder(requireActivity())
         builder.setTitle("Choose effect")
