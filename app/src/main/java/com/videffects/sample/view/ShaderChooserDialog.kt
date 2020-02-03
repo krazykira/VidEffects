@@ -1,4 +1,4 @@
-package com.videffects.sample.fragment
+package com.videffects.sample.view
 
 import android.app.Dialog
 import android.os.Bundle

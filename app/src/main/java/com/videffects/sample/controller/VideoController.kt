@@ -1,4 +1,4 @@
-package com.videffects.sample
+package com.videffects.sample.controller
 
 import android.Manifest.permission.WRITE_EXTERNAL_STORAGE
 import android.content.Context
@@ -17,8 +17,8 @@ import com.sherazkhilji.videffects.interfaces.ConvertResultListener
 import com.sherazkhilji.videffects.interfaces.Filter
 import com.sherazkhilji.videffects.interfaces.ShaderInterface
 import com.sherazkhilji.videffects.model.Metadata
-import com.videffects.sample.activity.VideoActivity
-import com.videffects.sample.fragment.ShaderChooserDialog
+import com.videffects.sample.view.VideoActivity
+import com.videffects.sample.view.ShaderChooserDialog
 import com.videffects.sample.interfaces.OnSelectShaderListener
 import com.videffects.sample.interfaces.ProgressChangeListener
 import com.videffects.sample.model.*

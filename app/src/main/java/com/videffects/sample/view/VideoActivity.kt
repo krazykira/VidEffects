@@ -1,4 +1,4 @@
-package com.videffects.sample.activity
+package com.videffects.sample.view
 
 import android.Manifest
 import android.content.res.AssetFileDescriptor
@@ -15,7 +15,7 @@ import com.sherazkhilji.sample.R
 import com.sherazkhilji.videffects.filter.NoEffectFilter
 import com.sherazkhilji.videffects.interfaces.Filter
 import com.sherazkhilji.videffects.interfaces.ShaderInterface
-import com.videffects.sample.VideoController
+import com.videffects.sample.controller.VideoController
 import com.videffects.sample.model.resizeView
 import kotlinx.android.synthetic.main.activity_video.*
 
@@ -95,6 +95,7 @@ class VideoActivity : AppCompatActivity() {
     override fun onDestroy() {
         super.onDestroy()
         videoController?.onDestroy()
+        videoController = null
     }
 
     fun getFilter(): Filter? = videoSurfaceView.filter

@@ -1,4 +1,4 @@
-package com.videffects.sample.activity;
+package com.videffects.sample.view;
 
 import android.app.Activity;
 import android.content.res.AssetFileDescriptor;

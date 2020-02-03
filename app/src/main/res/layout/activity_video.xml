@@ -2,10 +2,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context="com.videffects.sample.activity.SamplePlayerActivity">
+    tools:context="com.videffects.sample.view.SamplePlayerActivity">
 
-    <!--    It's significant to set maximum possible size for view.    -->
     <com.sherazkhilji.videffects.view.VideoSurfaceView
         android:id="@+id/videoSurfaceView"
         android:layout_width="match_parent"
