@@ -4,18 +4,26 @@
     android:layout_height="match_parent"
     tools:context="com.videffects.sample.view.SamplePlayerActivity">
 
-    <com.sherazkhilji.videffects.view.VideoSurfaceView
-        android:id="@+id/videoSurfaceView"
+    <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_gravity="center" />
+        android:layout_marginBottom="56dp">
+
+        <com.sherazkhilji.videffects.view.VideoSurfaceView
+            android:id="@+id/videoSurfaceView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="center" />
+
+    </FrameLayout>
 
     <androidx.appcompat.widget.AppCompatSeekBar
         android:id="@+id/intensitySeekBar"
         android:layout_width="match_parent"
-        android:layout_height="64dp"
-        android:layout_margin="8dp"
-        android:layout_gravity="bottom"/>
+        android:layout_height="56dp"
+        android:layout_gravity="bottom"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp" />
 
     <FrameLayout
         android:id="@+id/progress"
@@ -27,7 +35,7 @@
         <ProgressBar
             android:layout_width="56dp"
             android:layout_height="56dp"
-            android:layout_gravity="center"/>
+            android:layout_gravity="center" />
 
     </FrameLayout>
 

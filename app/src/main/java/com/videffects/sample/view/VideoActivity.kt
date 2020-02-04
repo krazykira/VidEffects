@@ -24,8 +24,6 @@ class VideoActivity : AppCompatActivity() {
 
     companion object {
 
-        private const val TAG = "kifio-VideoActivity"
-
         const val WRITE_EXTERNAL_STORAGE = 201
 
         fun startActivity(assetsFileDescriptor: AssetFileDescriptor) {
@@ -64,7 +62,7 @@ class VideoActivity : AppCompatActivity() {
                 true
             }
             R.id.save -> {
-                videoController?.saveVideo(videoSurfaceView.filter)
+                videoController?.saveVideo()
                 true
             }
             else -> super.onOptionsItemSelected(item)
@@ -77,7 +75,7 @@ class VideoActivity : AppCompatActivity() {
             grantResults: IntArray
     ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        if (requestCode == WRITE_EXTERNAL_STORAGE) videoController?.saveVideo(videoSurfaceView.filter)
+        if (requestCode == WRITE_EXTERNAL_STORAGE) videoController?.saveVideo()
     }
 
 
@@ -98,8 +96,6 @@ class VideoActivity : AppCompatActivity() {
         videoController = null
     }
 
-    fun getFilter(): Filter? = videoSurfaceView.filter
-
     fun requestStoragePermissions() {
         ActivityCompat.requestPermissions(this,
                 arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE),
@@ -107,13 +103,13 @@ class VideoActivity : AppCompatActivity() {
     }
 
     fun onSelectShader(shader: ShaderInterface) {
-        videoSurfaceView.shader = shader
+        videoSurfaceView.setShader(shader)
         intensitySeekBar.isEnabled = false
         intensitySeekBar.progress = 100
     }
 
     fun onSelectFilter(filter: Filter) {
-        videoSurfaceView.filter = filter
+        videoSurfaceView.setFilter(filter)
         intensitySeekBar.isEnabled = true
         intensitySeekBar.progress = 0
     }

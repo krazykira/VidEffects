@@ -1,34 +1,18 @@
 package com.sherazkhilji.videffects.filter;
 
-import android.os.Parcel;
-import android.os.Parcelable;
-
 import com.sherazkhilji.videffects.Constants;
 import com.sherazkhilji.videffects.interfaces.Filter;
 
 public class AutoFixFilter implements Filter {
 
+    private static final float SHIFT_SCALE = 1.0f / 256f;
+    private static final float HIST_OFFSET = 0.5f / 766f;
+    private static final float HIST_SCALE = 765f / 766f;
+    private static final float DENSITY_OFFSET = 0.5f / 1024f;
+    private static final float DENSITY_SCALE = 1023f / 1024f;
+
     private float strength = 0.0F;
-
-    public AutoFixFilter() {
-
-    }
-
-    public AutoFixFilter(Parcel in) {
-        strength = in.readFloat();
-    }
-
-    public static final Creator<AutoFixFilter> CREATOR = new Creator<AutoFixFilter>() {
-        @Override
-        public AutoFixFilter createFromParcel(Parcel in) {
-            return new AutoFixFilter(in);
-        }
-
-        @Override
-        public AutoFixFilter[] newArray(int size) {
-            return new AutoFixFilter[size];
-        }
-    };
+    private String shader;
 
     public void setStrength(float strength) {
         this.strength = strength;
@@ -41,11 +25,6 @@ public class AutoFixFilter implements Filter {
 
     @Override
     public String getFragmentShader() {
-        float shiftScale = 1.0f / 256f;
-        float histOffset = 0.5f /766f;
-        float histScale = 765f / 766f;
-        float densityOffset = 0.5f / 1024f;
-        float densityScale = 1023f / 1024f;
         return "#extension GL_OES_EGL_image_external : require\n"
                 + "precision mediump float;\n"
                 + "uniform samplerExternalOES tex_sampler_0;\n"
@@ -55,11 +34,11 @@ public class AutoFixFilter implements Filter {
                 + " float hist_offset;\n" + " float hist_scale;\n"
                 + " float density_offset;\n" + " float density_scale;\n"
                 + "varying vec2 vTextureCoord;\n" + "void main() {\n"
-                + "  shift_scale = " + shiftScale + ";\n"
-                + "  hist_offset = " + histOffset + ";\n"
-                + "  hist_scale = " + histScale + ";\n"
-                + "  density_offset = " + densityOffset + ";\n"
-                + "  density_scale = " + densityScale + ";\n"
+                + "  shift_scale = " + SHIFT_SCALE + ";\n"
+                + "  hist_offset = " + HIST_OFFSET + ";\n"
+                + "  hist_scale = " + HIST_SCALE + ";\n"
+                + "  density_offset = " + DENSITY_OFFSET + ";\n"
+                + "  density_scale = " + DENSITY_SCALE + ";\n"
                 + "  scale = " + strength + ";\n"
                 + "  const vec3 weights = vec3(0.33333, 0.33333, 0.33333);\n"
                 + "  vec4 color = texture2D(tex_sampler_0, vTextureCoord);\n"
@@ -87,15 +66,5 @@ public class AutoFixFilter implements Filter {
                 + "  } else {\n"
                 + "    gl_FragColor = vec4(color.rgb * dst_energy / energy, color.a);\n"
                 + "  }\n" + "}\n";
-    }
-
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeFloat(strength);
     }
 }

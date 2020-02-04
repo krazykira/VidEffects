@@ -11,7 +11,9 @@ import android.widget.SeekBar
 import androidx.core.content.ContextCompat
 import com.sherazkhilji.videffects.AutoFixEffect
 import com.sherazkhilji.videffects.HueEffect
+import com.sherazkhilji.videffects.filter.AutoFixFilter
 import com.sherazkhilji.videffects.filter.GrainFilter
+import com.sherazkhilji.videffects.filter.HueFilter
 import com.sherazkhilji.videffects.filter.NoEffectFilter
 import com.sherazkhilji.videffects.interfaces.ConvertResultListener
 import com.sherazkhilji.videffects.interfaces.Filter
@@ -27,7 +29,9 @@ import java.io.File
 class VideoController(private var activity: VideoActivity?,
                       filename: String) {
 
-    var assetFileDescriptor: AssetFileDescriptor = activity?.assets?.openFd(filename)
+    private var filter: Filter = NoEffectFilter()
+
+    private var assetFileDescriptor: AssetFileDescriptor = activity?.assets?.openFd(filename)
             ?: throw RuntimeException("Asset not found")
 
     private var mediaPlayer: MediaPlayer = MediaPlayer()
@@ -36,11 +40,12 @@ class VideoController(private var activity: VideoActivity?,
             && Build.VERSION.SDK_INT < Build.VERSION_CODES.Q
     private val progressChangeListener: ProgressChangeListener = object : ProgressChangeListener() {
         override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
-            val filter = activity?.getFilter() ?: return
-            when (filter) {
-                is GrainFilter -> filter.setStrength(transformGrain(progress))
-                is HueEffect -> filter.setDegrees(transformHue(progress))
-                is AutoFixEffect -> filter.setScale(transformAutofix(progress))
+            filter.run {
+                when (this) {
+                    is GrainFilter -> setStrength(transformGrain(progress))
+                    is HueFilter -> setHue(transformHue(progress))
+                    is AutoFixFilter -> setStrength(transformAutofix(progress))
+                }
             }
         }
     }
@@ -78,8 +83,14 @@ class VideoController(private var activity: VideoActivity?,
         dialog.setListener(object : OnSelectShaderListener {
             override fun onSelectShader(shader: Any) {
                 when (shader) {
-                    is ShaderInterface -> activity?.onSelectShader(shader)
-                    is Filter -> activity?.onSelectFilter(shader)
+                    is ShaderInterface -> {
+                        filter = NoEffectFilter()
+                        activity?.onSelectShader(shader)
+                    }
+                    is Filter -> {
+                        filter = shader
+                        activity?.onSelectFilter(shader)
+                    }
                     else -> return
                 }
             }
@@ -87,25 +98,24 @@ class VideoController(private var activity: VideoActivity?,
         dialog.show(activity?.supportFragmentManager, ShaderChooserDialog::class.java.simpleName)
     }
 
-    fun saveVideo(filter: Filter) {
+    fun saveVideo() {
         activity?.let {
             if (shouldAskWritePermission && isStoragePermissionNotGranted(it)) {
                 it.requestStoragePermissions()
             } else {
-                save(filter)
+                save()
             }
         }
     }
 
-    private fun save(filter: Filter) {
+    private fun save() {
         val parent = activity?.getExternalFilesDir(Environment.DIRECTORY_PICTURES)
                 ?: throw RuntimeException("Activity is destroyed!")
         val child = "out.mp4"
         val outPath = File(parent, child).toString()
-
         val assetConverterThread = AssetConverterThread(
                 AssetsConverter(assetFileDescriptor),
-                NoEffectFilter(),
+                filter,
                 outPath,
                 object : ConvertResultListener {
 

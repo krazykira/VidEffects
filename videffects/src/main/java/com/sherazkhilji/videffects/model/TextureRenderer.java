@@ -1,23 +1,16 @@
 package com.sherazkhilji.videffects.model;
 
 import android.opengl.GLES20;
-import android.opengl.Matrix;
 
-import com.sherazkhilji.videffects.model.Utils;
 import com.sherazkhilji.videffects.interfaces.Filter;
-
-import static android.opengl.GLES11Ext.GL_TEXTURE_EXTERNAL_OES;
-import static com.sherazkhilji.videffects.Constants.FLOAT_SIZE_BYTES;
 
 class TextureRenderer extends BaseRenderer {
 
-    int getTextureId() {
-        return textureHandles[0];
-    }
+    private Filter filter;
 
     TextureRenderer(Filter filter) {
-        super(filter);
         super.init();
+        this.filter = filter;
     }
 
     void draw(int viewportWidth, int viewportHeight) {
@@ -25,5 +18,15 @@ class TextureRenderer extends BaseRenderer {
         GLES20.glClearColor(0f, 0f, 0f, 0f);
         GLES20.glViewport(0, 0, viewportWidth, viewportHeight);
         super.draw();
+    }
+
+    @Override
+    protected int getFragmentShader() {
+        return Utils.loadShader(GLES20.GL_FRAGMENT_SHADER, filter.getFragmentShader());
+    }
+
+    @Override
+    protected int getVertexShader() {
+        return Utils.loadShader(GLES20.GL_VERTEX_SHADER, filter.getVertexShader());
     }
 }

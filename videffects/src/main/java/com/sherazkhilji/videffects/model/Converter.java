@@ -119,7 +119,7 @@ public class Converter {
 
             // Init output surface
             textureRenderer = new TextureRenderer(filter);
-            surfaceTexture = new SurfaceTexture(textureRenderer.getTextureId());
+            surfaceTexture = new SurfaceTexture(textureRenderer.getTexture());
 
             // Control the thread from which OnFrameAvailableListener will be called
             thread = new HandlerThread("FrameHandlerThread");
@@ -260,7 +260,7 @@ public class Converter {
                             waitTillFrameAvailable();
 
                             surfaceTexture.updateTexImage();
-                            surfaceTexture.getTransformMatrix(textureRenderer.texMatrix);
+                            surfaceTexture.getTransformMatrix(textureRenderer.getTransformMatrix());
 
                             // Draw texture with opengl
                             textureRenderer.draw(width, height);

@@ -12,7 +12,7 @@ fun View.resizeView(w: Double, h: Double) {
 
     val activity = this.context as Activity
     val maxWidth = activity.screenWidth()
-    val maxHeight = activity.screenHeight() - 64.toPx() - 96.toPx()
+    val maxHeight = activity.screenHeight() - (2 * 56.toPx())
 
     val scale = kotlin.math.min(
             maxWidth / w,

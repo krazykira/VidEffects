@@ -12,19 +12,18 @@ import android.util.Log;
 import android.view.Surface;
 
 import com.sherazkhilji.videffects.NoEffect;
-import com.sherazkhilji.videffects.model.Utils;
 import com.sherazkhilji.videffects.filter.NoEffectFilter;
 import com.sherazkhilji.videffects.interfaces.Filter;
 import com.sherazkhilji.videffects.interfaces.ShaderInterface;
+import com.sherazkhilji.videffects.model.BaseRenderer;
+import com.sherazkhilji.videffects.model.Utils;
 
 import java.io.IOException;
 
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 
-import static android.opengl.GLES11Ext.GL_TEXTURE_EXTERNAL_OES;
 import static com.sherazkhilji.videffects.Constants.DEFAULT_VERTEX_SHADER;
-import static com.sherazkhilji.videffects.Constants.FLOAT_SIZE_BYTES;
 
 /**
  * This GLSurfaceView can be used to display video that is being played by media
@@ -37,10 +36,8 @@ import static com.sherazkhilji.videffects.Constants.FLOAT_SIZE_BYTES;
 public class VideoSurfaceView extends GLSurfaceView {
     private static final String TAG = "VideoSurfaceView";
     private MediaPlayer mMediaPlayer = null;
-    private @Deprecated
-    ShaderInterface effect;
-    private Filter filter;
-    private VideoRender videoRender;
+    private Filter filter = new NoEffectFilter();
+    private ShaderInterface effect = new NoEffect();
 
     public VideoSurfaceView(Context context) {
         super(context);
@@ -53,7 +50,7 @@ public class VideoSurfaceView extends GLSurfaceView {
     }
 
     private void init() {
-        this.videoRender = new VideoRender();
+        VideoRender videoRender = new VideoRender();
         setEGLContextClientVersion(2);
         setRenderer(videoRender);
     }
@@ -68,12 +65,12 @@ public class VideoSurfaceView extends GLSurfaceView {
     @Deprecated
     public void init(MediaPlayer mediaPlayer, ShaderInterface shaderEffect) {
         setupMediaPlayer(mediaPlayer);
-        effect = shaderEffect != null ? shaderEffect : new NoEffect();
+        setShader(shaderEffect);
     }
 
     public void init(MediaPlayer mediaPlayer, Filter filter) {
         setupMediaPlayer(mediaPlayer);
-        this.filter = filter != null ? filter : new NoEffectFilter();
+        setFilter(filter);
     }
 
     private void setupMediaPlayer(MediaPlayer mediaPlayer) {
@@ -129,41 +126,18 @@ public class VideoSurfaceView extends GLSurfaceView {
         private boolean isMediaPlayerPrepared = false;
 
         VideoRender() {
-            Matrix.setIdentityM(texMatrix, 0);
+            Matrix.setIdentityM(getTransformMatrix(), 0);
         }
 
-        @Override
-        public void onDrawFrame(GL10 glUnused) {
-            synchronized (this) {
-                if (updateSurface) {
-                    mSurface.updateTexImage();
-                    mSurface.getTransformMatrix(texMatrix);
-                    updateSurface = false;
-                }
-            }
-
-            GLES20.glClearColor(0.0f, 1.0f, 0.0f, 1.0f);
-            GLES20.glClear(GLES20.GL_DEPTH_BUFFER_BIT | GLES20.GL_COLOR_BUFFER_BIT);
-
-            super.draw()
-    
-            GLES20.glDrawElements(GLES20.GL_TRIANGLES, 6, GLES20.GL_UNSIGNED_INT, 0);
-            GLES20.glFinish();
-        }
-
-        @Override
-        public void onSurfaceChanged(GL10 glUnused, int width, int height) {
-
-        }
 
         @Override
         public void onSurfaceCreated(GL10 glUnused, EGLConfig config) {
-            super.init()
+            super.init();
             /*
              * Create the SurfaceTexture that will feed this textureID, and pass
              * it to the MediaPlayer
              */
-            mSurface = new SurfaceTexture(textureHandles[0]);
+            mSurface = new SurfaceTexture(getTexture());
             mSurface.setOnFrameAvailableListener(this);
 
             Surface surface = new Surface(mSurface);
@@ -188,16 +162,61 @@ public class VideoSurfaceView extends GLSurfaceView {
         }
 
         @Override
+        public void onSurfaceChanged(GL10 glUnused, int width, int height) {
+
+        }
+
+        @Override
         synchronized public void onFrameAvailable(SurfaceTexture surface) {
             updateSurface = true;
         }
 
-        private void setProgram() {
-            if (effect != null) {
-                program = createProgram(effect.getShader(VideoSurfaceView.this));
-            } else if (filter != null) {
-                program = createProgram(filter.getFragmentShader());
+        @Override
+        public void onDrawFrame(GL10 glUnused) {
+            synchronized (this) {
+                if (updateSurface) {
+                    mSurface.updateTexImage();
+                    mSurface.getTransformMatrix(getTransformMatrix());
+                    updateSurface = false;
+                }
             }
+
+            GLES20.glClearColor(0.0f, 1.0f, 0.0f, 1.0f);
+            GLES20.glClear(GLES20.GL_DEPTH_BUFFER_BIT | GLES20.GL_COLOR_BUFFER_BIT);
+            draw();
+        }
+
+        @Override
+        protected void draw() {
+            super.draw();
+            GLES20.glDrawElements(GLES20.GL_TRIANGLES, 6, GLES20.GL_UNSIGNED_INT, 0);
+            GLES20.glFinish();
+        }
+
+        @Override
+        protected int getVertexShader() {
+            String vertexShaderString;
+            if (effect != null) {
+                vertexShaderString = DEFAULT_VERTEX_SHADER;
+            } else if (filter != null) {
+                vertexShaderString = filter.getVertexShader();
+            } else {
+                throw new IllegalStateException("Effect is not applied");
+            }
+            return Utils.loadShader(GLES20.GL_VERTEX_SHADER, vertexShaderString);
+        }
+
+        @Override
+        protected int getFragmentShader() {
+            String fragmentShaderString;
+            if (effect != null) {
+                fragmentShaderString = effect.getShader(VideoSurfaceView.this);
+            } else if (filter != null) {
+                fragmentShaderString = filter.getFragmentShader();
+            } else {
+                throw new IllegalStateException("Effect is not applied");
+            }
+            return Utils.loadShader(GLES20.GL_FRAGMENT_SHADER, fragmentShaderString);
         }
     } // End of class VideoRender.
 

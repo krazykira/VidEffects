@@ -5,7 +5,6 @@ import com.sherazkhilji.videffects.*
 import com.sherazkhilji.videffects.filter.AutoFixFilter
 import com.sherazkhilji.videffects.filter.GrainFilter
 import com.sherazkhilji.videffects.filter.HueFilter
-import com.sherazkhilji.videffects.interfaces.Filter
 
 class Shaders(width: Int, height: Int) {
 
@@ -20,6 +19,7 @@ class Shaders(width: Int, height: Int) {
             HueFilter(),
 
             // Effects
+            AutoFixEffect(0.0F),
             BlackAndWhiteEffect(),
             BrightnessEffect(0.5F),
             ContrastEffect(0.5F),
