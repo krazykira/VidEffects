@@ -1,6 +1,8 @@
 package com.videffects.sample.view
 
 import android.Manifest
+import android.content.Context
+import android.content.Intent
 import android.content.res.AssetFileDescriptor
 import android.media.MediaPlayer
 import android.os.Bundle
@@ -25,9 +27,11 @@ class VideoActivity : AppCompatActivity() {
     companion object {
 
         const val WRITE_EXTERNAL_STORAGE = 201
+        const val ASSET_NAME = "name"
 
-        fun startActivity(assetsFileDescriptor: AssetFileDescriptor) {
-            // TODO: Implement opening from assets gallery
+        fun startActivity(ctx: Context, assetName: String) {
+            ctx.startActivity(Intent(ctx, VideoActivity::class.java)
+                    .putExtra(ASSET_NAME, assetName))
         }
     }
 
@@ -36,7 +40,9 @@ class VideoActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_video)
-        videoController = VideoController(this, "video_2.mp4")
+        val filename = intent.getStringExtra(ASSET_NAME)
+                ?: throw RuntimeException("Asset name is null")
+        videoController = VideoController(this, filename)
     }
 
     fun setupVideoSurfaceView(mediaPlayer: MediaPlayer, width: Double, height: Double) {
@@ -123,5 +129,9 @@ class VideoActivity : AppCompatActivity() {
             progress.visibility = View.GONE
             Toast.makeText(this, msg, Toast.LENGTH_SHORT).show()
         }
+    }
+
+    fun showToast(msg: String) {
+        Toast.makeText(this, msg, Toast.LENGTH_SHORT).show()
     }
 }

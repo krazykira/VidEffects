@@ -26,12 +26,12 @@ fun View.resizeView(w: Double, h: Double) {
 /**
  * Convert dp to px
  */
-private fun Int.toPx() = (this * Resources.getSystem().displayMetrics.density).toInt()
+fun Int.toPx() = (this * Resources.getSystem().displayMetrics.density).toInt()
 
 /**
  * Get screen width in pixels
  */
-private fun Activity.screenWidth(): Int {
+fun Activity.screenWidth(): Int {
     val displayMetrics = DisplayMetrics()
     windowManager.defaultDisplay.getMetrics(displayMetrics)
     return displayMetrics.widthPixels
@@ -40,7 +40,7 @@ private fun Activity.screenWidth(): Int {
 /**
  * Get screen height in pixels
  */
-private fun Activity.screenHeight(): Int {
+fun Activity.screenHeight(): Int {
     val displayMetrics = DisplayMetrics()
     windowManager.defaultDisplay.getMetrics(displayMetrics)
     return displayMetrics.heightPixels

@@ -6,6 +6,7 @@ import com.sherazkhilji.videffects.filter.AutoFixFilter
 import com.sherazkhilji.videffects.filter.GrainFilter
 import com.sherazkhilji.videffects.filter.HueFilter
 
+// TODO: Rewite to factory
 class Shaders(width: Int, height: Int) {
 
     companion object {

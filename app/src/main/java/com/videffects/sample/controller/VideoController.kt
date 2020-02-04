@@ -45,6 +45,7 @@ class VideoController(private var activity: VideoActivity?,
                     is GrainFilter -> setStrength(transformGrain(progress))
                     is HueFilter -> setHue(transformHue(progress))
                     is AutoFixFilter -> setStrength(transformAutofix(progress))
+                    else -> activity?.showToast("Changing intensity not implemented for selected effect in this demo")
                 }
             }
         }
@@ -109,6 +110,12 @@ class VideoController(private var activity: VideoActivity?,
     }
 
     private fun save() {
+
+        if (filter is NoEffectFilter) {
+            activity?.showToast("Saving supported only by Filters.")
+            return
+        }
+
         val parent = activity?.getExternalFilesDir(Environment.DIRECTORY_PICTURES)
                 ?: throw RuntimeException("Activity is destroyed!")
         val child = "out.mp4"
