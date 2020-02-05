@@ -12,7 +12,11 @@ public class AssetsConverter extends Converter {
     public AssetsConverter(AssetFileDescriptor assetFileDescriptor) {
         setMetadata(assetFileDescriptor);
         try {
-            extractor.setDataSource(
+            videoExtractor.setDataSource(
+                    assetFileDescriptor.getFileDescriptor(),
+                    assetFileDescriptor.getStartOffset(),
+                    assetFileDescriptor.getLength());
+            audioExtractor.setDataSource(
                     assetFileDescriptor.getFileDescriptor(),
                     assetFileDescriptor.getStartOffset(),
                     assetFileDescriptor.getLength());

@@ -112,8 +112,7 @@ class VideoController(private var activity: VideoActivity?,
     private fun save() {
 
         if (filter is NoEffectFilter) {
-            activity?.showToast("Saving supported only by Filters.")
-            return
+            activity?.showToast("Saving will work only with Filters.")
         }
 
         val parent = activity?.getExternalFilesDir(Environment.DIRECTORY_PICTURES)

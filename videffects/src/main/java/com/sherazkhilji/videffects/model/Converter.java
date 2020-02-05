@@ -23,6 +23,7 @@ import com.sherazkhilji.videffects.interfaces.Filter;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
+import java.util.concurrent.TimeUnit;
 
 import static android.media.MediaCodec.BUFFER_FLAG_END_OF_STREAM;
 import static android.opengl.EGLExt.EGL_RECORDABLE_ANDROID;
@@ -31,9 +32,15 @@ public class Converter {
 
     private static final String TAG = "Converter";
     private static final String VIDEO = "video/";
+    private static final String AUDIO = "audio/";
     private static final String OUT_MIME = "video/avc";
 
-    protected MediaExtractor extractor = new MediaExtractor();
+    protected MediaExtractor videoExtractor = new MediaExtractor();
+    protected MediaExtractor audioExtractor = new MediaExtractor();
+
+    private int videoTrackIndex = -1;
+    private int audioTrackIndex = -1;
+
     protected int width;
     protected int height;
     protected int bitrate;
@@ -51,8 +58,7 @@ public class Converter {
     private boolean allInputDecoded = false;
     private boolean allOutputEncoded = false;
 
-    private long mediaCodedTimeoutUs = 10000L;
-    private int trackIndex = -1;
+    private long mediaCodedTimeoutUs = 1000L;
     private final Object lock = new Object();
     private volatile boolean frameAvailable = false;
 
@@ -67,7 +73,8 @@ public class Converter {
     public Converter(String path) {
         setMetadata(path);
         try {
-            extractor.setDataSource(path);
+            videoExtractor.setDataSource(path);
+            audioExtractor.setDataSource(path);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -84,12 +91,14 @@ public class Converter {
 
     public void startConverter(Filter filter, String outPath, ConvertResultListener listener) {
         try {
-
-            int trackCount = extractor.getTrackCount();
-            for (int i = 0; i < trackCount; i++) {
-               convert(i, filter, outPath);
+            muxer = new MediaMuxer(outPath, MediaMuxer.OutputFormat.MUXER_OUTPUT_MPEG_4);
+            long startTime = System.nanoTime();
+            convertVideo(filter);
+            if (audioTrackIndex != -1) {
+                addAudio();
             }
-
+            long endTime = System.nanoTime();
+            Log.d(TAG, "Convert time: " + TimeUnit.NANOSECONDS.toSeconds(endTime - startTime));
             if (listener != null) listener.onSuccess();
         } catch (IOException e) {
             e.printStackTrace();
@@ -99,58 +108,85 @@ public class Converter {
         }
     }
 
-    private void convert(int trackIndex, Filter filter, String outPath) throws IOException {
-        MediaFormat format = extractor.getTrackFormat(trackIndex);
-        String mime = format.getString(MediaFormat.KEY_MIME);
-
-        if (mime != null && mime.startsWith(VIDEO)) {
-            int frameRate = format.getInteger(MediaFormat.KEY_FRAME_RATE);
-
-            extractor.selectTrack(trackIndex);
-
-            // Create H.264 encoder
-            encoder = MediaCodec.createEncoderByType(mime);
-
-            // Configure the encoder
-            encoder.configure(getOutputFormat(frameRate), null, null, MediaCodec.CONFIGURE_FLAG_ENCODE);
-            inputSurface = encoder.createInputSurface();
-
-            initEgl(inputSurface);
-
-            // Init output surface
-            textureRenderer = new TextureRenderer(filter);
-            surfaceTexture = new SurfaceTexture(textureRenderer.getTexture());
-
-            // Control the thread from which OnFrameAvailableListener will be called
-            thread = new HandlerThread("FrameHandlerThread");
-            thread.start();
-
-            surfaceTexture.setOnFrameAvailableListener(new SurfaceTexture.OnFrameAvailableListener() {
-                @Override
-                public void onFrameAvailable(SurfaceTexture surfaceTexture) {
-                    synchronized (lock) {
-                        // New frame available before the last frame was process...we dropped some frames
-                        if (frameAvailable) {
-                            Log.d(TAG, "Frame available before the last frame was process...we dropped some frames");
-                        }
-                        frameAvailable = true;
-                        lock.notifyAll();
-                    }
-                }
-            }, new Handler(thread.getLooper()));
-
-            outputSurface = new Surface(surfaceTexture);
-            decoder = MediaCodec.createDecoderByType(mime);
-            decoder.configure(format, outputSurface, null, 0);
-            muxer = new MediaMuxer(outPath, MediaMuxer.OutputFormat.MUXER_OUTPUT_MPEG_4);
-
-            encoder.start();
-            decoder.start();
-            convert();
+    private void convertVideo(Filter filter) throws IOException {
+        for (int i = 0; i < videoExtractor.getTrackCount(); i++) {
+            MediaFormat format = videoExtractor.getTrackFormat(i);
+            convert(i, format, filter);
         }
     }
 
-    private MediaFormat getOutputFormat(int frameRate) {
+    private void convert(int trackIndex, MediaFormat format, Filter filter) throws IOException {
+        String mime = format.getString(MediaFormat.KEY_MIME);
+
+        if (mime == null || !mime.startsWith(VIDEO)) return;
+
+        videoExtractor.selectTrack(trackIndex);
+
+        // Create H.264 encoder
+        encoder = MediaCodec.createEncoderByType(mime);
+
+        // Configure the encoder
+        int frameRate = format.getInteger(MediaFormat.KEY_FRAME_RATE);
+
+        encoder.configure(getVideoFormat(frameRate), null, null, MediaCodec.CONFIGURE_FLAG_ENCODE);
+        inputSurface = encoder.createInputSurface();
+
+        initEgl(inputSurface);
+
+        // Init output surface
+        textureRenderer = new TextureRenderer(filter);
+        surfaceTexture = new SurfaceTexture(textureRenderer.getTexture());
+
+        // Control the thread from which OnFrameAvailableListener will be called
+        thread = new HandlerThread("FrameHandlerThread");
+        thread.start();
+
+        surfaceTexture.setOnFrameAvailableListener(new SurfaceTexture.OnFrameAvailableListener() {
+            @Override
+            public void onFrameAvailable(SurfaceTexture surfaceTexture) {
+                synchronized (lock) {
+                    // New frame available before the last frame was process...we dropped some frames
+                    if (frameAvailable) {
+                        Log.d(TAG, "Frame available before the last frame was process...we dropped some frames");
+                    }
+                    frameAvailable = true;
+                    lock.notifyAll();
+                }
+            }
+        }, new Handler(thread.getLooper()));
+
+        outputSurface = new Surface(surfaceTexture);
+        decoder = MediaCodec.createDecoderByType(mime);
+        decoder.configure(format, outputSurface, null, 0);
+
+        encoder.start();
+        decoder.start();
+        convert();
+    }
+
+    private void addAudio() {
+        int maxChunkSize = 1024 * 1024;
+        ByteBuffer buffer = ByteBuffer.allocate(maxChunkSize);
+        MediaCodec.BufferInfo bufferInfo = new MediaCodec.BufferInfo();
+
+        while (true) {
+
+            int chunkSize = audioExtractor.readSampleData(buffer, 0);
+
+            if (chunkSize >= 0) {
+                bufferInfo.presentationTimeUs = audioExtractor.getSampleTime();
+                bufferInfo.flags = audioExtractor.getSampleFlags();
+                bufferInfo.size = chunkSize;
+
+                muxer.writeSampleData(audioTrackIndex, buffer, bufferInfo);
+                audioExtractor.advance();
+            } else {
+                break;
+            }
+        }
+    }
+
+    private MediaFormat getVideoFormat(int frameRate) {
         MediaFormat format = MediaFormat.createVideoFormat(OUT_MIME, width, height);
         format.setInteger(MediaFormat.KEY_COLOR_FORMAT, MediaCodecInfo.CodecCapabilities.COLOR_FormatSurface);
         format.setInteger(MediaFormat.KEY_BIT_RATE, bitrate);
@@ -158,6 +194,19 @@ public class Converter {
         format.setInteger(MediaFormat.KEY_I_FRAME_INTERVAL, 20);
         format.setString(MediaFormat.KEY_MIME, OUT_MIME);
         return format;
+    }
+
+    private MediaFormat getAudioFormat() {
+        for (int i = 0; i < audioExtractor.getTrackCount(); i++) {
+            MediaFormat format = audioExtractor.getTrackFormat(i);
+            String mime = format.getString(MediaFormat.KEY_MIME);
+            if (mime != null &&
+                    (mime.startsWith(AUDIO) || format.containsKey(MediaFormat.KEY_CHANNEL_COUNT))) {
+                audioExtractor.selectTrack(i);
+                return format;
+            }
+        }
+        return null;
     }
 
     private void initEgl(Surface inputSurface) {
@@ -228,7 +277,7 @@ public class Converter {
                 if (outBufferId >= 0) {
                     ByteBuffer encodedBuffer = encoder.getOutputBuffer(outBufferId);
                     if (encodedBuffer != null) {
-                        muxer.writeSampleData(trackIndex, encodedBuffer, bufferInfo);
+                        muxer.writeSampleData(videoTrackIndex, encodedBuffer, bufferInfo);
                         encoder.releaseOutputBuffer(outBufferId, false);
                         // Are we finished here?
                         if ((bufferInfo.flags & BUFFER_FLAG_END_OF_STREAM) != 0) {
@@ -239,7 +288,11 @@ public class Converter {
                 } else if (outBufferId == MediaCodec.INFO_TRY_AGAIN_LATER) {
                     encoderOutputAvailable = false;
                 } else if (outBufferId == MediaCodec.INFO_OUTPUT_FORMAT_CHANGED) {
-                    trackIndex = muxer.addTrack(encoder.getOutputFormat());
+                    videoTrackIndex = muxer.addTrack(encoder.getOutputFormat());
+                    MediaFormat audioFormat = getAudioFormat();
+                    if (audioFormat != null) {
+                        audioTrackIndex = muxer.addTrack(audioFormat);
+                    }
                     muxer.start();
                 }
 
@@ -289,11 +342,11 @@ public class Converter {
         if (inBufferId >= 0) {
             ByteBuffer buffer = decoder.getInputBuffer(inBufferId);
             if (buffer != null) {
-                int sampleSize = extractor.readSampleData(buffer, 0);
+                int sampleSize = videoExtractor.readSampleData(buffer, 0);
                 if (sampleSize >= 0) {
                     decoder.queueInputBuffer(inBufferId, 0, sampleSize,
-                            extractor.getSampleTime(), extractor.getSampleFlags());
-                    extractor.advance();
+                            videoExtractor.getSampleTime(), videoExtractor.getSampleFlags());
+                    videoExtractor.advance();
                 } else {
                     decoder.queueInputBuffer(inBufferId, 0, 0,
                             0, BUFFER_FLAG_END_OF_STREAM);
@@ -307,7 +360,7 @@ public class Converter {
         synchronized (lock) {
             while (!frameAvailable) {
                 try {
-                    lock.wait(500);
+                    lock.wait(100);
                     if (!frameAvailable) {
                         Log.e(TAG, "Surface frame wait timed out");
                     }
@@ -321,9 +374,9 @@ public class Converter {
 
     private void releaseConverter() {
 
-        if (extractor != null) {
-            extractor.release();
-            extractor = null;
+        if (videoExtractor != null) {
+            videoExtractor.release();
+            videoExtractor = null;
         }
 
         if (decoder != null) {
