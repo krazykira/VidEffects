@@ -46,6 +46,7 @@ class VideoActivity : AppCompatActivity() {
         val filename = intent.getStringExtra(ASSET_NAME)
                 ?: throw RuntimeException("Asset name is null")
         videoController = VideoController(this, filename)
+        progress.setOnClickListener {  }
     }
 
     fun setupVideoSurfaceView(mediaPlayer: MediaPlayer, width: Double, height: Double) {
