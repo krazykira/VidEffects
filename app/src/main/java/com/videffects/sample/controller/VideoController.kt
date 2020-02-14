@@ -1,16 +1,9 @@
 package com.videffects.sample.controller
 
-import android.Manifest.permission.WRITE_EXTERNAL_STORAGE
-import android.content.Context
-import android.content.pm.PackageManager
 import android.content.res.AssetFileDescriptor
 import android.media.MediaPlayer
-import android.os.Build
 import android.os.Environment
 import android.widget.SeekBar
-import androidx.core.content.ContextCompat
-import com.sherazkhilji.videffects.AutoFixEffect
-import com.sherazkhilji.videffects.HueEffect
 import com.sherazkhilji.videffects.filter.AutoFixFilter
 import com.sherazkhilji.videffects.filter.GrainFilter
 import com.sherazkhilji.videffects.filter.HueFilter
@@ -19,11 +12,11 @@ import com.sherazkhilji.videffects.interfaces.ConvertResultListener
 import com.sherazkhilji.videffects.interfaces.Filter
 import com.sherazkhilji.videffects.interfaces.ShaderInterface
 import com.sherazkhilji.videffects.model.Metadata
-import com.videffects.sample.view.VideoActivity
-import com.videffects.sample.view.ShaderChooserDialog
 import com.videffects.sample.interfaces.OnSelectShaderListener
 import com.videffects.sample.interfaces.ProgressChangeListener
 import com.videffects.sample.model.*
+import com.videffects.sample.view.ShaderChooserDialog
+import com.videffects.sample.view.VideoActivity
 import java.io.File
 
 class VideoController(private var activity: VideoActivity?,
@@ -36,8 +29,6 @@ class VideoController(private var activity: VideoActivity?,
 
     private var mediaPlayer: MediaPlayer = MediaPlayer()
     private var metadata: Metadata? = AssetsMetadataExtractor().extract(assetFileDescriptor)
-    private val shouldAskWritePermission = Build.VERSION.SDK_INT >= Build.VERSION_CODES.M
-            && Build.VERSION.SDK_INT < Build.VERSION_CODES.Q
     private val progressChangeListener: ProgressChangeListener = object : ProgressChangeListener() {
         override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
             filter.run {
@@ -96,20 +87,13 @@ class VideoController(private var activity: VideoActivity?,
                 }
             }
         })
-        dialog.show(activity?.supportFragmentManager, ShaderChooserDialog::class.java.simpleName)
-    }
 
-    fun saveVideo() {
         activity?.let {
-            if (shouldAskWritePermission && isStoragePermissionNotGranted(it)) {
-                it.requestStoragePermissions()
-            } else {
-                save()
-            }
+            dialog.show(it.supportFragmentManager, ShaderChooserDialog::class.java.simpleName)
         }
     }
 
-    private fun save() {
+    fun saveVideo() {
 
         if (filter is NoEffectFilter) {
             activity?.showToast("Saving will work only with Filters.")
@@ -137,11 +121,6 @@ class VideoController(private var activity: VideoActivity?,
 
         activity?.onStartSavingVideo()
         assetConverterThread.start()
-    }
-
-    private fun isStoragePermissionNotGranted(ctx: Context): Boolean {
-        val result = ContextCompat.checkSelfPermission(ctx, WRITE_EXTERNAL_STORAGE)
-        return result != PackageManager.PERMISSION_GRANTED
     }
 
     fun onPause() {

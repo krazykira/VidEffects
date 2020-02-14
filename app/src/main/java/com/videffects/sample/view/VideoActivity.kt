@@ -3,8 +3,10 @@ package com.videffects.sample.view
 import android.Manifest
 import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.content.res.AssetFileDescriptor
 import android.media.MediaPlayer
+import android.os.Build
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
@@ -13,6 +15,7 @@ import android.widget.SeekBar
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import com.sherazkhilji.sample.R
 import com.sherazkhilji.videffects.filter.NoEffectFilter
 import com.sherazkhilji.videffects.interfaces.Filter
@@ -68,7 +71,11 @@ class VideoActivity : AppCompatActivity() {
                 true
             }
             R.id.save -> {
-                videoController?.saveVideo()
+                if (isStoragePermissionNotGranted()) {
+                    requestStoragePermissions()
+                } else {
+                    videoController?.saveVideo()
+                }
                 true
             }
             else -> super.onOptionsItemSelected(item)
@@ -106,6 +113,15 @@ class VideoActivity : AppCompatActivity() {
         ActivityCompat.requestPermissions(this,
                 arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE),
                 WRITE_EXTERNAL_STORAGE)
+    }
+
+    private fun isStoragePermissionNotGranted(): Boolean {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M
+                || Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            return true
+        }
+        val result = ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
+        return result != PackageManager.PERMISSION_GRANTED
     }
 
     fun onSelectShader(shader: ShaderInterface) {
