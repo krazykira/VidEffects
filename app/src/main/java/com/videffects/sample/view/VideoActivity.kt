@@ -110,7 +110,7 @@ class VideoActivity : AppCompatActivity() {
         videoController = null
     }
 
-    fun requestStoragePermissions() {
+    private fun requestStoragePermissions() {
         ActivityCompat.requestPermissions(this,
                 arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE),
                 WRITE_EXTERNAL_STORAGE)

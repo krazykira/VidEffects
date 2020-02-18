@@ -30,10 +30,11 @@ import static android.opengl.EGLExt.EGL_RECORDABLE_ANDROID;
 
 public class Converter {
 
-    private static final String TAG = "Converter";
+    private static final String TAG = "kifio-Converter";
     private static final String VIDEO = "video/";
     private static final String AUDIO = "audio/";
     private static final String OUT_MIME = "video/avc";
+    private static final int DEFAULT_FRAMERATE = 15;
 
     protected MediaExtractor videoExtractor = new MediaExtractor();
     protected MediaExtractor audioExtractor = new MediaExtractor();
@@ -100,7 +101,7 @@ public class Converter {
             long endTime = System.nanoTime();
             Log.d(TAG, "Convert time: " + TimeUnit.NANOSECONDS.toSeconds(endTime - startTime));
             if (listener != null) listener.onSuccess();
-        } catch (IOException e) {
+        } catch (Exception e) {
             e.printStackTrace();
             if (listener != null) listener.onFail();
         } finally {
@@ -108,14 +109,14 @@ public class Converter {
         }
     }
 
-    private void convertVideo(Filter filter) throws IOException {
+    private void convertVideo(Filter filter) throws Exception {
         for (int i = 0; i < videoExtractor.getTrackCount(); i++) {
             MediaFormat format = videoExtractor.getTrackFormat(i);
             convert(i, format, filter);
         }
     }
 
-    private void convert(int trackIndex, MediaFormat format, Filter filter) throws IOException {
+    private void convert(int trackIndex, MediaFormat format, Filter filter) throws Exception {
         String mime = format.getString(MediaFormat.KEY_MIME);
 
         if (mime == null || !mime.startsWith(VIDEO)) return;
@@ -126,7 +127,9 @@ public class Converter {
         encoder = MediaCodec.createEncoderByType(mime);
 
         // Configure the encoder
-        int frameRate = format.getInteger(MediaFormat.KEY_FRAME_RATE);
+        int frameRate = format.containsKey(MediaFormat.KEY_FRAME_RATE)
+                ? format.getInteger(MediaFormat.KEY_FRAME_RATE)
+                : DEFAULT_FRAMERATE;
 
         encoder.configure(getVideoFormat(frameRate), null, null, MediaCodec.CONFIGURE_FLAG_ENCODE);
         inputSurface = encoder.createInputSurface();
@@ -380,14 +383,12 @@ public class Converter {
         }
 
         if (decoder != null) {
-            decoder.stop();
             decoder.release();
             decoder = null;
         }
 
 
         if (encoder != null) {
-            encoder.stop();
             encoder.release();
             encoder = null;
         }
@@ -400,7 +401,6 @@ public class Converter {
         }
 
         if (muxer != null) {
-            muxer.stop();
             muxer.release();
             muxer = null;
         }
