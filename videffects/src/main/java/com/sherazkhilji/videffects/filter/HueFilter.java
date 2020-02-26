@@ -11,7 +11,7 @@ public class HueFilter implements Filter {
             + "precision mediump float;\n"
             + "varying vec2 vTextureCoord;\n"
             + "uniform samplerExternalOES sTexture;\n"
-            + "float hue=%f;\n"
+            + "float intensity=%f;\n"
             + "void main() {\n"
             + "vec4 kRGBToYPrime = vec4 (0.299, 0.587, 0.114, 0.0);\n"
             + "vec4 kRGBToI = vec4 (0.595716, -0.274453, -0.321263, 0.0);\n"
@@ -24,8 +24,8 @@ public class HueFilter implements Filter {
             + "float I = dot(color, kRGBToI);\n"
             + "float Q = dot(color, kRGBToQ);\n"
             + "float chroma = sqrt (I * I + Q * Q);\n"
-            + "Q = chroma * sin (hue);\n"
-            + "I = chroma * cos (hue);\n"
+            + "Q = chroma * sin (intensity);\n"
+            + "I = chroma * cos (intensity);\n"
             + "vec4 yIQ = vec4 (YPrime, I, Q, 0.0);\n"
             + "color.r = dot (yIQ, kYIQToR);\n"
             + "color.g = dot (yIQ, kYIQToG);\n"
@@ -33,10 +33,11 @@ public class HueFilter implements Filter {
             + "gl_FragColor = color;\n"
             + "}\n";
 
-    private float hue;
+    private float intensity;
 
-    public void setHue(float degrees) {
-        this.hue = ((degrees - 45) / 45f + 0.5f) * -1;
+    @Override
+    public void setIntensity(float intensity) {
+        this.intensity = ((intensity - 45) / 45f + 0.5f) * -1;
     }
 
     @Override
@@ -46,6 +47,6 @@ public class HueFilter implements Filter {
 
     @Override
     public String getFragmentShader() {
-        return String.format(Locale.ENGLISH, SHADER, hue);
+        return String.format(Locale.ENGLISH, SHADER, intensity);
     }
 }

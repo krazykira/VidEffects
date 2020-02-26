@@ -11,11 +11,12 @@ public class AutoFixFilter implements Filter {
     private static final float DENSITY_OFFSET = 0.5f / 1024f;
     private static final float DENSITY_SCALE = 1023f / 1024f;
 
-    private float strength = 0.0F;
+    private float intensity = 0.0F;
     private String shader;
 
-    public void setStrength(float strength) {
-        this.strength = strength;
+    @Override
+    public void setIntensity(float strength) {
+        this.intensity = strength;
     }
 
     @Override
@@ -39,7 +40,7 @@ public class AutoFixFilter implements Filter {
                 + "  hist_scale = " + HIST_SCALE + ";\n"
                 + "  density_offset = " + DENSITY_OFFSET + ";\n"
                 + "  density_scale = " + DENSITY_SCALE + ";\n"
-                + "  scale = " + strength + ";\n"
+                + "  scale = " + intensity + ";\n"
                 + "  const vec3 weights = vec3(0.33333, 0.33333, 0.33333);\n"
                 + "  vec4 color = texture2D(tex_sampler_0, vTextureCoord);\n"
                 + "  float energy = dot(color.rgb, weights);\n"

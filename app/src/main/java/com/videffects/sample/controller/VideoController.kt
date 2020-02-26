@@ -49,7 +49,6 @@ class VideoController(private var activity: VideoActivity?,
     }
 
     private fun setupMediaPlayer() {
-        mediaPlayer
         mediaPlayer.isLooping = true
         mediaPlayer.setDataSource(
                 assetFileDescriptor.fileDescriptor,

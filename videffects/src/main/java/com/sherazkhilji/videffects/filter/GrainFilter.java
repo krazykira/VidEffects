@@ -10,7 +10,7 @@ import java.util.concurrent.ThreadLocalRandom;
 
 public class GrainFilter implements Filter {
 
-    private float strength = 0.0F;
+    private float intensity = 0.0F;
 
     private String shaderString;
 
@@ -57,8 +57,9 @@ public class GrainFilter implements Filter {
 
     }
 
-    public void setStrength(float strength) {
-        this.strength = strength;
+    @Override
+    public void setIntensity(float intensity) {
+        this.intensity = intensity;
     }
 
     @Override
@@ -71,6 +72,6 @@ public class GrainFilter implements Filter {
         return String.format(Locale.ENGLISH, shaderString,
                 ThreadLocalRandom.current().nextFloat(),
                 ThreadLocalRandom.current().nextFloat(),
-                strength);
+                intensity);
     }
 }
