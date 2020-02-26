@@ -22,6 +22,7 @@ ext {
     siteUrl = 'https://github.com/krazykira/VidEffects'
     gitUrl = 'https://github.com/krazykira/VidEffects.git'
 
+    versionCode = 3
     libraryVersion = '1.0.3'
 
     developerId = 'krazykira'
@@ -43,7 +44,7 @@ android {
     defaultConfig {
         minSdkVersion 21
         targetSdkVersion 29
-        versionCode 1
+        versionCode versionCode
         versionName libraryVersion
     }
 
@@ -53,6 +54,10 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+}
+
+dependencies {
+    implementation 'androidx.annotation:annotation:1.1.0'
 }
 
 /**

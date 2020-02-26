@@ -13,10 +13,13 @@ import android.opengl.EGLDisplay;
 import android.opengl.EGLExt;
 import android.opengl.EGLSurface;
 import android.opengl.GLUtils;
+import android.os.Build;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.util.Log;
 import android.view.Surface;
+
+import androidx.annotation.RequiresApi;
 
 import com.sherazkhilji.videffects.interfaces.ConvertResultListener;
 import com.sherazkhilji.videffects.interfaces.Filter;
@@ -28,6 +31,7 @@ import java.util.concurrent.TimeUnit;
 import static android.media.MediaCodec.BUFFER_FLAG_END_OF_STREAM;
 import static android.opengl.EGLExt.EGL_RECORDABLE_ANDROID;
 
+@RequiresApi(Build.VERSION_CODES.M)
 public class Converter {
 
     private static final String TAG = "kifio-Converter";
@@ -89,7 +93,6 @@ public class Converter {
             bitrate = metadata.getBitrate();
         }
     }
-
     public void startConverter(Filter filter, String outPath, ConvertResultListener listener) {
         try {
             muxer = new MediaMuxer(outPath, MediaMuxer.OutputFormat.MUXER_OUTPUT_MPEG_4);

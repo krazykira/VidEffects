@@ -33,9 +33,9 @@ class VideoController(private var activity: VideoActivity?,
         override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
             filter.run {
                 when (this) {
-                    is GrainFilter -> setStrength(transformGrain(progress))
-                    is HueFilter -> setHue(transformHue(progress))
-                    is AutoFixFilter -> setStrength(transformAutofix(progress))
+                    is GrainFilter -> setIntensity(transformGrain(progress))
+                    is HueFilter -> setIntensity(transformHue(progress))
+                    is AutoFixFilter -> setIntensity(transformAutofix(progress))
                     else -> activity?.showToast("Changing intensity not implemented for selected effect in this demo")
                 }
             }
