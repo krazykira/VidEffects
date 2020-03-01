@@ -132,9 +132,11 @@ public class Converter {
         encoder = MediaCodec.createByCodecName(info.getName());
 
         // Configure the encoder
-        int frameRate = format.containsKey(MediaFormat.KEY_FRAME_RATE)
-                ? format.getInteger(MediaFormat.KEY_FRAME_RATE)
-                : DEFAULT_FRAMERATE;
+        int frameRate = DEFAULT_FRAMERATE;
+
+        if (format.containsKey(MediaFormat.KEY_FRAME_RATE)) {
+            frameRate = format.getInteger(MediaFormat.KEY_FRAME_RATE);
+        }
 
         encoder.configure(getVideoFormat(frameRate, info), null, null, MediaCodec.CONFIGURE_FLAG_ENCODE);
         inputSurface = encoder.createInputSurface();
@@ -215,14 +217,11 @@ public class Converter {
 
     private MediaFormat getVideoFormat(int frameRate, MediaCodecInfo info) {
         MediaFormat format = MediaFormat.createVideoFormat(OUT_MIME, width, height);
-//        format.setInteger(MediaFormat.KEY_COLOR_FORMAT, MediaCodecInfo.CodecCapabilities.COLOR_FormatSurface);
         format.setInteger(MediaFormat.KEY_COLOR_FORMAT, selectColorFormat(info, OUT_MIME));
         format.setInteger(MediaFormat.KEY_BIT_RATE, bitrate);
         format.setInteger(MediaFormat.KEY_FRAME_RATE, frameRate);
         format.setInteger(MediaFormat.KEY_I_FRAME_INTERVAL, 20);
-//        format.setString(MediaFormat.KEY_MIME, OUT_MIME);
         format.setInteger(MediaFormat.KEY_MAX_INPUT_SIZE, 0);
-//        format.setInteger(MediaFormat.KEY_CHANNEL_COUNT, 1);
         return format;
     }
 
@@ -263,8 +262,6 @@ public class Converter {
         }
         return null;
     }
-
-    private boolean isEglnit = false;
 
     private void initEgl(Surface inputSurface) {
 
@@ -311,7 +308,6 @@ public class Converter {
         if (!EGL14.eglMakeCurrent(eglDisplay, eglSurface, eglSurface, eglContext)) {
             Log.d(TAG, "eglMakeCurrent: " + GLUtils.getEGLErrorString(EGL14.eglGetError()));
         }
-        isEglnit = true;
     }
 
     private void convert() {
@@ -468,8 +464,7 @@ public class Converter {
     }
 
     private void releaseEgl() {
-        if (!isEglnit) return;
-        if (eglDisplay != EGL14.EGL_NO_DISPLAY) {
+        if (eglDisplay != null) {
             EGL14.eglDestroySurface(eglDisplay, eglSurface);
             EGL14.eglDestroyContext(eglDisplay, eglContext);
             EGL14.eglReleaseThread();

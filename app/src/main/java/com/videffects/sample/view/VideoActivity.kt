@@ -72,10 +72,12 @@ class VideoActivity : AppCompatActivity() {
                 true
             }
             R.id.save -> {
-                if (isStoragePermissionNotGranted()) {
-                    requestStoragePermissions()
-                } else {
-                    videoController?.saveVideo()
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                    if (isStoragePermissionNotGranted()) {
+                        requestStoragePermissions()
+                    } else {
+                        videoController?.saveVideo()
+                    }
                 }
                 true
             }
