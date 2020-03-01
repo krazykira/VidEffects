@@ -2,8 +2,11 @@ package com.videffects.sample.controller
 
 import android.content.res.AssetFileDescriptor
 import android.media.MediaPlayer
+import android.os.Build
 import android.os.Environment
+import android.util.Log
 import android.widget.SeekBar
+import androidx.annotation.RequiresApi
 import com.sherazkhilji.videffects.filter.AutoFixFilter
 import com.sherazkhilji.videffects.filter.GrainFilter
 import com.sherazkhilji.videffects.filter.HueFilter
@@ -22,6 +25,10 @@ import java.io.File
 class VideoController(private var activity: VideoActivity?,
                       filename: String) {
 
+    companion object {
+        private const val TAG = "kVideoController"
+    }
+
     private var filter: Filter = NoEffectFilter()
 
     private var assetFileDescriptor: AssetFileDescriptor = activity?.assets?.openFd(filename)
@@ -29,7 +36,8 @@ class VideoController(private var activity: VideoActivity?,
 
     private var mediaPlayer: MediaPlayer = MediaPlayer()
     private var metadata: Metadata? = AssetsMetadataExtractor().extract(assetFileDescriptor)
-    private val progressChangeListener: ProgressChangeListener = object : ProgressChangeListener() {
+
+    private val intensityChangeListener: ProgressChangeListener = object : ProgressChangeListener() {
         override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
             filter.run {
                 when (this) {
@@ -55,6 +63,16 @@ class VideoController(private var activity: VideoActivity?,
                 assetFileDescriptor.startOffset,
                 assetFileDescriptor.length
         )
+
+        mediaPlayer.setOnErrorListener { _, what, extra ->
+            Log.d(TAG, "OnError! What: $what; Extra: $extra")
+            false
+        }
+
+        mediaPlayer.setOnCompletionListener {
+            Log.d(TAG, "OnComplete!")
+
+        }
     }
 
     private fun setupView() {
@@ -62,7 +80,7 @@ class VideoController(private var activity: VideoActivity?,
         val activity = this.activity
         if (metadata != null && activity != null) {
             activity.setupVideoSurfaceView(mediaPlayer, metadata.width, metadata.height)
-            activity.setupSeekBar(progressChangeListener)
+            activity.setupSeekBar(intensityChangeListener)
         }
     }
 
@@ -92,6 +110,7 @@ class VideoController(private var activity: VideoActivity?,
         }
     }
 
+    @RequiresApi(Build.VERSION_CODES.M)
     fun saveVideo() {
 
         if (filter is NoEffectFilter) {
@@ -133,6 +152,7 @@ class VideoController(private var activity: VideoActivity?,
         activity = null
     }
 
+    @RequiresApi(Build.VERSION_CODES.M)
     private class AssetConverterThread(private var assetsConverter: AssetsConverter,
                                        private var filter: Filter,
                                        private var outPath: String,

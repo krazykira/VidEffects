@@ -72,10 +72,12 @@ class VideoActivity : AppCompatActivity() {
                 true
             }
             R.id.save -> {
-                if (isStoragePermissionNotGranted()) {
-                    requestStoragePermissions()
-                } else {
-                    videoController?.saveVideo()
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                    if (isStoragePermissionNotGranted()) {
+                        requestStoragePermissions()
+                    } else {
+                        videoController?.saveVideo()
+                    }
                 }
                 true
             }
@@ -95,13 +97,13 @@ class VideoActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
-        videoSurfaceView.onResume()
+//        videoSurfaceView.onResume()
     }
 
     override fun onPause() {
         super.onPause()
         videoController?.onPause()
-        videoSurfaceView.onPause()
+//        videoSurfaceView.onPause()
     }
 
     override fun onDestroy() {
@@ -126,13 +128,13 @@ class VideoActivity : AppCompatActivity() {
     }
 
     fun onSelectShader(shader: ShaderInterface) {
-        videoSurfaceView.setShader(shader)
+//        videoSurfaceView.setShader(shader)
         intensitySeekBar.isEnabled = false
         intensitySeekBar.progress = 100
     }
 
     fun onSelectFilter(filter: Filter) {
-        videoSurfaceView.setFilter(filter)
+//        videoSurfaceView.setFilter(filter)
         intensitySeekBar.isEnabled = true
         intensitySeekBar.progress = 0
     }
