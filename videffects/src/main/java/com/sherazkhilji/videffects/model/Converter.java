@@ -3,6 +3,7 @@ package com.sherazkhilji.videffects.model;
 import android.graphics.SurfaceTexture;
 import android.media.MediaCodec;
 import android.media.MediaCodecInfo;
+import android.media.MediaCodecList;
 import android.media.MediaExtractor;
 import android.media.MediaFormat;
 import android.media.MediaMuxer;
@@ -127,14 +128,15 @@ public class Converter {
         videoExtractor.selectTrack(trackIndex);
 
         // Create H.264 encoder
-        encoder = MediaCodec.createEncoderByType(mime);
+        MediaCodecInfo info = selectCodec(mime);
+        encoder = MediaCodec.createByCodecName(info.getName());
 
         // Configure the encoder
         int frameRate = format.containsKey(MediaFormat.KEY_FRAME_RATE)
                 ? format.getInteger(MediaFormat.KEY_FRAME_RATE)
                 : DEFAULT_FRAMERATE;
 
-        encoder.configure(getVideoFormat(frameRate), null, null, MediaCodec.CONFIGURE_FLAG_ENCODE);
+        encoder.configure(getVideoFormat(frameRate, info), null, null, MediaCodec.CONFIGURE_FLAG_ENCODE);
         inputSurface = encoder.createInputSurface();
 
         initEgl(inputSurface);
@@ -192,14 +194,61 @@ public class Converter {
         }
     }
 
-    private MediaFormat getVideoFormat(int frameRate) {
+    private static MediaCodecInfo selectCodec(String mimeType) {
+        MediaCodecList codecs = new MediaCodecList(MediaCodecList.REGULAR_CODECS);
+        MediaCodecInfo[] infos = codecs.getCodecInfos();
+
+        for (int i = 0; i < infos.length; i++) {
+            MediaCodecInfo codecInfo = infos[i];
+            if (!codecInfo.isEncoder()) {
+                continue;
+            }
+            String[] types = codecInfo.getSupportedTypes();
+            for (int j = 0; j < types.length; j++) {
+                if (types[j].equalsIgnoreCase(mimeType)) {
+                    return codecInfo;
+                }
+            }
+        }
+        return null;
+    }
+
+    private MediaFormat getVideoFormat(int frameRate, MediaCodecInfo info) {
         MediaFormat format = MediaFormat.createVideoFormat(OUT_MIME, width, height);
-        format.setInteger(MediaFormat.KEY_COLOR_FORMAT, MediaCodecInfo.CodecCapabilities.COLOR_FormatSurface);
+//        format.setInteger(MediaFormat.KEY_COLOR_FORMAT, MediaCodecInfo.CodecCapabilities.COLOR_FormatSurface);
+        format.setInteger(MediaFormat.KEY_COLOR_FORMAT, selectColorFormat(info, OUT_MIME));
         format.setInteger(MediaFormat.KEY_BIT_RATE, bitrate);
         format.setInteger(MediaFormat.KEY_FRAME_RATE, frameRate);
         format.setInteger(MediaFormat.KEY_I_FRAME_INTERVAL, 20);
-        format.setString(MediaFormat.KEY_MIME, OUT_MIME);
+//        format.setString(MediaFormat.KEY_MIME, OUT_MIME);
+        format.setInteger(MediaFormat.KEY_MAX_INPUT_SIZE, 0);
+//        format.setInteger(MediaFormat.KEY_CHANNEL_COUNT, 1);
         return format;
+    }
+
+    private int selectColorFormat(MediaCodecInfo codecInfo, String mimeType) {
+        MediaCodecInfo.CodecCapabilities capabilities = codecInfo.getCapabilitiesForType(mimeType);
+        for (int i = 0; i < capabilities.colorFormats.length; i++) {
+            int colorFormat = capabilities.colorFormats[i];
+            if (isRecognizedFormat(colorFormat)) {
+                return colorFormat;
+            }
+        }
+        return 0;   // not reached
+    }
+
+    private static boolean isRecognizedFormat(int colorFormat) {
+        switch (colorFormat) {
+            // these are the formats we know how to handle for this test
+            case MediaCodecInfo.CodecCapabilities.COLOR_FormatYUV420Planar:
+            case MediaCodecInfo.CodecCapabilities.COLOR_FormatYUV420PackedPlanar:
+            case MediaCodecInfo.CodecCapabilities.COLOR_FormatYUV420SemiPlanar:
+            case MediaCodecInfo.CodecCapabilities.COLOR_FormatYUV420PackedSemiPlanar:
+            case MediaCodecInfo.CodecCapabilities.COLOR_TI_FormatYUV420PackedSemiPlanar:
+                return true;
+            default:
+                return false;
+        }
     }
 
     private MediaFormat getAudioFormat() {
@@ -215,7 +264,10 @@ public class Converter {
         return null;
     }
 
+    private boolean isEglnit = false;
+
     private void initEgl(Surface inputSurface) {
+
         eglDisplay = EGL14.eglGetDisplay(EGL14.EGL_DEFAULT_DISPLAY);
 
         if (eglDisplay == EGL14.EGL_NO_DISPLAY) {
@@ -259,6 +311,7 @@ public class Converter {
         if (!EGL14.eglMakeCurrent(eglDisplay, eglSurface, eglSurface, eglContext)) {
             Log.d(TAG, "eglMakeCurrent: " + GLUtils.getEGLErrorString(EGL14.eglGetError()));
         }
+        isEglnit = true;
     }
 
     private void convert() {
@@ -415,6 +468,7 @@ public class Converter {
     }
 
     private void releaseEgl() {
+        if (!isEglnit) return;
         if (eglDisplay != EGL14.EGL_NO_DISPLAY) {
             EGL14.eglDestroySurface(eglDisplay, eglSurface);
             EGL14.eglDestroyContext(eglDisplay, eglContext);
