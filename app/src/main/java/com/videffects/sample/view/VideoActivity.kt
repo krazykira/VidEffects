@@ -65,6 +65,11 @@ class VideoActivity : AppCompatActivity() {
         return true
     }
 
+    override fun onPrepareOptionsMenu(menu: Menu): Boolean {
+        menu.findItem(R.id.save).isVisible = Build.VERSION.SDK_INT >= Build.VERSION_CODES.M
+        return super.onPrepareOptionsMenu(menu)
+    }
+
     override fun onOptionsItemSelected(item: MenuItem): Boolean { // Handle item selection
         return when (item.itemId) {
             R.id.chooseShader -> {
