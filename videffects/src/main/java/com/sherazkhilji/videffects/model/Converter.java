@@ -128,8 +128,7 @@ public class Converter {
         videoExtractor.selectTrack(trackIndex);
 
         // Create H.264 encoder
-        MediaCodecInfo info = selectCodec(mime);
-        encoder = MediaCodec.createByCodecName(info.getName());
+        encoder = MediaCodec.createEncoderByType(mime);
 
         // Configure the encoder
         int frameRate = DEFAULT_FRAMERATE;
@@ -138,7 +137,7 @@ public class Converter {
             frameRate = format.getInteger(MediaFormat.KEY_FRAME_RATE);
         }
 
-        encoder.configure(getVideoFormat(frameRate, info), null, null, MediaCodec.CONFIGURE_FLAG_ENCODE);
+        encoder.configure(getVideoFormat(frameRate), null, null, MediaCodec.CONFIGURE_FLAG_ENCODE);
         inputSurface = encoder.createInputSurface();
 
         initEgl(inputSurface);
@@ -196,58 +195,14 @@ public class Converter {
         }
     }
 
-    private static MediaCodecInfo selectCodec(String mimeType) {
-        MediaCodecList codecs = new MediaCodecList(MediaCodecList.REGULAR_CODECS);
-        MediaCodecInfo[] infos = codecs.getCodecInfos();
-
-        for (int i = 0; i < infos.length; i++) {
-            MediaCodecInfo codecInfo = infos[i];
-            if (!codecInfo.isEncoder()) {
-                continue;
-            }
-            String[] types = codecInfo.getSupportedTypes();
-            for (int j = 0; j < types.length; j++) {
-                if (types[j].equalsIgnoreCase(mimeType)) {
-                    return codecInfo;
-                }
-            }
-        }
-        return null;
-    }
-
-    private MediaFormat getVideoFormat(int frameRate, MediaCodecInfo info) {
+    private MediaFormat getVideoFormat(int frameRate) {
         MediaFormat format = MediaFormat.createVideoFormat(OUT_MIME, width, height);
-        format.setInteger(MediaFormat.KEY_COLOR_FORMAT, selectColorFormat(info, OUT_MIME));
+        format.setInteger(MediaFormat.KEY_COLOR_FORMAT, MediaCodecInfo.CodecCapabilities.COLOR_FormatSurface);
         format.setInteger(MediaFormat.KEY_BIT_RATE, bitrate);
         format.setInteger(MediaFormat.KEY_FRAME_RATE, frameRate);
         format.setInteger(MediaFormat.KEY_I_FRAME_INTERVAL, 20);
         format.setInteger(MediaFormat.KEY_MAX_INPUT_SIZE, 0);
         return format;
-    }
-
-    private int selectColorFormat(MediaCodecInfo codecInfo, String mimeType) {
-        MediaCodecInfo.CodecCapabilities capabilities = codecInfo.getCapabilitiesForType(mimeType);
-        for (int i = 0; i < capabilities.colorFormats.length; i++) {
-            int colorFormat = capabilities.colorFormats[i];
-            if (isRecognizedFormat(colorFormat)) {
-                return colorFormat;
-            }
-        }
-        return 0;   // not reached
-    }
-
-    private static boolean isRecognizedFormat(int colorFormat) {
-        switch (colorFormat) {
-            // these are the formats we know how to handle for this test
-            case MediaCodecInfo.CodecCapabilities.COLOR_FormatYUV420Planar:
-            case MediaCodecInfo.CodecCapabilities.COLOR_FormatYUV420PackedPlanar:
-            case MediaCodecInfo.CodecCapabilities.COLOR_FormatYUV420SemiPlanar:
-            case MediaCodecInfo.CodecCapabilities.COLOR_FormatYUV420PackedSemiPlanar:
-            case MediaCodecInfo.CodecCapabilities.COLOR_TI_FormatYUV420PackedSemiPlanar:
-                return true;
-            default:
-                return false;
-        }
     }
 
     private MediaFormat getAudioFormat() {
