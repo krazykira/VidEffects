@@ -119,9 +119,12 @@ dependencies {
 ![Video screenshot with Invert Colors Effect](https://cloud.githubusercontent.com/assets/2201511/9244236/ea09d344-41b2-11e5-9e71-f04601fd61e9.png)
 
 ## Special Thanks to
-* [Sisik](https://github.com/sixo) blog posts about converting video and audio files with MediaCodec and Muxer .
-  ** https://sisik.eu/blog/android/media/video-to-grayscale
-  ** https://sisik.eu/blog/android/media/mix-audio-into-video
+* [Sisik](https://github.com/sixo) blog posts about converting video and audio files with MediaCodec and Muxer.
+
+   https://sisik.eu/blog/android/media/video-to-grayscale
+
+   https://sisik.eu/blog/android/media/mix-audio-into-video
+   
 * This blog [post](http://code.tutsplus.com/tutorials/how-to-use-android-media-effects-with-opengl-es--cms-23650) by Ashraff Hathibelagal for easing the process of learning Opengl and explaining how to apply effects on images.
 * [GrepCode](http://grepcode.com/file/repository.grepcode.com/java/ext/com.google.android/android/5.0.1_r1/android/filterpacks/imageproc/package-info.java) For providing me with Android source code which were helpful in writing video effects/filters.
 * [MediaPlayerSurface by crossle](https://github.com/crossle/MediaPlayerSurface) It helped me in playing video using a GlsurfaceView.
