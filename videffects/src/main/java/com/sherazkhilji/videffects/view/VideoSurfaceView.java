@@ -117,7 +117,6 @@ public class VideoSurfaceView extends GLSurfaceView {
         super.onPause();
         mMediaPlayer.pause();
     }
-
     private class VideoRender extends BaseRenderer implements Renderer,
             SurfaceTexture.OnFrameAvailableListener {
 
