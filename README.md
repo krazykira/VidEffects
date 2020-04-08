@@ -4,6 +4,10 @@
 This is an Android library which can be used to apply different Filters/Effects on videos. It uses vertexShaders and fragmentShaders to apply effects on `GLSurfaceView`. It uses `MediaPlayer` instance for playing videos on `GlSurfaceView`. See the sample app in order to see a working demo.
 ![Img](https://github.com/krazykira/VidEffects/blob/master/videffects/screenshot/library_demo.gif)
 
+### Change Log
+```
+1.1.0 - Now using this library, you can also save video once you apply a Filter (not EFFECT), Updated Sample app, 
+```
 ## Supported Effects
 
 The following list of effects are currently avaialble and can be applied using VidEffects
