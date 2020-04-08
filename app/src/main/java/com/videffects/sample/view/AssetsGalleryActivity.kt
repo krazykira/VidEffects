@@ -1,6 +1,7 @@
 package com.videffects.sample.view
 
 import android.app.Activity
+import android.content.Intent
 import android.graphics.Rect
 import android.graphics.drawable.Drawable
 import android.os.Bundle
@@ -11,24 +12,26 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.ItemDecoration
+import com.sherazkhilji.sample.R
 import com.videffects.sample.model.AssetsGalleryModel
 import com.videffects.sample.model.screenHeight
 import com.videffects.sample.model.screenWidth
 import com.videffects.sample.model.toPx
+import kotlinx.android.synthetic.main.activity_gallery.*
 
 
 class AssetsGalleryActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val recyclerView = RecyclerView(this)
-        recyclerView.layoutParams = ViewGroup.LayoutParams(
-                ViewGroup.LayoutParams.MATCH_PARENT,
-                ViewGroup.LayoutParams.MATCH_PARENT)
+        setContentView(R.layout.activity_gallery)
         recyclerView.layoutManager = GridLayoutManager(this, SPAN_COUNT)
         recyclerView.adapter = PreviewAdapter(AssetsGalleryModel(this))
         recyclerView.addItemDecoration(SpacesItemDecoration())
-        setContentView(recyclerView)
+
+        buttonSamplePlayer.setOnClickListener {
+            startActivity(Intent(this, SamplePlayerActivity::class.java))
+        }
     }
 
     private class PreviewAdapter(private val model: AssetsGalleryModel) : RecyclerView.Adapter<PreviewHolder>() {

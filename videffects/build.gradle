@@ -23,7 +23,7 @@ ext {
     gitUrl = 'https://github.com/krazykira/VidEffects.git'
 
     versionCode = 3
-    libraryVersion = '1.0.3'
+    libraryVersion = '1.1.0'
 
     developerId = 'krazykira'
     developerName = 'Sheraz Ahmed Khilji'
