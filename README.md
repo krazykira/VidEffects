@@ -2,7 +2,12 @@
 [![Android Arsenal](https://img.shields.io/badge/Android%20Arsenal-VidEffects-green.svg?style=true)](https://android-arsenal.com/details/1/4029)
 
 This is an Android library which can be used to apply different Filters/Effects on videos. It uses vertexShaders and fragmentShaders to apply effects on `GLSurfaceView`. It uses `MediaPlayer` instance for playing videos on `GlSurfaceView`. See the sample app in order to see a working demo.
+![Img](https://github.com/krazykira/VidEffects/blob/master/videffects/screenshot/library_demo.gif)
 
+### Change Log
+```
+1.1.0 - Now using this library, you can also save video once you apply a Filter (not EFFECT), Updated Sample app, 
+```
 ## Supported Effects
 
 The following list of effects are currently avaialble and can be applied using VidEffects
@@ -30,12 +35,13 @@ The following list of effects are currently avaialble and can be applied using V
 
 
 
-
 ## Limitations
+- The effects applied using this library are temporary. What that means is that the original video doesn't change. Effects are only applied during video playback and once the video ends the effects end with it.
+- Minimum Supported Android version is 21 (Lollipop)
+- Saving video available only for Filters and requires Android 23 min api version.For more information check the file [VideoController](https://github.com/krazykira/VidEffects/blob/master/app/src/main/java/com/videffects/sample/controller/VideoController.kt).
+- Other ways to save video once effect/filter is applied [FFmpeg](https://ffmpeg.org/) to apply effects on videos.  Details about how to do that can be seen on this [wiki page](https://github.com/krazykira/VidEffects/wiki/Permanent-video-effects)
+- Some emulators have problems during video playback so try on real device when that happens e.g: Android Lollipop emulators don't show video.
 
-The effects applied using this library are temporary. What that means is that the orignal video doesn't change. Effects are only applied during video playback and once the video ends the effects end with it. In the future, i am aiming to apply permanant effect to videos. You guys are welcome to help out using PRs. 
-<br>For now, if you are really desperate and want to apply effects then you can use [FFmpeg](https://ffmpeg.org/) to apply effects on videos. Details about how to do that can be seen on this [wiki page](https://github.com/krazykira/VidEffects/wiki/Permanent-video-effects)
-Saving video available only for Filters and requires Android 23 min api version.
 
 ## How to use it
 - Add the following code to your project's `build.gradle` file
@@ -50,7 +56,7 @@ Saving video available only for Filters and requires Android 23 min api version.
  ```sh
 dependencies {
 //	Gradle path for VidEffects
-    	compile 'com.sherazkhilji.videffects:videffects:1.0.2'
+    	implementation "com.sherazkhilji.videffects:videffects:1.1.0"
 }
 ```
 
@@ -105,7 +111,8 @@ dependencies {
  ```
 
 
-- Incase of any confusion, checkout the [SamplePlayerActivity](https://github.com/krazykira/VidEffects/blob/master/app/src/main/java/com/videffects/sample/SamplePlayerActivity.java) for a complete example on how to apply different `Effects` on your videos.
+- Incase of any confusion, check the file [SamplePlayerActivity](https://github.com/krazykira/VidEffects/blob/master/app/src/main/java/com/videffects/sample/view/SamplePlayerActivity.java) for a complete example on how to apply different `Effects` on your videos.
+- For Advance implementation and saving Filters, check the file [VideoActivity](https://github.com/krazykira/VidEffects/blob/master/app/src/main/java/com/videffects/sample/view/VideoActivity.kt)
 
 ## See it in working
 
@@ -141,13 +148,13 @@ Want to contribute or add some new Effects? Great! Fork it and send me a pull re
 Developed by
 ============
 
-* Sheraz Ahmad Khilji - <sherazkhilji@gmail.com>
+* Sheraz Ahmed Khilji - <sherazkhilji@gmail.com>
 
 
 License
 =======
 
-    Copyright 2016 Sheraz Ahmad Khilji
+    Copyright 2020 Sheraz Ahmed Khilji
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.

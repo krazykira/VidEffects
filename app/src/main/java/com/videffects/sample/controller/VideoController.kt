@@ -2,12 +2,10 @@ package com.videffects.sample.controller
 
 import android.content.res.AssetFileDescriptor
 import android.media.MediaPlayer
-import android.media.MediaPlayer.MEDIA_ERROR_UNKNOWN
 import android.os.Build
 import android.os.Environment
 import android.util.Log
 import android.widget.SeekBar
-import android.widget.Toast
 import androidx.annotation.RequiresApi
 import com.sherazkhilji.videffects.filter.AutoFixFilter
 import com.sherazkhilji.videffects.filter.GrainFilter
