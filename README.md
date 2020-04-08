@@ -2,11 +2,11 @@
 [![Android Arsenal](https://img.shields.io/badge/Android%20Arsenal-VidEffects-green.svg?style=true)](https://android-arsenal.com/details/1/4029)
 
 This is an Android library which can be used to apply different Filters/Effects on videos. It uses vertexShaders and fragmentShaders to apply effects on `GLSurfaceView`. It uses `MediaPlayer` instance for playing videos on `GlSurfaceView`. See the sample app in order to see a working demo.
-![Img](https://github.com/krazykira/VidEffects/blob/master/videffects/screenshot/library_demo.gif)
+![Img](https://github.com/krazykira/VidEffects/blob/master/screenshot/library_demo.gif)
 
 ### Change Log
 ```
-1.1.0 - Now using this library, you can also save video once you apply a Filter (not EFFECT), Updated Sample app, 
+1.1.0 - Added ability to save video once you apply a FILTER (not EFFECT), Updated Sample app with a detailed example, 
 ```
 ## Supported Effects
 
