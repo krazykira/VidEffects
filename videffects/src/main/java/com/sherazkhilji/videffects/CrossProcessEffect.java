@@ -13,16 +13,9 @@ import com.sherazkhilji.videffects.interfaces.ShaderInterface;
  */
 public class CrossProcessEffect implements ShaderInterface {
 
-    /**
-     * Initialize Effect
-     */
-    public CrossProcessEffect() {
-    }
-
     @Override
     public String getShader(GLSurfaceView mGlSurfaceView) {
-
-        String shader = "#extension GL_OES_EGL_image_external : require\n"
+        return "#extension GL_OES_EGL_image_external : require\n"
                 + "precision mediump float;\n"
                 + "uniform samplerExternalOES sTexture;\n"
                 + "varying vec2 vTextureCoord;\n" + "void main() {\n"
@@ -41,8 +34,5 @@ public class CrossProcessEffect implements ShaderInterface {
                 + "  ncolor.b = color.b * 0.5 + 0.25;\n"
                 + "  gl_FragColor = vec4(ncolor.rgb, color.a);\n" + "}\n";
 
-        return shader;
-
     }
-
 }

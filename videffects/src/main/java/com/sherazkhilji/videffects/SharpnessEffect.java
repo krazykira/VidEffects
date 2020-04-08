@@ -10,6 +10,7 @@ import com.sherazkhilji.videffects.interfaces.ShaderInterface;
  * @author sheraz.khilji
  */
 public class SharpnessEffect implements ShaderInterface {
+
     private int mWidth;
     private int mHeight;
     private float scale = 0f;
@@ -46,7 +47,7 @@ public class SharpnessEffect implements ShaderInterface {
         String stepsizeYString = "stepsizeY = " + 1.0f / mHeight + ";\n";
         String scaleString = "scale = " + scale + ";\n";
 
-        String shader = "#extension GL_OES_EGL_image_external : require\n"
+        return "#extension GL_OES_EGL_image_external : require\n"
                 + "precision mediump float;\n"
                 + "uniform samplerExternalOES sTexture;\n"
                 + " float scale;\n"
@@ -76,8 +77,5 @@ public class SharpnessEffect implements ShaderInterface {
                 + "  gl_FragColor = vec4(color.rgb - 2.0 * scale * nbr_color, color.a);\n"
                 + "}\n";
 
-        return shader;
-
     }
-
 }

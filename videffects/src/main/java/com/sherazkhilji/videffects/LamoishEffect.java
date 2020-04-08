@@ -13,16 +13,10 @@ import java.util.Random;
  * @author sheraz.khilji
  */
 public class LamoishEffect implements ShaderInterface {
+
     private int mWidth;
     private int mHeight;
     private Random mRandom;
-
-    /**
-     * Initialize Effect
-     */
-    public LamoishEffect() {
-
-    }
 
     /**
      * Init all values that will be used by this shader.

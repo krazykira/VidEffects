@@ -1,13 +1,19 @@
 apply plugin: 'com.android.application'
 
+apply plugin: 'kotlin-android'
+
+apply plugin: 'kotlin-android-extensions'
+
 android {
-    compileSdkVersion 24
-    buildToolsVersion "23.0.3"
+    compileSdkVersion 29
+    buildToolsVersion "29.0.3"
 
     defaultConfig {
         applicationId "com.sherazkhilji.sample"
-        minSdkVersion 16
-        targetSdkVersion 24
+        minSdkVersion 21
+        targetSdkVersion 29
+        versionCode 1
+        versionName "1.0"
     }
 
     buildTypes {
@@ -19,7 +25,8 @@ android {
 }
 
 dependencies {
-    compile 'com.sherazkhilji.videffects:videffects:1.0.2'
-//        compile project(":videffects")
-
+    implementation project(":videffects")
+    implementation"org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+    implementation 'androidx.core:core-ktx:1.2.0'
+    implementation 'com.google.android.material:material:1.1.0'
 }

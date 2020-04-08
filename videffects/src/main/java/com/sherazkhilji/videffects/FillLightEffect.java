@@ -11,7 +11,8 @@ import com.sherazkhilji.videffects.interfaces.ShaderInterface;
  * @author sheraz.khilji
  */
 public class FillLightEffect implements ShaderInterface {
-    private float strength = 0f;
+
+    private float strength;
 
     /**
      * Initialize Effect
@@ -38,7 +39,7 @@ public class FillLightEffect implements ShaderInterface {
         String multString = "mult = " + mult + ";\n";
         String igammaString = "igamma = " + igamma + ";\n";
 
-        String shader = "#extension GL_OES_EGL_image_external : require\n"
+        return "#extension GL_OES_EGL_image_external : require\n"
                 + "precision mediump float;\n"
                 + "uniform samplerExternalOES sTexture;\n"
                 + " float mult;\n"
@@ -60,8 +61,5 @@ public class FillLightEffect implements ShaderInterface {
                 + "  vec3 new_color = min(color.rgb + diff * backmask, 1.0);\n"
                 + "  gl_FragColor = vec4(new_color, color.a);\n" + "}\n";
 
-        return shader;
-
     }
-
 }

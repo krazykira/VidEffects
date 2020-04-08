@@ -32,6 +32,10 @@ public class GrainEffect implements ShaderInterface {
         this.strength = strength;
     }
 
+    public void setStrength(float strength) {
+        this.strength = strength;
+    }
+
     /**
      * Init all values that will be used by this shader.
      *
@@ -47,9 +51,9 @@ public class GrainEffect implements ShaderInterface {
     public String getShader(GLSurfaceView mGlSurfaceView) {
         initValues(mGlSurfaceView);
 
-        float seed[] = {mRandom.nextFloat(), mRandom.nextFloat()};
+        float[] seed = {mRandom.nextFloat(), mRandom.nextFloat()};
         String scaleString = "scale = " + strength + ";\n";
-        String seedString[] = new String[2];
+        String[] seedString = new String[2];
         seedString[0] = "seed[0] = " + seed[0] + ";\n";
         seedString[1] = "seed[1] = " + seed[1] + ";\n";
         String stepX = "stepX = " + 0.5f / mWidth + ";\n";
@@ -57,7 +61,7 @@ public class GrainEffect implements ShaderInterface {
 
         // locString[1] = "loc[1] = loc[1]+" + seedString[1] + ";\n";
 
-        String shader = "#extension GL_OES_EGL_image_external : require\n"
+        return "#extension GL_OES_EGL_image_external : require\n"
                 + "precision mediump float;\n"
                 + " vec2 seed;\n"
                 + "varying vec2 vTextureCoord;\n"
@@ -99,7 +103,6 @@ public class GrainEffect implements ShaderInterface {
                 + "  gl_FragColor = vec4(color.rgb * weight, color.a);\n"
                 + "  gl_FragColor = gl_FragColor+vec4(rand(vTextureCoord + seed), rand(vTextureCoord + seed),rand(vTextureCoord + seed),1);\n"
                 + "}\n";
-        return shader;
 
     }
 }

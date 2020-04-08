@@ -9,30 +9,32 @@ import com.sherazkhilji.videffects.interfaces.ShaderInterface;
  * Apply Hue effect on the video being played
  */
 public class HueEffect implements ShaderInterface {
-    float hueValue;
+
+    private float hue;
 
     /**
      * Initialize Effect
      * <p>
      * <img alt="Hue value chart" width="400" height="350" src="https://cloud.githubusercontent.com/assets/2201511/21810115/b99ac22a-d74a-11e6-9f6c-ef74d15c88c7.jpg" >
      *
-     * @param hueDegrees Range of value should be between 0 to 360 degrees as described in the image above
+     * @param degrees Range of value should be between 0 to 360 degrees as described in the image above
      */
-    public HueEffect(float hueDegrees) {
-//      manipulating input value so that we can map it on 360 degree circle
-        hueValue = ((hueDegrees - 45) / 45f + 0.5f) * -1;
+    public HueEffect(float degrees) {
+        setDegrees(degrees);
+    }
 
+    public void setDegrees(float degrees) {
+        hue = ((degrees - 45) / 45f + 0.5f) * -1;
     }
 
     @Override
     public String getShader(GLSurfaceView mGlSurfaceView) {
-
-        String shader = "#extension GL_OES_EGL_image_external : require\n"
+        return "#extension GL_OES_EGL_image_external : require\n"
                 + "precision mediump float;\n"
 
                 + "varying vec2 vTextureCoord;\n"
                 + "uniform samplerExternalOES sTexture;\n"
-                + "float hue=" + hueValue + ";\n"
+                + "float hue=" + hue + ";\n"
 
                 + "void main() {\n"
 
@@ -65,7 +67,5 @@ public class HueEffect implements ShaderInterface {
                 + "gl_FragColor = color;\n"
 
                 + "}\n";
-
-        return shader;
     }
 }

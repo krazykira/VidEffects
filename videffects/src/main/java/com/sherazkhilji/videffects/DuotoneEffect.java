@@ -12,9 +12,14 @@ import com.sherazkhilji.videffects.interfaces.ShaderInterface;
  * @author sheraz.khilji
  */
 public class DuotoneEffect implements ShaderInterface {
+
     // Default values
-    private int mFirstColor = Color.MAGENTA;
-    private int mSecondColor = Color.YELLOW;
+    private int mFirstColor;
+    private int mSecondColor;
+
+    public DuotoneEffect() {
+        this(Color.MAGENTA, Color.YELLOW);
+    }
 
     /**
      * Initialize effect
@@ -31,14 +36,14 @@ public class DuotoneEffect implements ShaderInterface {
 
     @Override
     public String getShader(GLSurfaceView mGlSurfaceView) {
-        float first[] = {Color.red(mFirstColor) / 255f,
+        float[] first = {Color.red(mFirstColor) / 255f,
                 Color.green(mFirstColor) / 255f, Color.blue(mFirstColor) / 255f};
-        float second[] = {Color.red(mSecondColor) / 255f,
+        float[] second = {Color.red(mSecondColor) / 255f,
                 Color.green(mSecondColor) / 255f,
                 Color.blue(mSecondColor) / 255f};
 
-        String firstColorString[] = new String[3];
-        String secondColorString[] = new String[3];
+        String[] firstColorString = new String[3];
+        String[] secondColorString = new String[3];
 
         firstColorString[0] = "first[0] = " + first[0] + ";\n";
         firstColorString[1] = "first[1] = " + first[1] + ";\n";
@@ -48,7 +53,7 @@ public class DuotoneEffect implements ShaderInterface {
         secondColorString[1] = "second[1] = " + second[1] + ";\n";
         secondColorString[2] = "second[2] = " + second[2] + ";\n";
 
-        String shader = "#extension GL_OES_EGL_image_external : require\n"
+        return "#extension GL_OES_EGL_image_external : require\n"
                 + "precision mediump float;\n"
                 + "uniform samplerExternalOES sTexture;\n"
                 + " vec3 first;\n"
@@ -67,8 +72,6 @@ public class DuotoneEffect implements ShaderInterface {
                 + "  float energy = (color.r + color.g + color.b) * 0.3333;\n"
                 + "  vec3 new_color = (1.0 - energy) * first + energy * second;\n"
                 + "  gl_FragColor = vec4(new_color.rgb, color.a);\n" + "}\n";
-
-        return shader;
 
     }
 }

@@ -14,7 +14,6 @@ public class VignetteEffect implements ShaderInterface {
     private int mWidth = 0;
     private int mHeight = 0;
     private float mScale = 0f;
-    private final float mShade = 0.85f;
 
     /**
      * Initialize Effect
@@ -27,7 +26,6 @@ public class VignetteEffect implements ShaderInterface {
         if (scale > 1.0f)
             scale = 1.0f;
         this.mScale = scale;
-
     }
 
     /**
@@ -59,6 +57,7 @@ public class VignetteEffect implements ShaderInterface {
         scaleString[0] = "scale[0] = " + scale[0] + ";\n";
         scaleString[1] = "scale[1] = " + scale[1] + ";\n";
         String inv_max_distString = "inv_max_dist = " + 1.0f / max_dist + ";\n";
+        float mShade = 0.85f;
         String shadeString = "shade = " + mShade + ";\n";
 
         // The 'range' is between 1.3 to 0.6. When scale is zero then range is
@@ -68,7 +67,7 @@ public class VignetteEffect implements ShaderInterface {
         String rangeString = "range = "
                 + (1.30f - (float) Math.sqrt(mScale) * 0.7f) + ";\n";
 
-        String shader = "#extension GL_OES_EGL_image_external : require\n"
+        return "#extension GL_OES_EGL_image_external : require\n"
                 + "precision mediump float;\n"
                 + "uniform samplerExternalOES sTexture;\n"
                 + " float range;\n"
@@ -90,8 +89,6 @@ public class VignetteEffect implements ShaderInterface {
                 + "  vec4 color = texture2D(sTexture, vTextureCoord);\n"
                 + "  gl_FragColor = vec4(color.rgb * lumen, color.a);\n"
                 + "}\n";
-
-        return shader;
 
     }
 }
