@@ -4,7 +4,6 @@ import android.Manifest
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.content.res.AssetFileDescriptor
 import android.media.MediaPlayer
 import android.os.Build
 import android.os.Bundle
@@ -17,12 +16,12 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.sherazkhilji.sample.R
+import com.sherazkhilji.sample.databinding.ActivityVideoBinding
 import com.sherazkhilji.videffects.filter.NoEffectFilter
 import com.sherazkhilji.videffects.interfaces.Filter
 import com.sherazkhilji.videffects.interfaces.ShaderInterface
 import com.videffects.sample.controller.VideoController
 import com.videffects.sample.model.resizeView
-import kotlinx.android.synthetic.main.activity_video.*
 
 
 class VideoActivity : AppCompatActivity() {
@@ -33,31 +32,35 @@ class VideoActivity : AppCompatActivity() {
         const val ASSET_NAME = "name"
 
         fun startActivity(ctx: Context, assetName: String) {
-            ctx.startActivity(Intent(ctx, VideoActivity::class.java)
-                    .putExtra(ASSET_NAME, assetName))
+            ctx.startActivity(
+                Intent(ctx, VideoActivity::class.java)
+                    .putExtra(ASSET_NAME, assetName)
+            )
         }
     }
 
     private var videoController: VideoController? = null
+    private lateinit var binding: ActivityVideoBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_video)
+        binding = ActivityVideoBinding.inflate(layoutInflater)
+        setContentView(binding.root)
         val filename = intent.getStringExtra(ASSET_NAME)
-                ?: throw RuntimeException("Asset name is null")
+            ?: throw RuntimeException("Asset name is null")
         videoController = VideoController(this, filename)
-        progress.setOnClickListener {  }
+        binding.progress.setOnClickListener { }
     }
 
     fun setupVideoSurfaceView(mediaPlayer: MediaPlayer, width: Double, height: Double) {
-        videoSurfaceView.resizeView(width, height)
-        videoSurfaceView.init(mediaPlayer, NoEffectFilter())
+        binding.videoSurfaceView.resizeView(width, height)
+        binding.videoSurfaceView.init(mediaPlayer, NoEffectFilter())
     }
 
     fun setupSeekBar(onSeekBarChangeListener: SeekBar.OnSeekBarChangeListener) {
-        intensitySeekBar.max = 100
-        intensitySeekBar.isEnabled = false
-        intensitySeekBar.setOnSeekBarChangeListener(onSeekBarChangeListener)
+        binding.intensitySeekBar.max = 100
+        binding.intensitySeekBar.isEnabled = false
+        binding.intensitySeekBar.setOnSeekBarChangeListener(onSeekBarChangeListener)
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -91,9 +94,9 @@ class VideoActivity : AppCompatActivity() {
     }
 
     override fun onRequestPermissionsResult(
-            requestCode: Int,
-            permissions: Array<out String>,
-            grantResults: IntArray
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
     ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
@@ -104,13 +107,13 @@ class VideoActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
-        videoSurfaceView.onResume()
+        binding.videoSurfaceView.onResume()
     }
 
     override fun onPause() {
         super.onPause()
         videoController?.onPause()
-        videoSurfaceView.onPause()
+        binding.videoSurfaceView.onPause()
     }
 
     override fun onDestroy() {
@@ -120,39 +123,43 @@ class VideoActivity : AppCompatActivity() {
     }
 
     private fun requestStoragePermissions() {
-        ActivityCompat.requestPermissions(this,
-                arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE),
-                WRITE_EXTERNAL_STORAGE)
+        ActivityCompat.requestPermissions(
+            this,
+            arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE),
+            WRITE_EXTERNAL_STORAGE
+        )
     }
 
     private fun isStoragePermissionNotGranted(): Boolean {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M
-                || Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            || Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q
+        ) {
             return true
         }
-        val result = ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
+        val result =
+            ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
         return result != PackageManager.PERMISSION_GRANTED
     }
 
     fun onSelectShader(shader: ShaderInterface) {
-        videoSurfaceView.setShader(shader)
-        intensitySeekBar.isEnabled = false
-        intensitySeekBar.progress = 100
+        binding.videoSurfaceView.setShader(shader)
+        binding.intensitySeekBar.isEnabled = false
+        binding.intensitySeekBar.progress = 100
     }
 
     fun onSelectFilter(filter: Filter) {
-        videoSurfaceView.setFilter(filter)
-        intensitySeekBar.isEnabled = true
-        intensitySeekBar.progress = 0
+        binding.videoSurfaceView.setFilter(filter)
+        binding.intensitySeekBar.isEnabled = true
+        binding.intensitySeekBar.progress = 0
     }
 
     fun onStartSavingVideo() {
-        progress.visibility = View.VISIBLE
+        binding.progress.visibility = View.VISIBLE
     }
 
     fun onFinishSavingVideo(msg: String) {
         runOnUiThread {
-            progress.visibility = View.GONE
+            binding.progress.visibility = View.GONE
             Toast.makeText(this, msg, Toast.LENGTH_SHORT).show()
         }
     }
