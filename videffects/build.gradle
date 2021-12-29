@@ -1,51 +1,18 @@
 apply plugin: 'com.android.library'
-apply plugin: 'maven'
+apply plugin: 'maven-publish'
+apply plugin: 'signing'
 
 /**
- In order to push the library to Bintray we need to execute the
- following gradle commands in the given sequence.
-
- ./gradlew assemble      // To generate build folder
- ./gradlew createPom     // To create POM file for maven. if that creates a new file then dont add it to git
- ./gradlew bintrayUpload // To upload library to bintray
- */
-ext {
-    bintrayRepo = 'maven'
-    bintrayName = 'VidEffects'
-
-    publishedGroupId = 'com.sherazkhilji.videffects'
-    libraryName = 'VidEffects'
-    artifact = 'videffects'
-
-    libraryDescription = 'It is an Android library uses OpenGL Shaders to apply effects on Videos at Runtime.'
-
-    siteUrl = 'https://github.com/krazykira/VidEffects'
-    gitUrl = 'https://github.com/krazykira/VidEffects.git'
-
-    versionCode = 3
-    libraryVersion = '1.1.0'
-
-    developerId = 'krazykira'
-    developerName = 'Sheraz Ahmed Khilji'
-    developerEmail = 'sherazkhilji@gmail.com'
-
-    licenseName = 'The Apache Software License, Version 2.0'
-    licenseUrl = 'http://www.apache.org/licenses/LICENSE-2.0.txt'
-    allLicenses = ["Apache-2.0"]
-}
-/**
- * This is needed because we want to complie this as android library so that we can test it before publishing
+ * This is needed because we want to compile this as android library so that we can test it before publishing
  */
 android {
 
-    compileSdkVersion 29
-    buildToolsVersion "29.0.3"
+    compileSdkVersion 30
+    buildToolsVersion "30.0.3"
 
     defaultConfig {
         minSdkVersion 21
-        targetSdkVersion 29
-        versionCode versionCode
-        versionName libraryVersion
+        targetSdkVersion 30
     }
 
     buildTypes {
@@ -57,47 +24,75 @@ android {
 }
 
 dependencies {
-    implementation 'androidx.annotation:annotation:1.1.0'
+    implementation 'androidx.annotation:annotation:1.3.0'
 }
 
-/**
- Run this code to create pom-default.xml file in build directory
- */
-task createPom doLast {
-    pom {
-        project {
-//          All of these values are defined in the ext block
-            packaging 'aar'
-            groupId publishedGroupId
-            artifactId artifact
-            version libraryVersion
+// Because the components are created only during the afterEvaluate phase, you must
+// configure your publications using the afterEvaluate() lifecycle method.
+afterEvaluate {
+    publishing {
+        publications {
+            // Creates a Maven publication called "release".
+            releaseLibrary(MavenPublication) {
+                // Applies the component for the release build variant.
+                from components.release
 
-            inceptionYear new Date()
-            licenses {
-                license {
-                    name licenseName
-                    url licenseUrl
-                    distribution 'repo'
+                // You can then customize attributes of the publication as shown below.
+                groupId = 'com.github.krazykira'
+                artifactId = 'videffects'
+                version = '1.1.1'
+                pom {
+                    name = 'VidEffects'
+                    description = 'It is an Android library uses OpenGL Shaders to apply effects on Videos at Runtime.'
+                    url = 'https://github.com/krazykira/VidEffects'
+                    licenses {
+                        license {
+                            name = 'The Apache License, Version 2.0'
+                            url = 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+                        }
+                    }
+                    developers {
+                        developer {
+                            id = 'krazykira'
+                            name = 'Sheraz Ahmed Khilji'
+                            email = 'sherazkhilji@gmail.com'
+                        }
+                    }
+                    scm {
+                        connection = 'scm:git:git://github.com/krazykira/VidEffects.git'
+                        developerConnection = 'scm:git:ssh://github.com/krazykira/VidEffects.git'
+                        url = 'github.com/krazykira/VidEffects/'
+                    }
                 }
-            }
-            developers {
-                developer {
-                    id developerId
-                    name developerName
-                    email developerEmail
-                }
-            }
-            scm {
-                connection gitUrl
-                developerConnection gitUrl
-                url siteUrl
+                repositories {
+                    mavenCentral {
+                        // Url for Staging Snapshot Deployment
+//                      url "https://oss.sonatype.org/content/repositories/snapshots/"
 
+                        // Url for Live/Release artifact Deployment
+                        url "https://oss.sonatype.org/service/local/staging/deploy/maven2/"
+                        credentials {
+                            username "$osshUsername"
+                            password "$osshPassword"
+                        }
+                    }
+                }
             }
         }
-    }.writeTo("build/poms/pom-default.xml").writeTo("pom.xml")
+    }
+/**
+ * Steps for publishing the artifact
+ * 1. For publishing. You need to have the public gpg key and gradle.properties.
+ * 2. Once you have them available then you need to run ./gradlew publishReleaseLibraryPublicationToMavenRepoRepository
+ * 3. Once the gradle task completes goto https://oss.sonatype.org/index.html#stagingRepositories and login with your credentials.
+ * 4. After logging in, go to Staging repositories section and you will see the recently uploaded releasable artifact there.
+ * 5. Select the artifact, then click close button. A few validations will run and if all of them pass then release button is enabled.
+ * 6. Click the release button and the artifact will be released.
+ */
+    signing {
+        sign publishing.publications.releaseLibrary
+    }
 }
-// Place it at the end of the file
-apply from: 'https://raw.githubusercontent.com/nuuneoi/JCenter/master/installv1.gradle'
-apply from: 'https://raw.githubusercontent.com/nuuneoi/JCenter/master/bintrayv1.gradle'
+
 
 

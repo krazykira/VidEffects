@@ -7,7 +7,8 @@ This is an Android library which can be used to apply different Filters/Effects 
 
 ### Change Log
 ```
-1.1.0 - Added ability to save video once you apply a FILTER (not EFFECT), Updated Sample app with a detailed example, 
+1.1.0 - Added ability to save video once you apply a FILTER (not EFFECT), Updated Sample app with a detailed example, (Available on Jcenter)
+1.1.1 - Updated Dependencies & Published the videffects to MavenCentral. All future versions from now onwards will be distributed via MavenCentral.
 ```
 ## Supported Effects
 
@@ -48,7 +49,7 @@ The following list of effects are currently avaialble and can be applied using V
 - Add the following code to your project's `build.gradle` file
 ```sh
   repositories {
-        jcenter()
+        mavenCentral()
     }
 ```
 
@@ -57,7 +58,7 @@ The following list of effects are currently avaialble and can be applied using V
  ```sh
 dependencies {
 //	Gradle path for VidEffects
-    	implementation "com.sherazkhilji.videffects:videffects:1.1.0"
+    	implementation "com.github.krazykira:videffects:1.1.1"
 }
 ```
 
@@ -155,7 +156,7 @@ Developed by
 License
 =======
 
-    Copyright 2020 Sheraz Ahmed Khilji
+    Copyright 2022 Sheraz Ahmed Khilji
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.

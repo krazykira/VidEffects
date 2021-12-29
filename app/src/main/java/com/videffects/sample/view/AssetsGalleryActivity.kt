@@ -12,24 +12,26 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.ItemDecoration
-import com.sherazkhilji.sample.R
+import com.sherazkhilji.sample.databinding.ActivityGalleryBinding
 import com.videffects.sample.model.AssetsGalleryModel
 import com.videffects.sample.model.screenHeight
 import com.videffects.sample.model.screenWidth
 import com.videffects.sample.model.toPx
-import kotlinx.android.synthetic.main.activity_gallery.*
 
 
 class AssetsGalleryActivity : AppCompatActivity() {
 
+    private lateinit var binding: ActivityGalleryBinding
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_gallery)
-        recyclerView.layoutManager = GridLayoutManager(this, SPAN_COUNT)
-        recyclerView.adapter = PreviewAdapter(AssetsGalleryModel(this))
-        recyclerView.addItemDecoration(SpacesItemDecoration())
+        binding = ActivityGalleryBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+        binding.recyclerView.layoutManager = GridLayoutManager(this, SPAN_COUNT)
+        binding.recyclerView.adapter = PreviewAdapter(AssetsGalleryModel(this))
+        binding.recyclerView.addItemDecoration(SpacesItemDecoration())
 
-        buttonSamplePlayer.setOnClickListener {
+        binding.buttonSamplePlayer.setOnClickListener {
             startActivity(Intent(this, SamplePlayerActivity::class.java))
         }
     }
